@@ -1,0 +1,193 @@
+/* Reset default styles */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(-45deg, #0168c9, #002244, #005b9f, #001b36);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    min-height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.background {
+    width: 430px;
+    height: 520px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+
+.background .shape {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    border-radius: 50%;
+}
+
+form {
+    max-width: 550px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    flex-shrink: 1;
+    height: max-content;
+    width: 90%;
+    max-height: 550px;
+    background-color: rgba(255, 255, 255, 0.693);
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 50px 35px;
+
+}
+
+form * {
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    letter-spacing: 1px;
+    outline: none;
+    border: none;
+}
+
+form h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: max-content;
+    text-align: center;
+    margin-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+label {
+    display: flex;
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+input {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    background-color: #f9f9fc;
+    border: 1.5px solid #e1e1e1;
+    /* Subtle border */
+    border-radius: 8px;
+    /* Slightly rounder edges */
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 17px;
+    font-weight: 300;
+}
+
+.submit-container {
+    display: flex;
+    justify-content: center;
+    /* Centers the button horizontally */
+}
+
+button {
+    width: 50%;
+    margin-top: 30px;
+    background-color: #004687;
+    color: #ffffff;
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    /* Centers the logos horizontally */
+    align-items: center;
+    /* Centers the logos vertically if they are different heights */
+    gap: 40px;
+    /* Adds a specific amount of space between each logo */
+    margin-bottom: 20px;
+    /* Adds space below the logos */
+}
+
+.logo {
+    flex-shrink: 1;
+    max-width: 120px;
+    /* Adjust this based on how big you want your logos */
+    height: auto;
+    /* Keeps the image proportions correct */
+}
+
+.password-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    bottom: 25px; /* input height is 50px, half is 25px */
+    transform: translateY(50%); /* perfectly centers the icon on the line */
+    cursor: pointer;
+    color: #000000;
+    font-size: 18px;
+    user-select: none;
+}
+
+.toggle-password:hover {
+    color: #c3c3c3;
+}
+
+.forgotpass {
+    text-decoration: none;
+    margin-top: 8px;
+    text-align: right;
+    font-size: 13px;
+}
+
+#success, #error {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+#error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

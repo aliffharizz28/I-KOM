@@ -1,0 +1,102 @@
+/* Style the sidebar - fixed full height */
+.sidebar {
+  height: 100vh;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #004687;
+  overflow-x: hidden;
+  padding-top: 24px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .logo {
+  display: block;
+  margin: 0 auto;
+  width: 140px;
+  height: 60px;
+  margin-bottom: 5px;
+}
+
+.sidebar h3 {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 20px;  
+  font-size: 11.5px;
+}
+
+/* Style sidebar links */
+.sidebar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #ffffff;
+  display: block;
+}
+
+/* Style links on mouse-over */
+.sidebar a:hover {
+  color: #cdcdcd;
+}
+
+/* Style the main content */
+.main {
+  margin-left: 250px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+hr {
+  border: 0.5px solid #cdcdcd;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%; /* Add this line */
+  box-sizing: border-box; /* Ensures padding doesn't push it out */
+}
+
+.nav-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: #000000;
+  padding-top: 10px;
+
+}
+
+.nav-container a {
+  text-decoration: none;
+  font-size: 17px;
+  padding-bottom: 22px;
+}
+
+div .logout-container .logout {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 17px;
+  padding-bottom: 17px;
+  align-items: flex-end;
+}
+
+.logout-container {
+  margin-top: auto;
+  padding-bottom: 30px;
+}
+
+.pm i {
+  margin-right: 14px; /* Adjust this value to your liking */
+}
+
+.logout i {
+  margin-right: 14px; /* Adjust this value to your liking */
+}
+
+/* Add media queries for small screens (when the height of the screen is less than 450px, add a smaller padding and font-size) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}

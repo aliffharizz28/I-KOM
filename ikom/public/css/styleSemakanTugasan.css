@@ -1,0 +1,350 @@
+/* General Layout and Typography */
+.semakan-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #333;
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.header-section h2 i {
+    color: #3b82f6;
+    margin-right: 10px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.semakan-container {
+    display: flex;
+    gap: 30px;
+    height: 75vh;
+    min-height: 600px;
+}
+
+.preview-side {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 380px;
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Preview Area */
+.preview-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+}
+
+.preview-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.active-student-badge {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.preview-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f1f5f9;
+}
+
+.empty-preview {
+    text-align: center;
+    color: #94a3b8;
+}
+
+.empty-preview i {
+    margin-bottom: 15px;
+    color: #cbd5e1;
+}
+
+/* List Area */
+.list-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.list-header h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 15px 10px 35px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.search-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.student-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.student-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.student-card:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.student-card.active-card {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.student-avatar {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.student-card.active-card .student-avatar {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.student-details h4 {
+    margin: 0 0 4px 0;
+    color: #1e293b;
+    font-size: 1rem;
+}
+
+.submit-time {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.status-marked {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-unmarked {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.mark-input-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f1f5f9;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.mark-input {
+    width: 45px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0f172a;
+    text-align: center;
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.mark-input::-webkit-outer-spin-button,
+.mark-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.mark-input:focus {
+    color: #3b82f6;
+}
+
+.mark-divider {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.panel-footer {
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.btn-save-marks {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-save-marks:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+.btn-save-marks:active {
+    transform: translateY(1px);
+}
+
+/* Scrollbar styling */
+.student-list::-webkit-scrollbar {
+    width: 6px;
+}
+.student-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.student-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}

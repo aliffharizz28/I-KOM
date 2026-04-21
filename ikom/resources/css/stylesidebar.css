@@ -1,0 +1,103 @@
+/* Style the sidebar - fixed full height */
+.sidebar {
+  width: 280px; /* Lebar tetap supaya content tak langgar */
+  min-width: 280px; 
+  height: 100vh;
+  background-color: #004687;
+  padding: 24px 15px;
+  display: flex;
+  flex-direction: column;
+  position: sticky; /* Sidebar kekal statik di kiri walaupun content discroll */
+  top: 0;
+  box-sizing: border-box;
+}
+
+.sidebar .logo {
+  display: block;
+  margin: 0 auto 10px auto;
+  width: 120px;
+  height: 60px;
+  margin-bottom: 5px;
+}
+
+.sidebar h3 {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 20px;  
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Style sidebar links */
+.sidebar a {
+  padding: 12px 15px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  transition: 0.3s;
+}
+
+/* Style links on mouse-over */
+.sidebar a:hover {
+  color: #cdcdcd;
+}
+
+/* Style the main content */
+.main {
+  padding: 0px 10px;
+}
+
+hr {
+  border: 0.5px solid #cdcdcd;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%; /* Add this line */
+  box-sizing: border-box; /* Ensures padding doesn't push it out */
+}
+
+.nav-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: #000000;
+  padding-top: 10px;
+
+}
+
+.nav-container a {
+  text-decoration: none;
+  font-size: 20px;
+  padding-bottom: 22px;
+}
+
+div .logout-container .logout {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 20px;
+  padding-bottom: 17px;
+  align-items: flex-end;
+}
+
+.logout-container {
+  margin-top: auto;
+  padding-bottom: 30px;
+}
+
+.pm i {
+  margin-right: 14px; /* Adjust this value to your liking */
+}
+
+.logout i {
+  margin-right: 14px; /* Adjust this value to your liking */
+}
+
+/* Add media queries for small screens (when the height of the screen is less than 450px, add a smaller padding and font-size) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}

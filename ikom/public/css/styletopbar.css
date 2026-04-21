@@ -1,0 +1,67 @@
+.topbar {
+    background-color: #004687;
+    /* Same blue as sidebar */
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    /* Match content-area padding */
+    border-radius: 0;
+    /* Remove radius to merge seamlessly */
+    margin-top: -40px;
+    /* Pull to top edge */
+    margin-left: -40px;
+    /* Pull to left edge matching sidebar */
+    margin-right: -40px;
+    /* Pull to right edge */
+    margin-bottom: 40px;
+    box-shadow: 0 4px 15px rgba(0, 70, 135, 0.15);
+    position: relative;
+}
+
+.topbar-left .page-title {
+    position: absolute;
+    left: calc(50% - 125px);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+.topbar-right .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px 18px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.topbar-right .user-profile:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.topbar-right .user-name {
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+}
+
+.topbar-right .user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-right .user-avatar i {
+    font-size: 26px;
+    color: #ffffff;
+}
