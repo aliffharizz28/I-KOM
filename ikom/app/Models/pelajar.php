@@ -17,6 +17,7 @@ class pelajar extends Authenticatable
         'fld_user_id', // FK ke jadual Pengguna
         'fld_sig_id', // FK ke jadual SIG
         'fld_pel_pic',
+        'fld_pel_mt',
     ];
 
     // Hubungan dengan model Pengguna
@@ -59,5 +60,24 @@ class pelajar extends Authenticatable
     public function penilaian()
     {
         return $this->hasMany(penilaian::class, 'fld_pel_nomat', 'fld_pel_nomat');
+    }
+
+    // Accessor untuk Peratusan Kehadiran (Berdasarkan perjumpaan yang telah disahkan)
+    public function getPeratusanKehadiranAttribute()
+    {
+        $totalMeetings = perjumpaan::where('fld_sig_id', $this->fld_sig_id)
+                                   ->where('fld_meet_verify', 1)
+                                   ->count();
+
+        if ($totalMeetings == 0) return 0;
+
+        $attendedMeetings = kehadiran::where('fld_pel_nomat', $this->fld_pel_nomat)
+                                     ->where('fld_hdr_status', 'Hadir')
+                                     ->whereHas('perjumpaan', function($q) {
+                                         $q->where('fld_meet_verify', 1);
+                                     })
+                                     ->count();
+
+        return round(($attendedMeetings / $totalMeetings) * 100);
     }
 }

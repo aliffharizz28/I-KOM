@@ -25,15 +25,19 @@ class tugasanPelajarController extends Controller
             return redirect()->route('dashboard')->with('error', 'Anda belum didaftarkan ke mana-mana SIG.');
         }
 
-        // Ambil tugasan bagi SIG pelajar tersebut, dan check status penghantaran pelajar ini
-        $tugasans = tugasan::with(['penghantaran' => function ($query) use ($pelajar) {
-                $query->where('fld_pel_nomat', $pelajar->fld_pel_nomat);
-            }])
+        // Ambil tugasan bagi SIG pelajar tersebut
+        $tugasans = tugasan::with('penghantaran')
             ->where('fld_sig_id', $pelajar->fld_sig_id)
+            ->where('is_published', 1)
             ->orderBy('fld_tgs_tarikh', 'desc')
             ->get();
 
-        return view('tugasanPelajar', compact('tugasans'));
+        $rakanSigs = pelajar::with('pengguna')
+            ->where('fld_sig_id', $pelajar->fld_sig_id)
+            ->where('fld_pel_nomat', '!=', $pelajar->fld_pel_nomat)
+            ->get();
+
+        return view('tugasanPelajar', compact('tugasans', 'rakanSigs', 'pelajar'));
     }
 
     public function store(Request $request)
@@ -41,6 +45,8 @@ class tugasanPelajarController extends Controller
         $request->validate([
             'tugasan_id' => 'required|exists:tugasan,fld_tgs_id',
             'tugasan_file' => 'required|file|mimes:pdf,doc,docx,zip,rar|max:5120',
+            'group_members' => 'nullable|array',
+            'group_members.*' => 'exists:pelajar,fld_pel_nomat'
         ]);
 
         $userId = Auth::user()->fld_user_id;
@@ -50,7 +56,21 @@ class tugasanPelajarController extends Controller
             return back()->with('error', 'Rekod pelajar tidak dijumpai.');
         }
 
-        // Semak jika sudah ada penghantaran
+        // Semak ahli kumpulan jika mereka telah mempunyai penghantaran bagi tugasan ini
+        $membersToSave = [];
+        if ($request->has('group_members')) {
+            foreach ($request->group_members as $nomat) {
+                $hasSubmitted = penghantaran::where('fld_tgs_id', $request->tugasan_id)
+                                            ->where('fld_pel_nomat', $nomat)
+                                            ->exists();
+                if ($hasSubmitted) {
+                    return back()->with('error', "Pelajar dengan no matrik $nomat telah pun berada dalam kumpulan lain atau telah menghantar tugasan ini. Sila buang pelajar tersebut daripada senarai ahli.");
+                }
+                $membersToSave[] = $nomat;
+            }
+        }
+
+        // Semak jika current user sudah ada penghantaran
         $existing = penghantaran::where('fld_tgs_id', $request->tugasan_id)
                                 ->where('fld_pel_nomat', $pelajar->fld_pel_nomat)
                                 ->first();
@@ -73,8 +93,22 @@ class tugasanPelajarController extends Controller
             $penghantaran->fld_pgh_fail = $filename;
         }
 
-        $penghantaran->save();
+        try {
+            $penghantaran->save();
 
-        return redirect()->route('tugasanPelajar')->with('success', 'Tugasan berjaya dihantar!');
+            // Simpan penghantaran untuk setiap ahli kumpulan dengan fail yang sama
+            foreach ($membersToSave as $nomat) {
+                $memberPenghantaran = new penghantaran();
+                $memberPenghantaran->fld_tgs_id = $request->tugasan_id;
+                $memberPenghantaran->fld_pel_nomat = $nomat;
+                $memberPenghantaran->fld_pgh_fail = $penghantaran->fld_pgh_fail; // Use the same uploaded file
+                $memberPenghantaran->save();
+            }
+
+            return redirect()->route('tugasanPelajar')->with('success', 'Tugasan berjaya dihantar!');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('DB Save error: ' . $e->getMessage());
+            return back()->with('error', 'Ralat menyimpan ke pangkalan data: ' . $e->getMessage());
+        }
     }
 }

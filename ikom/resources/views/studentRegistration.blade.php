@@ -22,9 +22,9 @@
             <p>Seret dan lepas fail .csv anda di sini atau klik untuk layari</p>
             <input type="file" id="csv_file" accept=".csv" onchange="handleFileSelect(event)" />
         </div>
-        <div id="file-name-display" style="margin-top: 10px; font-weight: bold; color: #555;"></div>
+        <div id="file-name-display" class="file-name-display"></div>
         
-        <button type="button" class="btn-primary" style="margin-top: 15px;" onclick="registerBulk()">Muat Naik & Daftar</button>
+        <button type="button" class="btn-primary mt-15" onclick="registerBulk()">Muat Naik & Daftar</button>
 
     </div>
 
@@ -33,9 +33,9 @@
         <h3>Pendaftaran Individu</h3>
         <div class="form-group">
             <label>Nombor Matrik</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="matric_search" placeholder="Contoh : A203272" style="flex: 1;" />
-                <button type="button" class="btn-primary" style="white-space: nowrap; width: auto; padding: 12px 22px;" onclick="fetchStudent()">Cari Pelajar</button>
+            <div class="search-flex-container">
+                <input type="text" id="matric_search" placeholder="Contoh : A203272" class="flex-1" />
+                <button type="button" class="btn-primary btn-search" onclick="fetchStudent()">Cari Pelajar</button>
             </div>
         </div>
 
@@ -63,12 +63,12 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn-primary" style="margin-top: 15px;" onclick="registerIndividual()">Daftar ke SIG</button>
+            <button type="button" class="btn-primary mt-15" onclick="registerIndividual()">Daftar ke SIG</button>
         </div>
 
     </div>
 
-    <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+    <div class="table-section-container">
         <h3>Senarai Pelajar Berdaftar</h3>
         <table id="registered-students-table" class="students-table">
             <thead>
@@ -89,7 +89,7 @@
                     @endforeach
                 @else
                     <tr id="no-data-row">
-                        <td colspan="3" style="text-align: center;">Tiada pelajar berdaftar lagi.</td>
+                        <td colspan="3" class="text-center">Tiada pelajar berdaftar lagi.</td>
                     </tr>
                 @endif
             </tbody>

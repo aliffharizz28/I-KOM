@@ -299,6 +299,14 @@ select.form-control {
 }
 
 /* Action Buttons */
+.btn-action-publish {
+    background-color: #10b981; color: white; border: none; padding: 6px 10px;
+    border-radius: 6px; cursor: pointer; margin-right: 5px;
+}
+.btn-action-hide {
+    background-color: #f59e0b; color: white; border: none; padding: 6px 10px;
+    border-radius: 6px; cursor: pointer; margin-right: 5px;
+}
 .btn-action-edit {
     background-color: #3b82f6; color: white; border: none; padding: 6px 10px;
     border-radius: 6px; cursor: pointer; margin-right: 5px;
@@ -356,4 +364,46 @@ select.form-control {
 }
 .file-download-link {
     color: #10b981; font-weight: 600; text-decoration: none;
+}
+
+/* Further Extracted Inline Styles */
+.col-tindakan {
+     width: 150px; 
+    }
+.status-badge-container {
+     display:flex; flex-direction:column; gap:5px; align-items:flex-start; 
+    }
+.inline-form {
+     display:inline-block; 
+    }
+.label-jenis-tugasan {
+     margin-bottom: 10px; 
+    }
+.jenis-tugasan-container {
+     display: flex; gap: 20px; align-items: center; padding: 14px 16px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; height: 50px; box-sizing: border-box; 
+    }
+.jenis-tugasan-label {
+    font-weight: normal; 
+    margin-bottom: 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    cursor: pointer; 
+    }
+.detail-file-wrapper-custom {
+    flex:unset;
+    margin-bottom: 15px; 
+}
+.detail-panel-row-custom {
+    margin-top: 15px;
+    margin-bottom: 0; 
+}
+.detail-panel-small-custom {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none; 
+}
+.btn-semak-tugasan-link {
+     display: inline-flex; justify-content: center; width: 100%; font-size: 1.1rem; padding: 15px; text-decoration: none; 
 }

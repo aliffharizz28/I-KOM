@@ -292,3 +292,41 @@ p {
         width: 100%;
     }
 }
+
+/* =========================================
+   EXTRACTED INLINE STYLES
+   ========================================= */
+.file-name-display {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
+
+.search-flex-container {
+    display: flex;
+    gap: 10px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.btn-search {
+    white-space: nowrap;
+    width: auto;
+    padding: 12px 22px;
+}
+
+.table-section-container {
+    margin-top: 40px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+.text-center {
+    text-align: center;
+}

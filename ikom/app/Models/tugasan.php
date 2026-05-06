@@ -13,7 +13,9 @@ class tugasan extends Model
         'fld_tgs_nama',
         'fld_tgs_desc',
         'fld_tgs_tarikh',
+        'fld_tgs_jenis',
         'fld_tgs_status',
+        'is_published',
         'fld_sig_id',
         'fld_tgs_file',
     ];

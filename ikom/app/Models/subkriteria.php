@@ -26,4 +26,10 @@ class subkriteria extends Model
     {
         return $this->hasMany(penilaian::class, 'fld_sub_id', 'fld_sub_id');
     }
+
+    // Hubungan dengan model SubkriteriaDesc
+    public function descriptions()
+    {
+        return $this->hasMany(subkriteriaDesc::class, 'fld_sub_id', 'fld_sub_id');
+    }
 }

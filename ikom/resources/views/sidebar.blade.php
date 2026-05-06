@@ -24,26 +24,28 @@
                 @if(Auth::check() && Auth::user()->fld_user_role == 1)
                     <a href="{{ route('dashboard') }}" class="pm"><i class="fa fa-tachometer"></i> Papan Pemuka </a>
                     <a href="{{ route('coursereg') }}" class="pm"><i class="fa fa-plus-square"></i> Daftar Kursus </a>
-                    <a href="{{ route('penyelarasSigRegistration') }}" class="pm"><i class="fa fa-id-card"></i>Daftar Penyelaras SIG </a>
+                    <a href="{{ route('penyelarasSigRegistration') }}" class="pm"><i class="fa fa-id-card"></i> Daftar Penyelaras SIG </a>
+                    <a href="{{ route('laporanSIG') }}" class="pm"><i class="fas fa-file-excel"></i> Laporan SIG </a>
                 @endif
 
                 @if(Auth::check() && Auth::user()->fld_user_role == 2)
                     <a href="{{ route('dashboard') }}" class="pm"><i class="fa fa-tachometer"></i> Papan Pemuka </a>
                     <a href="{{ route('registration') }}" class="pm"><i class="fa fa-users"></i>  Daftar Pelajar </a>
-                    <a href="#" class="pm"><i class="fa fa-pencil-square"></i> Sub-Kriteria Markah </a>
+                    <a href="{{ route('subkriteria') }}" class="pm"><i class="fa fa-pencil-square"></i> Rubrik Pemarkahan</a>
                     <a href="{{ route('tugasan') }}" class="pm"><i class="fas fa-tasks"></i> Tugasan </a>
-                    <a href="#" class="pm"><i class="fas fa-chart-line"></i> Penilaian Markah </a>
-                    <a href="#" class="pm"><i class="fas fa-check-circle"></i> Kehadiran </a>
+                    <a href="{{ route('penilaian') }}" class="pm"><i class="fas fa-chart-line"></i> Penilaian Markah </a>
+                    <a href="{{ route('kehadiran') }}" class="pm"><i class="fas fa-check-circle"></i> Kehadiran </a>
                 @endif
                 
                 @if(Auth::check() && Auth::user()->fld_user_role == 3)
                     <a href="{{ route('dashboard') }}" class="pm"><i class="fa fa-tachometer"></i> Papan Pemuka Pelajar </a>
                     <a href="{{ route('tugasanPelajar') }}" class="pm"><i class="fas fa-tasks"></i> Tugasan </a>
+                    <a href="{{ route('semakanmarkah') }}" class="pm"><i class="fas fa-graduation-cap"></i> Semakan Markah </a>
+                    @if(Auth::user()->pelajar && Auth::user()->pelajar->fld_pel_mt == 1)
+                        <a href="{{ route('kehadiran') }}" class="pm"><i class="fas fa-check-circle"></i> Kehadiran </a>
+                    @endif
                 @endif
                 
-                @if(Auth::check() && Auth::user()->fld_user_role == 4)
-                    <a href="{{ route('dashboard') }}" class="pm"><i class="fa fa-tachometer"></i> Papan Pemuka MT </a>
-                @endif
             </div>
 
 

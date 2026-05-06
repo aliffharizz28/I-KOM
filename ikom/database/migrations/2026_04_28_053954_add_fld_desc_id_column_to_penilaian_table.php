@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('penilaian', function (Blueprint $table) {
+            $table->unsignedBigInteger('fld_desc_id')->nullable()->after('fld_sub_id');
+            $table->foreign('fld_desc_id')
+                ->references('fld_desc_id')
+                ->on('subkriteria_desc')
+                ->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('penilaian', function (Blueprint $table) {
+            $table->dropForeign(['fld_desc_id']);
+            $table->dropColumn('fld_desc_id');
+        });
+    }
+};

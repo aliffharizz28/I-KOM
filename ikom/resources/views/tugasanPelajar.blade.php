@@ -7,21 +7,32 @@
 
 @if (Auth::user()->fld_user_role == 3)
 <div class="hantar-tugasan-wrapper">
+
     @if(session('success'))
-        <div class="alert-success" style="margin-bottom: 2rem; background-color: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+        <div class="alert-success">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert-danger" style="margin-bottom: 2rem; background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+        <div class="alert-danger alert-danger-center">
             <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Filter Select -->
-    <div class="filter-controls" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
-        <select id="statusFilter" onchange="filterTasks()" style="padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; font-size: 0.95rem; background-color: white; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div class="filter-controls">
+        <select id="statusFilter" onchange="filterTasks()">
             <option value="all">Semua Status</option>
             <option value="belum">Belum Dihantar</option>
             <option value="telah">Telah Dihantar</option>
@@ -61,11 +72,11 @@
             </div>
         @else
             @foreach($groupedTasks as $groupId => $group)
-                <div class="task-group-section" data-group-status="{{ $groupId }}" style="display: {{ $group['tasks']->isEmpty() ? 'none' : 'block' }}; margin-bottom: 2.5rem;">
+                <div class="task-group-section" data-group-status="{{ $groupId }}" style="display: {{ $group['tasks']->isEmpty() ? 'none' : 'block' }};">
                     @if(!$group['tasks']->isEmpty())
-                        <div class="group-header" style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                            <h3 style="margin: 0; padding-right: 1.5rem; color: #475569; font-size: 1.25rem; font-weight: 600;"><i class="fas fa-tasks text-indigo-500"></i> {{ $group['title'] }}</h3>
-                            <div style="flex-grow: 1; height: 2px; background-color: #cbd5e1; border-radius: 1px;"></div>
+                        <div class="group-header">
+                            <h3><i class="fas fa-tasks text-indigo-500"></i> {{ $group['title'] }}</h3>
+                            <div class="group-header-divider"></div>
                         </div>
                         <div class="tasks-grid">
                             @foreach($group['tasks'] as $tgs)
@@ -84,6 +95,11 @@
                                                 <span class="status danger">Tamat Tempoh / Tidak Aktif</span>
                                             @endif
                                         @endif
+                                        
+                                        <div class="task-type-container">
+                                            <span class="task-type-badge"><i class="fas fa-users"></i> {{ $tgs->fld_tgs_jenis }}</span>
+                                        </div>
+
                                         <p class="due-date"><i class="fas fa-calendar-times"></i> Tarikh Tutup: {{ \Carbon\Carbon::parse($tgs->fld_tgs_tarikh)->format('d M Y') }}</p>
                                         <p class="desc">{{ $tgs->fld_tgs_desc }}</p>
 
@@ -97,9 +113,9 @@
                                     </div>
                                     <div class="task-action">
                                         @if($hasSubmitted)
-                                            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                            <div class="task-action-buttons">
                                                 <button class="btn-hantar" onclick="showHantarForm({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}')">Hantar Semula</button>
-                                                <a class="btn-semak" href="{{ asset('lampiran_penghantaran/'.($tgs->penghantaran->first()->fld_pgh_fail ?? '')) }}" target="_blank" style="text-decoration:none; text-align:center; display:inline-flex; align-items:center; justify-content:center;">Semak Fail Tugasan</a>
+                                                <a class="btn-semak" href="{{ asset('lampiran_penghantaran/'.($tgs->penghantaran->first()->fld_pgh_fail ?? '')) }}" target="_blank">Semak Fail Tugasan</a>
                                             </div>
                                         @else
                                             @if($tgs->fld_tgs_status == 'Aktif')
@@ -138,7 +154,50 @@
                 </div>
             </div>
 
+            <div class="form-group" id="groupMembersGroup" style="display: none;">
+                <label><i class="fas fa-users"></i> Ahli Kumpulan</label>
+                <div class="btn-select-members-container">
+                    <button type="button" class="btn-select-members" onclick="openMembersModal()"><i class="fas fa-user-plus"></i> Pilih Ahli Kumpulan</button>
+                </div>
+                <!-- Container to show selected chips -->
+                <div id="selectedMembersContainer">
+                    <span id="noMembersSelectedText">Tiada ahli dipilih (Hanya anda)</span>
+                </div>
+                <small class="members-note">* Hanya pelajar yang belum menghantar akan dipaparkan. Anda tidak perlu memilih diri sendiri.</small>
 
+                <!-- Hidden Modal for Member Selection -->
+                <div id="membersModal" class="members-modal" style="display:none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-users"></i> Pilih Ahli Kumpulan</h3>
+                            <button type="button" class="btn-close-modal" onclick="closeMembersModal()">&times;</button>
+                        </div>
+                        
+                        <input type="text" id="memberSearch" placeholder="Cari nama atau no matrik..." onkeyup="filterMembers()">
+
+                        <div class="members-checkbox-list" id="modalCheckboxList">
+                            @foreach($rakanSigs as $rakan)
+                                <div class="member-checkbox-item" data-nomat="{{ $rakan->fld_pel_nomat }}">
+                                    <input type="checkbox" id="member_{{ $rakan->fld_pel_nomat }}" name="group_members[]" value="{{ $rakan->fld_pel_nomat }}" class="member-checkbox" data-name="{{ $rakan->pengguna->fld_user_nama }}">
+                                    <label for="member_{{ $rakan->fld_pel_nomat }}" class="member-label">
+                                        {{ $rakan->pengguna->fld_user_nama }} <br>
+                                        <small>{{ $rakan->fld_pel_nomat }}</small>
+                                    </label>
+                                </div>
+                            @endforeach
+                            @if($rakanSigs->isEmpty())
+                                <div class="empty-rakan-msg">Tiada rakan SIG lain.</div>
+                            @endif
+                            <div id="noAvailableMembersMsg" style="display: none;">Semua rakan SIG telah menghantar atau ditag untuk tugasan ini.</div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-modal-cancel" onclick="closeMembersModal()">Batal</button>
+                            <button type="button" class="btn-modal-confirm" onclick="confirmMembers()"><i class="fas fa-check"></i> Selesai</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn-submit">
@@ -150,12 +209,126 @@
 </div>
 
 <script>
+    const submittedMap = {};
+    @foreach($tugasans as $tgs)
+        submittedMap[{{ $tgs->fld_tgs_id }}] = [
+            @foreach($tgs->penghantaran as $pgh)
+                "{{ $pgh->fld_pel_nomat }}",
+            @endforeach
+        ];
+    @endforeach
+    
+    const taskTypes = {};
+    @foreach($tugasans as $tgs)
+        taskTypes[{{ $tgs->fld_tgs_id }}] = "{{ $tgs->fld_tgs_jenis }}";
+    @endforeach
+
     function showHantarForm(id, title) {
         document.getElementById('tasksMainContainer').style.display = 'none';
         document.querySelector('.filter-controls').style.display = 'none';
         document.getElementById('hantarFormSection').style.display = 'block';
         document.getElementById('taskNamePlaceholder').innerText = title;
         document.getElementById('tugasan_id').value = id;
+
+        if (taskTypes[id] === 'Berkumpulan') {
+            document.getElementById('groupMembersGroup').style.display = 'block';
+            
+            // clear selected chips
+            renderSelectedChips();
+            
+            // hide those who submitted
+            const items = document.querySelectorAll('.member-checkbox-item');
+            let availableCount = 0;
+            items.forEach(item => {
+                const checkbox = item.querySelector('.member-checkbox');
+                if (submittedMap[id] && submittedMap[id].includes(item.getAttribute('data-nomat'))) {
+                    item.style.display = 'none';
+                    item.classList.add('unavailable-member');
+                    checkbox.checked = false;
+                } else {
+                    item.style.display = 'flex';
+                    item.classList.remove('unavailable-member');
+                    availableCount++;
+                }
+            });
+
+            if(availableCount === 0) {
+                document.getElementById('noAvailableMembersMsg').style.display = 'block';
+            } else {
+                document.getElementById('noAvailableMembersMsg').style.display = 'none';
+            }
+        } else {
+            document.getElementById('groupMembersGroup').style.display = 'none';
+            // uncheck all
+            const checkboxes = document.querySelectorAll('.member-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            renderSelectedChips();
+        }
+    }
+
+    function openMembersModal() {
+        document.getElementById('membersModal').style.display = 'flex';
+        document.getElementById('memberSearch').value = '';
+        filterMembers(); // reset filter
+    }
+
+    function closeMembersModal() {
+        document.getElementById('membersModal').style.display = 'none';
+    }
+
+    function confirmMembers() {
+        closeMembersModal();
+        renderSelectedChips();
+    }
+
+    function filterMembers() {
+        const input = document.getElementById('memberSearch').value.toLowerCase();
+        const items = document.querySelectorAll('.member-checkbox-item');
+        
+        items.forEach(item => {
+            if(item.classList.contains('unavailable-member')) return; // keep hidden if already submitted
+            
+            const label = item.querySelector('.member-label').innerText.toLowerCase();
+            if (label.includes(input)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function renderSelectedChips() {
+        const container = document.getElementById('selectedMembersContainer');
+        const checkboxes = document.querySelectorAll('.member-checkbox:checked');
+        
+        container.innerHTML = ''; // clear current
+
+        if (checkboxes.length === 0) {
+            container.innerHTML = '<span id="noMembersSelectedText">Tiada ahli dipilih (Hanya anda)</span>';
+            return;
+        }
+
+        checkboxes.forEach(cb => {
+            const name = cb.getAttribute('data-name');
+            const nomat = cb.value;
+            
+            const chip = document.createElement('div');
+            chip.className = 'member-chip';
+            
+            chip.innerHTML = `
+                <span>${name}</span>
+                <i class="fas fa-times member-chip-close" onclick="removeMember('${nomat}')"></i>
+            `;
+            container.appendChild(chip);
+        });
+    }
+
+    function removeMember(nomat) {
+        const cb = document.getElementById('member_' + nomat);
+        if (cb) {
+            cb.checked = false;
+            renderSelectedChips();
+        }
     }
 
     function hideHantarForm() {

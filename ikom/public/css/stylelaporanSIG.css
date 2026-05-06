@@ -1,0 +1,151 @@
+/* Override styles for Laporan SIG specifically */
+.sig-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .sig-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.laporan-actions {
+    display: flex;
+    margin-left: auto;
+    /* Push to the right */
+    gap: 12px;
+}
+
+.btn-laporan-download i,
+.btn-laporan-view i {
+    font-size: 1.1rem;
+}
+
+.btn-laporan-view {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.btn-laporan-view:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    color: white;
+}
+
+.btn-laporan-download {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.btn-laporan-download:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    color: white;
+}
+
+/* View Laporan specific styles */
+
+.view-laporan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.view-laporan-header-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.btn-view-export {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.btn-view-back {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+/*
+ * Fix horizontal scroll: The global body has overflow-x:hidden,
+ * so we must constrain ALL parent widths explicitly.
+ * The scroll must happen inside a bounded container.
+ */
+.kehadiran-wrapper {
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Prevent content-area from expanding beyond viewport */
+.content-area {
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.laporan-table-wrapper {
+    display: block;
+    max-width: 100%;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+}
+
+.laporan-table {
+    min-width: 1200px;
+    white-space: nowrap;
+    width: auto;
+}
+
+.text-markah-keseluruhan {
+    color: #2563eb;
+    font-weight: bold;
+}
+
+.badge-gred {
+    background: #eff6ff;
+    color: #1d4ed8;
+    padding: 5px 10px;
+    font-weight: bold;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.text-muted-dash {
+    color: #94a3b8;
+}
+
+.empty-state-cell {
+    padding: 20px;
+    text-align: center;
+}

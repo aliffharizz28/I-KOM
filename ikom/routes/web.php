@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\tugasanController;
 use App\Http\Controllers\tugasanPelajarController;
+use App\Http\Controllers\subkriteriaController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -81,6 +82,18 @@ Route::delete('/penyelarasSigRegistration/delete', [SigCoordinatorController::cl
     ->middleware(['auth', 'role:1'])
     ->name('penyelarasSigRegistration.delete');
     
+Route::get('/laporanSIG', [App\Http\Controllers\LaporanSIGController::class, 'index'])
+    ->middleware(['auth', 'role:1'])
+    ->name('laporanSIG');
+    
+Route::get('/laporanSIG/export/{sigId}', [App\Http\Controllers\LaporanSIGController::class, 'exportSIG'])
+    ->middleware(['auth', 'role:1'])
+    ->name('laporanSIG.export');
+
+Route::get('/laporanSIG/view/{sigId}', [App\Http\Controllers\LaporanSIGController::class, 'viewSIG'])
+    ->middleware(['auth', 'role:1'])
+    ->name('laporanSIG.view');
+    
 Route::get('/coursereg', [CourseregController::class, 'index'])
     ->middleware(['auth', 'role:1'])
     ->name('coursereg');
@@ -104,6 +117,22 @@ Route::put('/tugasan/{id}', [tugasanController::class, 'update'])
 Route::delete('/tugasan/{id}', [tugasanController::class, 'destroy'])
     ->name('tugasan.delete');
 
+Route::get('/subkriteria', [subkriteriaController::class, 'index'])
+    ->middleware(['auth', 'role:2'])
+    ->name('subkriteria');
+
+Route::post('/subkriteria/store', [subkriteriaController::class, 'store'])
+    ->middleware(['auth', 'role:2'])
+    ->name('subkriteria.store');
+
+Route::post('/subkriteria/create', [subkriteriaController::class, 'createSubkriteria'])
+    ->middleware(['auth', 'role:2'])
+    ->name('subkriteria.create');
+
+Route::post('/tugasan/toggle-publish/{id}', [tugasanController::class, 'togglePublish'])
+    ->middleware(['auth', 'role:2'])
+    ->name('tugasan.togglePublish');
+
 // Tugasan Pelajar (Role 3)
 Route::get('/tugasanPelajar', [tugasanPelajarController::class, 'index'])
     ->middleware(['auth', 'role:3'])
@@ -112,4 +141,51 @@ Route::get('/tugasanPelajar', [tugasanPelajarController::class, 'index'])
 Route::post('/tugasanPelajar', [tugasanPelajarController::class, 'store'])
     ->middleware(['auth', 'role:3'])
     ->name('tugasanPelajar.store');
-Route::get('/semakanTugasan', function () { return view('semakanTugasan'); });
+Route::get('/semakanTugasan/{id}', [App\Http\Controllers\semakanTugasanController::class, 'show'])->middleware(['auth', 'role:2'])->name('semakanTugasan.show');
+Route::post('/semakanTugasan/{id}/saveMarks', [App\Http\Controllers\semakanTugasanController::class, 'saveMarks'])->middleware(['auth', 'role:2'])->name('semakanTugasan.saveMarks');
+
+// Semakan Markah Pelajar (Role 3)
+Route::get('/semakanmarkah', [App\Http\Controllers\SemakanMarkahController::class, 'index'])
+    ->middleware(['auth', 'role:3'])
+    ->name('semakanmarkah');
+
+// Penilaian Markah (Role 2)
+Route::get('/penilaian', [App\Http\Controllers\penilaianController::class, 'index'])
+    ->middleware(['auth', 'role:2'])
+    ->name('penilaian');
+
+Route::get('/penilaian/markah/{nomat}', [App\Http\Controllers\penilaianController::class, 'markah'])
+    ->middleware(['auth', 'role:2'])
+    ->name('penilaian.markah');
+
+Route::post('/penilaian/publish', [App\Http\Controllers\penilaianController::class, 'updatePublishStatus'])
+    ->middleware(['auth', 'role:2'])
+    ->name('penilaian.publish');
+
+Route::get('/penilaian/export', [App\Http\Controllers\penilaianController::class, 'exportCSV'])
+    ->middleware(['auth', 'role:2'])
+    ->name('penilaian.export');
+
+Route::post('/penilaian/simpan/{nomat}', [App\Http\Controllers\penilaianController::class, 'simpan'])
+    ->middleware(['auth', 'role:2'])
+    ->name('penilaian.simpan');
+
+// Kehadiran Perjumpaan SIG (Role 2 & Role 3 MT)
+Route::get('/kehadiran', [App\Http\Controllers\KehadiranController::class, 'index'])
+    ->middleware(['auth', 'role:2,3'])
+    ->name('kehadiran');
+Route::post('/kehadiran/perjumpaan', [App\Http\Controllers\KehadiranController::class, 'storePerjumpaan'])
+    ->middleware(['auth', 'role:3'])
+    ->name('kehadiran.storePerjumpaan');
+Route::get('/kehadiran/rekod/{id}', [App\Http\Controllers\KehadiranController::class, 'rekodKehadiran'])
+    ->middleware(['auth', 'role:2,3'])
+    ->name('kehadiran.rekod');
+Route::post('/kehadiran/rekod/{id}', [App\Http\Controllers\KehadiranController::class, 'simpanKehadiran'])
+    ->middleware(['auth', 'role:2,3'])
+    ->name('kehadiran.simpan');
+Route::post('/kehadiran/sahkan/{id}', [App\Http\Controllers\KehadiranController::class, 'sahkanKehadiran'])
+    ->middleware(['auth', 'role:2'])
+    ->name('kehadiran.sahkan');
+Route::get('/kehadiran/export', [App\Http\Controllers\KehadiranController::class, 'exportCSV'])
+    ->middleware(['auth', 'role:2'])
+    ->name('kehadiran.export');

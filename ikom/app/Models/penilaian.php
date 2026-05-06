@@ -11,12 +11,14 @@ class penilaian extends Model
     protected $fillable = [
         'fld_nilai_id',
         'fld_nilai_markah',
-        'fld_nilai_gred',
-        'fld_nilai_komen',
         'fld_sig_id',
         'fld_pel_nomat',
         'fld_krit_id',
-        'fld_sub_id',
+        'fld_markah_detail',
+    ];
+
+    protected $casts = [
+        'fld_markah_detail' => 'array',
     ];
 
     // Hubungan dengan model SIG
@@ -35,11 +37,5 @@ class penilaian extends Model
     public function kriteria()
     {
         return $this->belongsTo(kriteria::class, 'fld_krit_id', 'fld_krit_id');
-    }
-
-    // Hubungan dengan model Subkriteria
-    public function subkriteria()
-    {
-        return $this->belongsTo(subkriteria::class, 'fld_sub_id', 'fld_sub_id');
     }
 }

@@ -13,6 +13,7 @@ class sig extends Model
     protected $fillable = [
         'fld_sig_id',
         'fld_sig_nama',
+        'fld_sig_logo',
     ];
 
     // Hubungan dengan model lain

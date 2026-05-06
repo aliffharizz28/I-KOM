@@ -10,7 +10,6 @@ class kehadiran extends Model
     protected $primaryKey = 'fld_hdr_id';
     protected $fillable = [
         'fld_hdr_id',
-        'fld_hdr_peratusan',
         'fld_hdr_status',
         'fld_meet_id',
         'fld_pel_nomat',

@@ -12,20 +12,19 @@ class perjumpaan extends Model
         'fld_meet_id',
         'fld_meet_topik',
         'fld_meet_tarikh',
-        'fld_meet_status',
-        'fld_pel_nomat',
+        'fld_meet_verify',
         'fld_sig_id',
     ];
-
-    // Hubungan dengan model Pelajar
-    public function pelajar()
-    {
-        return $this->belongsTo(pelajar::class, 'fld_pel_nomat', 'fld_pel_nomat');
-    }
 
     // Hubungan dengan model SIG
     public function sig()
     {
         return $this->belongsTo(sig::class, 'fld_sig_id', 'fld_sig_id');
     }
+
+    public function kehadiran() {
+        return $this->hasMany(kehadiran::class);
+    }
+
+
 }

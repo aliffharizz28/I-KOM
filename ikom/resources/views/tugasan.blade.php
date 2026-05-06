@@ -36,30 +36,42 @@
                     <th>Tajuk</th>
                     <th>Tarikh Tutup</th>
                     <th>Status</th>
-                    <th style="width: 120px;">Tindakan</th>
+                    <th class="col-tindakan">Tindakan</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($tugasans as $tgs)
                 <tr>
                     <td>
-                        <a href="javascript:void(0)" onclick="showDetails('{{ addslashes($tgs->fld_tgs_nama) }}', '{{ addslashes($tgs->fld_tgs_desc) }}', '{{ \Carbon\Carbon::parse($tgs->fld_tgs_tarikh)->format('d M Y') }}', '{{ $tgs->penghantaran_count }}', '{{ $tgs->fld_tgs_file ? asset('lampiran_tugasan/'.$tgs->fld_tgs_file) : '' }}', '{{ $tgs->fld_tgs_status }}')" class="title-link">
+                        <a href="javascript:void(0)" onclick="showDetails({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}', '{{ addslashes($tgs->fld_tgs_desc) }}', '{{ \Carbon\Carbon::parse($tgs->fld_tgs_tarikh)->format('d M Y') }}', '{{ $tgs->penghantaran_count }}', '{{ $tgs->fld_tgs_file ? asset('lampiran_tugasan/'.$tgs->fld_tgs_file) : '' }}', '{{ $tgs->fld_tgs_status }}', '{{ $tgs->fld_tgs_jenis }}')" class="title-link">
                             <strong>{{ $tgs->fld_tgs_nama }}</strong>
                         </a>
                     </td>
                     <td class="date-text">{{ \Carbon\Carbon::parse($tgs->fld_tgs_tarikh)->format('d M Y') }}</td>
                     <td>
-                        <span class="status-badge {{ $tgs->fld_tgs_status == 'Aktif' ? 'status-aktif' : 'status-tidak-aktif' }}">
-                            {{ $tgs->fld_tgs_status }}
-                        </span>
+                        <div class="status-badge-container">
+                            <span class="status-badge {{ $tgs->fld_tgs_status == 'Aktif' ? 'status-aktif' : 'status-tidak-aktif' }}">
+                                {{ $tgs->fld_tgs_status }}
+                            </span>
+                            <span class="status-badge {{ $tgs->is_published ? 'status-aktif' : 'status-tidak-aktif' }}">
+                                {{ $tgs->is_published ? 'Disiarkan' : 'Disembunyikan' }}
+                            </span>
+                        </div>
                     </td>
                     <td>
                         <!-- Edit Button -->
-                        <button type="button" title="Kemaskini" onclick="showEditForm({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}', '{{ addslashes($tgs->fld_tgs_desc) }}', '{{ $tgs->fld_tgs_tarikh }}')" class="btn-action-edit">
+                        <button type="button" title="Kemaskini" onclick="showEditForm({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}', '{{ addslashes($tgs->fld_tgs_desc) }}', '{{ $tgs->fld_tgs_tarikh }}', '{{ $tgs->fld_tgs_jenis }}')" class="btn-action-edit">
                             <i class="fas fa-edit"></i>
                         </button>
+                        <!-- Toggle Publish Button -->
+                        <form action="{{ route('tugasan.togglePublish', $tgs->fld_tgs_id) }}" method="POST" class="inline-form" onsubmit="return confirm('Adakah anda pasti untuk menukar status siaran tugasan ini?');">
+                            @csrf
+                            <button type="submit" title="{{ $tgs->is_published ? 'Sembunyikan' : 'Siarkan' }}" class="{{ $tgs->is_published ? 'btn-action-hide' : 'btn-action-publish' }}">
+                                <i class="fas {{ $tgs->is_published ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                            </button>
+                        </form>
                         <!-- Delete Button -->
-                        <form action="{{ route('tugasan.delete', $tgs->fld_tgs_id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Adakah anda pasti untuk memadam tugasan ini?');">
+                        <form action="{{ route('tugasan.delete', $tgs->fld_tgs_id) }}" method="POST" class="inline-form" onsubmit="return confirm('Adakah anda pasti untuk memadam tugasan ini?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" title="Padam" class="btn-action-delete">
@@ -103,14 +115,26 @@
 
             <div class="form-row">
                 <div class="form-group half-width">
-                    <label for="due_date"><i class="fas fa-calendar-alt"></i> Tarikh Tutup</label>
-                    <input type="date" id="due_date" name="due_date" class="form-control" required>
+                    <label class="label-jenis-tugasan"><i class="fas fa-users"></i> Jenis Tugasan</label>
+                    <div class="jenis-tugasan-container">
+                        <label class="jenis-tugasan-label">
+                            <input type="radio" name="tugasan_jenis" id="jenis_individu" value="Individu" required checked> Individu
+                        </label>
+                        <label class="jenis-tugasan-label">
+                            <input type="radio" name="tugasan_jenis" id="jenis_berkumpulan" value="Berkumpulan" required> Berkumpulan
+                        </label>
+                    </div>
                 </div>
                 
                 <div class="form-group half-width">
-                    <label for="tugasan_file"><i class="fas fa-paperclip"></i> Lampiran (Pilihan)</label>
-                    <input type="file" id="tugasan_file" name="tugasan_file" class="form-control file-input">
+                    <label for="due_date"><i class="fas fa-calendar-alt"></i> Tarikh Tutup</label>
+                    <input type="date" id="due_date" name="due_date" class="form-control" required>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tugasan_file"><i class="fas fa-paperclip"></i> Lampiran (Pilihan)</label>
+                <input type="file" id="tugasan_file" name="tugasan_file" class="form-control file-input">
             </div>
 
             <div class="form-actions">
@@ -143,7 +167,11 @@
                 <strong id="detailDate" class="detail-value"></strong>
             </div>
             <div class="detail-panel-small">
-                <span class="detail-label"><i class="fas fa-users"></i> Jumlah Pelajar Menghantar</span>
+                <span class="detail-label"><i class="fas fa-users"></i> Jenis</span>
+                <strong id="detailJenis" class="detail-value"></strong>
+            </div>
+            <div class="detail-panel-small">
+                <span class="detail-label"><i class="fas fa-user-check"></i> Menghantar</span>
                 <strong id="detailCount" class="detail-value-large">0</strong>
             </div>
             <div class="detail-panel-small">
@@ -152,20 +180,20 @@
             </div>
         </div>
 
-        <!-- Action Button row -->
-        <div class="detail-panel-row" style="margin-top: 15px; margin-bottom: 0;">
-            <div class="detail-panel-small" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                <a id="btnSemakTugasan" href="{{ url('/semakanTugasan') }}" class="btn-submit" style="display: inline-flex; justify-content: center; width: 100%; font-size: 1.1rem; padding: 15px; text-decoration: none;">
-                    <i class="fas fa-check-double"></i> Semak Tugasan Pelajar
-                </a>
-            </div>
-        </div>
-
-        <div id="detailFileWrapper" class="detail-panel-small" style="display:none; flex:unset;">
+        <div id="detailFileWrapper" class="detail-panel-small detail-file-wrapper-custom" style="display:none;">
             <span class="detail-label"><i class="fas fa-paperclip"></i> Lampiran Fail</span>
             <a id="detailFileLink" href="#" target="_blank" class="file-download-link">
                 <i class="fas fa-download"></i> Muat Turun Lampiran
             </a>
+        </div>
+
+        <!-- Action Button row -->
+        <div class="detail-panel-row detail-panel-row-custom">
+            <div class="detail-panel-small detail-panel-small-custom">
+                <a id="btnSemakTugasan" href="{{ url('/semakanTugasan') }}" class="btn-submit btn-semak-tugasan-link">
+                    <i class="fas fa-check-double"></i> Semak Tugasan Pelajar
+                </a>
+            </div>
         </div>
     </div>
 
@@ -183,13 +211,14 @@
         
         // Reset form to default Add mode
         document.getElementById('tugasanForm').reset();
+        document.getElementById('jenis_individu').checked = true;
         document.getElementById('tugasanForm').action = storeRoute;
         document.getElementById('formMethod').value = 'POST';
         document.getElementById('formTitle').innerHTML = '<i class="fas fa-file-alt"></i> Tambah Tugasan';
         document.getElementById('submitBtnText').innerHTML = '<i class="fas fa-paper-plane"></i> Hantar Tugasan';
     }
 
-    function showEditForm(id, title, desc, date) {
+    function showEditForm(id, title, desc, date, jenis) {
         document.getElementById('tugasanList').style.display = 'none';
         document.getElementById('tugasanHeader').style.display = 'none';
         document.getElementById('tugasanDetailsSection').style.display = 'none';
@@ -200,6 +229,12 @@
         document.getElementById('tugasan_desc').value = desc;
         document.getElementById('due_date').value = date;
         
+        if (jenis === 'Individu') {
+            document.getElementById('jenis_individu').checked = true;
+        } else if (jenis === 'Berkumpulan') {
+            document.getElementById('jenis_berkumpulan').checked = true;
+        }
+        
         // Set update mode parameters
         document.getElementById('tugasanForm').action = "/tugasan/" + id;
         document.getElementById('formMethod').value = 'PUT';
@@ -208,7 +243,7 @@
         document.getElementById('submitBtnText').innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
     }
 
-    function showDetails(title, desc, date, count, path, status) {
+    function showDetails(id, title, desc, date, count, path, status, jenis) {
         document.getElementById('tugasanList').style.display = 'none';
         document.getElementById('tugasanHeader').style.display = 'none';
         document.getElementById('tugasanFormSection').style.display = 'none';
@@ -217,12 +252,16 @@
         document.getElementById('detailTitle').innerHTML = '<i class="fas fa-tasks"></i> ' + title;
         document.getElementById('detailDesc').textContent = desc;
         document.getElementById('detailDate').textContent = date;
+        document.getElementById('detailJenis').textContent = jenis;
         document.getElementById('detailCount').textContent = count;
         
+        // Update URL for "Semak Tugasan Pelajar"
+        document.getElementById('btnSemakTugasan').href = "/semakanTugasan/" + id;
+        
         if (status === 'Aktif') {
-            document.getElementById('detailStatus').innerHTML = '<span style="color:#166534; background:#dcfce7; padding:4px 8px; border-radius:8px;">Aktif</span>';
+            document.getElementById('detailStatus').innerHTML = '<span class="status-badge status-aktif">Aktif</span>';
         } else {
-            document.getElementById('detailStatus').innerHTML = '<span style="color:#991b1b; background:#fee2e2; padding:4px 8px; border-radius:8px;">' + status + '</span>';
+            document.getElementById('detailStatus').innerHTML = '<span class="status-badge status-tidak-aktif">' + status + '</span>';
         }
 
         if (path) {

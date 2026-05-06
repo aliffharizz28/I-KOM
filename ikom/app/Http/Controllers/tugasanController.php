@@ -36,6 +36,7 @@ class tugasanController extends Controller
             'tugasan_title' => 'required|string|max:255',
             'tugasan_desc' => 'required|string',
             'due_date' => 'required|date',
+            'tugasan_jenis' => 'required|in:Individu,Berkumpulan',
             'tugasan_file' => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,png,jpg|max:5120',
         ]);
 
@@ -51,6 +52,7 @@ class tugasanController extends Controller
         $tugasan->fld_tgs_nama = $request->tugasan_title;
         $tugasan->fld_tgs_desc = $request->tugasan_desc;
         $tugasan->fld_tgs_tarikh = $request->due_date;
+        $tugasan->fld_tgs_jenis = $request->tugasan_jenis;
         $tugasan->fld_sig_id = $penyelaras->fld_sig_id;
 
         // Automatically determine status based on due date
@@ -67,24 +69,42 @@ class tugasanController extends Controller
             $tugasan->fld_tgs_file = $filename;
         }
 
+        // Default to not published
+        $tugasan->is_published = 0;
         $tugasan->save();
 
-        // Get all pelajar registered under this SIG to notify them
-        $pelajars = \App\Models\pelajar::with('pengguna')->where('fld_sig_id', $penyelaras->fld_sig_id)->get();
-        foreach ($pelajars as $pel) {
-            if ($pel->pengguna && !empty($pel->pengguna->fld_user_email)) {
-                try {
-                    // It is generally safer to queue emails in production, 
-                    // but for testing send() works synchronously.
-                    \Illuminate\Support\Facades\Mail::to($pel->pengguna->fld_user_email)->send(new \App\Mail\NewAssignmentMail($tugasan));
-                } catch (\Exception $e) {
-                    // Log or handle any mailing errors silently so it doesn't break the application
-                    \Illuminate\Support\Facades\Log::error('Failed to send mail: ' . $e->getMessage());
+        // Automatically create a sub criteria for the assignment
+        $subkriteria = new \App\Models\subkriteria();
+        $subkriteria->fld_sub_nama = $request->tugasan_title;
+        $subkriteria->save();
+
+        return redirect()->route('tugasan')->with('success', 'Tugasan berjaya ditambah dan disimpan (Masih belum disiarkan kepada pelajar).');
+    }
+
+    public function togglePublish(Request $request, $id)
+    {
+        $tugasan = tugasan::findOrFail($id);
+        $wasPublished = $tugasan->is_published;
+        
+        $tugasan->is_published = !$wasPublished;
+        $tugasan->save();
+
+        if ($tugasan->is_published) {
+            // Send email since it's just published
+            $pelajars = \App\Models\pelajar::with('pengguna')->where('fld_sig_id', $tugasan->fld_sig_id)->get();
+            foreach ($pelajars as $pel) {
+                if ($pel->pengguna && !empty($pel->pengguna->fld_user_email)) {
+                    try {
+                        \Illuminate\Support\Facades\Mail::to($pel->pengguna->fld_user_email)->send(new \App\Mail\NewAssignmentMail($tugasan));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to send mail: ' . $e->getMessage());
+                    }
                 }
             }
+            return back()->with('success', 'Tugasan telah disiarkan. Emel makluman telah dihantar kepada pelajar!');
+        } else {
+            return back()->with('success', 'Tugasan telah disembunyikan daripada pelajar.');
         }
-
-        return redirect()->route('tugasan')->with('success', 'Tugasan berjaya ditambah dan emel makluman telah dihantar kepada pelajar!');
     }
 
     public function update(Request $request, $id)
@@ -93,6 +113,7 @@ class tugasanController extends Controller
             'tugasan_title' => 'required|string|max:255',
             'tugasan_desc' => 'required|string',
             'due_date' => 'required|date',
+            'tugasan_jenis' => 'required|in:Individu,Berkumpulan',
             'tugasan_file' => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,png,jpg|max:5120',
         ]);
 
@@ -100,6 +121,7 @@ class tugasanController extends Controller
         $tugasan->fld_tgs_nama = $request->tugasan_title;
         $tugasan->fld_tgs_desc = $request->tugasan_desc;
         $tugasan->fld_tgs_tarikh = $request->due_date;
+        $tugasan->fld_tgs_jenis = $request->tugasan_jenis;
 
         // Automatically determine status based on updated due date
         if (\Carbon\Carbon::parse($request->due_date)->startOfDay()->lt(\Carbon\Carbon::today())) {
