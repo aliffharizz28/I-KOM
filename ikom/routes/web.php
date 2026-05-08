@@ -26,9 +26,8 @@ Route::get('/login', function () {
 Route::post('/login', [LoginController::class, 'authenticate']);
 
 // Route untuk dashboard (Semua Role Yang Sah)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'role:1,2,3,4'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+    ->middleware(['auth', 'role:1,2,3,4'])->name('dashboard');
 
 // Route untuk logout
 Route::post('/logout', function () {

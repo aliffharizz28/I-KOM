@@ -11,6 +11,28 @@
 
 <div class="kehadiran-wrapper">
     <div class="list-header view-laporan-header">
+        @php 
+            $logoMaps = [
+                'Intelligence Machines Club' => 'imachine.png',
+                'CyberHack & Ethic' => 'cyber.png',
+                'Inovasi Bisnes' => 'ibisnes.png',
+                'Interactive Multimedia Club' => 'imec.png',
+                'Mobile Application Development Club' => 'mad.png',
+                'Autonomous Robot and Vision Systems' => 'arvis.png',
+                'Programming Club' => 'pc.png',
+                'Video Innovation Club' => 'vic.png',
+            ];
+            $logoFile = $logoMaps[$sig->fld_sig_nama] ?? 'imachine.png';
+        @endphp
+        <div class="view-laporan-sig-info">
+            <div class="sig-logo-frame">
+                <img src="{{ asset('pic/logoSIG/' . $logoFile) }}" alt="{{ $sig->fld_sig_nama }} Logo" class="sig-logo">
+            </div>
+            <div class="sig-text-info">
+                <h1>Laporan Kursus</h1>
+                <p>{{ $sig->fld_sig_nama }}</p>
+            </div>
+        </div>
         <div class="view-laporan-header-actions">
             <a href="{{ route('laporanSIG.export', $sig->fld_sig_id) }}" class="btn-submit btn-view-export">
                 <i class="fas fa-file-excel"></i> Muat Turun

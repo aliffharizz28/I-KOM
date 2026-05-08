@@ -20,14 +20,14 @@
 
     @if(Auth::user()->fld_user_role == 2)
         <!-- Role 2: Penyelaras SIG -->
-        <div class="list-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="list-header">
             <h2><i class="fas fa-check-double"></i> Pengesahan Kehadiran Perjumpaan SIG</h2>
-            <a href="{{ route('kehadiran.export') }}" class="btn-submit" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 8px 16px;">
+            <a href="{{ route('kehadiran.export') }}" class="btn-export">
                 <i class="fas fa-file-excel"></i> Muat Turun Laporan
             </a>
         </div>
 
-        <div class="glass-effect table-container">
+        <div class="card-container table-container">
             <table class="custom-table">
                 <thead>
                     <tr>
@@ -43,17 +43,17 @@
                             <td>{{ $p->fld_meet_topik }}</td>
                             <td>{{ \Carbon\Carbon::parse($p->fld_meet_tarikh)->format('d M Y') }}</td>
                             <td>
-                                {!! $p->fld_meet_verify ? '<span class="status-badge" style="background:#c6f6d5;color:#2f855a;">Disahkan</span>' : '<span class="status-badge" style="background:#fed7d7;color:#c53030;">Belum Disahkan</span>' !!}
+                                {!! $p->fld_meet_verify ? '<span class="status-badge confirmed">Disahkan</span>' : '<span class="status-badge pending">Belum Disahkan</span>' !!}
                             </td>
                             <td>
-                                <a href="{{ route('kehadiran.rekod', $p->fld_meet_id) }}" class="btn-submit" style="padding: 5px 10px; font-size: 14px;">
+                                <a href="{{ route('kehadiran.rekod', $p->fld_meet_id) }}" class="btn-action">
                                     <i class="fas fa-eye"></i> Semak
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">Tiada data untuk dipaparkan.</td>
+                            <td colspan="4" class="text-center">Tiada data untuk dipaparkan.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -69,7 +69,7 @@
             </button>
         </div>
 
-        <div class="glass-effect table-container" id="perjumpaanList">
+        <div class="card-container table-container" id="perjumpaanList">
             <table class="custom-table">
                 <thead>
                     <tr>
@@ -85,10 +85,10 @@
                             <td>{{ $p->fld_meet_topik }}</td>
                             <td>{{ \Carbon\Carbon::parse($p->fld_meet_tarikh)->format('d M Y') }}</td>
                             <td>
-                                {!! $p->fld_meet_verify ? '<span class="status-badge" style="background:#c6f6d5;color:#2f855a;">Disahkan</span>' : '<span class="status-badge" style="background:#fed7d7;color:#c53030;">Belum Disahkan</span>' !!}
+                                {!! $p->fld_meet_verify ? '<span class="status-badge confirmed">Disahkan</span>' : '<span class="status-badge pending">Belum Disahkan</span>' !!}
                             </td>
                             <td>
-                                <a href="{{ route('kehadiran.rekod', $p->fld_meet_id) }}" class="btn-submit" style="padding: 5px 10px; font-size: 14px;">
+                                <a href="{{ route('kehadiran.rekod', $p->fld_meet_id) }}" class="btn-action">
                                     <i class="fas fa-clipboard-check"></i> Rekod Kehadiran
                                 </a>
                             </td>
@@ -103,7 +103,7 @@
         </div>
 
         <!-- Hidden Form -->
-        <div class="glass-effect section-container" id="perjumpaanFormSection" style="display: none;">
+        <div class="card-container section-container" id="perjumpaanFormSection" style="display: none;">
             <button type="button" onclick="hideForm()" class="btn-close-section">
                 <i class="fas fa-times"></i>
             </button>
@@ -113,11 +113,11 @@
                 @csrf
                 <div class="form-group">
                     <label for="topik"><i class="fas fa-heading"></i> Topik Perjumpaan</label>
-                    <input type="text" id="topik" name="topik" class="form-control" required placeholder="Cth: Perjumpaan Minggu 1">
+                    <input type="text" id="topik" name="topik" class="form-input" required placeholder="Cth: Perjumpaan Minggu 1">
                 </div>
                 <div class="form-group">
                     <label for="tarikh"><i class="fas fa-calendar-alt"></i> Tarikh</label>
-                    <input type="date" id="tarikh" name="tarikh" class="form-control" required>
+                    <input type="date" id="tarikh" name="tarikh" class="form-input" required>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Cipta & Rekod Kehadiran</button>

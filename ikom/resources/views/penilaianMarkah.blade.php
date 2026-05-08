@@ -129,7 +129,7 @@
     <div class="save-bar">
         <div class="save-bar-info">
             <span class="save-bar-total">Jumlah Markah: <strong id="saveTotalScore">0</strong> / 100%</span>
-            <span class="save-bar-grade" id="saveGrade" style="margin-left: 16px; font-weight: 700; font-size: 1.1rem;"></span>
+            <span class="save-bar-grade" id="saveGrade"></span>
         </div>
         <button type="button" class="btn-save-markah" id="btnSaveMarkah" onclick="saveMarks()">
             <i class="fas fa-save"></i> Simpan Penilaian

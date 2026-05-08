@@ -1,0 +1,25 @@
+.bottom-bar {
+    margin-top: 40px;
+    padding: 24px 0;
+    border-top: 1px solid #E5E7EB;
+    text-align: center;
+    width: 100%;
+}
+
+.bottom-bar-content p {
+    font-size: 0.85rem;
+    color: #6B7280;
+    margin: 4px 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.bottom-bar-note {
+    font-size: 0.75rem !important;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .bottom-bar {
+        padding: 20px 16px;
+    }
+}

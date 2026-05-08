@@ -1,29 +1,177 @@
-/* stylekehadiran.css */
-.kehadiran-wrapper {
-    padding: 20px;
-    font-family: 'Poppins', sans-serif;
+/* Minimalist Kehadiran Theme */
+:root {
+    --bg-color: #F8FAFC;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --primary-blue: #004687;
+    --accent-blue: #2563EB;
+    --border-color: #E5E7EB;
+    --card-bg: #FFFFFF;
 }
 
+.kehadiran-wrapper {
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+}
+
+/* ===== Header ===== */
 .list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
 }
 
 .list-header h2 {
-    color: #333;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.glass-effect {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    margin-bottom: 20px;
+.list-header h2 i {
+    color: var(--primary-blue);
+}
+
+/* ===== Buttons ===== */
+.btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--primary-blue);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-submit:hover {
+    background-color: #003366;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #059669;
+    color: #FFFFFF;
+    padding: 10px 16px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-export:hover {
+    background-color: #047857;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--primary-blue);
+    color: #FFFFFF;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-action:hover {
+    background-color: #003366;
+}
+
+.btn-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #F1F5F9;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-reset:hover {
+    background-color: #E2E8F0;
+}
+
+/* ===== Card Container (replaces glass-effect) ===== */
+.card-container {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.section-container {
+    padding: 24px;
+    position: relative;
+}
+
+.section-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: var(--primary-blue);
+}
+
+.btn-close-section {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-close-section:hover {
+    color: #DC2626;
+}
+
+/* ===== Table ===== */
+.table-container {
+    overflow-x: auto;
 }
 
 .custom-table {
@@ -32,123 +180,140 @@
 }
 
 .custom-table th, .custom-table td {
-    padding: 12px 15px;
+    padding: 16px 20px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .custom-table th {
-    background-color: #f8f9fa;
-    color: #333;
-    font-weight: 600;
+    background-color: var(--primary-blue);
+    color: #FFFFFF;
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.custom-table td {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.custom-table tbody tr:hover {
+    background-color: #F8FAFC;
 }
 
 .text-center {
-    text-align: center;
+    text-align: center !important;
 }
 
-.btn-submit {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+/* ===== Status Badges ===== */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
 }
 
-.btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+.status-badge.confirmed {
+    background-color: #ECFDF5;
+    color: #065F46;
 }
 
-.btn-reset {
-    background: #e2e8f0;
-    color: #4a5568;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
+.status-badge.pending {
+    background-color: #FEF2F2;
+    color: #991B1B;
 }
 
-.btn-reset:hover {
-    background: #cbd5e0;
+/* ===== Form Elements ===== */
+.kehadiran-form {
+    max-width: 600px;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
     font-weight: 500;
-    color: #4a5568;
+    color: var(--text-primary);
+    margin-bottom: 8px;
 }
 
-.form-control {
+.form-group label i {
+    color: var(--text-secondary);
+}
+
+.form-input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    font-family: 'Poppins', sans-serif;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 70, 135, 0.1);
 }
 
 .form-actions {
-    margin-top: 20px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    margin-top: 24px;
 }
 
-.btn-close-section {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #a0aec0;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.btn-close-section:hover {
-    color: #e53e3e;
-}
-
-.section-container {
-    position: relative;
-}
-
-.section-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #2d3748;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
+/* ===== Alerts ===== */
+.alert-success, .alert-danger {
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .alert-success {
-    background-color: #c6f6d5;
-    border-left: 4px solid #48bb78;
-    color: #2f855a;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+    background-color: #ECFDF5;
+    border: 1px solid #A7F3D0;
+    color: #065F46;
 }
 
 .alert-danger {
-    background-color: #fed7d7;
-    border-left: 4px solid #f56565;
-    color: #c53030;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #991B1B;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .btn-submit, .btn-export {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-submit, .btn-reset {
+        width: 100%;
+        justify-content: center;
+    }
 }

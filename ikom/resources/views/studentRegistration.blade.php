@@ -41,8 +41,8 @@
 
         <div id="student-form-container" style="display: none;">
             <div class="student-card">
-                <div>
-                    <img id="student_pic" src="public/pic/picpel1.jpg" alt="Gambar Profil"/>
+                <div class="student-picture-container">
+                    <img id="student_pic" src="{{ asset('pic/picpel1.jpg') }}" alt="Gambar Profil"/>
                 </div>
                 <div class="student-details">
                     <div class="form-group">
@@ -53,11 +53,11 @@
                         <label>Jurusan</label>
                         <input type="text" id="student_program" readonly />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group full-width">
                         <label>Nama</label>
                         <input type="text" id="student_name" readonly />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group full-width">
                         <label>Emel</label>
                         <input type="text" id="student_email" readonly />
                     </div>

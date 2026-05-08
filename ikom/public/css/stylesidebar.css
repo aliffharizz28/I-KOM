@@ -1,102 +1,172 @@
-/* Style the sidebar - fixed full height */
+/* Minimalistic Sidebar with Blue Theme */
+
 .sidebar {
-  height: 100vh;
-  width: 250px;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #004687;
-  overflow-x: hidden;
-  padding-top: 24px;
-  padding-left: 15px;
-  padding-right: 15px;
-  display: flex;
-  flex-direction: column;
+    box-sizing: border-box;
+    height: 100vh;
+    width: 280px;
+    /* Slightly wider for modern feel */
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    background-color: #004687;
+    /* Kept the exact requested blue */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 30px 16px;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    /* Extremely subtle shadow */
+}
+
+/* Custom Scrollbar for Sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.logo-container {
+    display: block;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Minimalist separator instead of <hr> */
 }
 
 .sidebar .logo {
-  display: block;
-  margin: 0 auto;
-  width: 140px;
-  height: 60px;
-  margin-bottom: 5px;
+    display: block;
+    margin: 0 auto 12px auto;
+    max-width: 140px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.sidebar .logo:hover {
+    transform: scale(1.05);
 }
 
 .sidebar h3 {
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 20px;  
-  font-size: 11.5px;
-}
-
-/* Style sidebar links */
-.sidebar a {
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 18px;
-  color: #ffffff;
-  display: block;
-}
-
-/* Style links on mouse-over */
-.sidebar a:hover {
-  color: #cdcdcd;
-}
-
-/* Style the main content */
-.main {
-  margin-left: 250px; /* Same as the width of the sidenav */
-  padding: 0px 10px;
-}
-
-hr {
-  border: 0.5px solid #cdcdcd;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 100%; /* Add this line */
-  box-sizing: border-box; /* Ensures padding doesn't push it out */
+    font-family: 'Montserrat', sans-serif;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 11px;
+    line-height: 1.5;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: 0.3px;
 }
 
 .nav-container {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: #000000;
-  padding-top: 10px;
-
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Proper spacing between items */
+    flex: 1;
 }
 
-.nav-container a {
-  text-decoration: none;
-  font-size: 17px;
-  padding-bottom: 22px;
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    /* Modern rounded selection styling */
+    transition: all 0.2s ease;
 }
 
-div .logout-container .logout {
-  text-decoration: none;
-  color: #ffffff;
-  font-size: 17px;
-  padding-bottom: 17px;
-  align-items: flex-end;
+.nav-item i {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+    margin-right: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s ease;
 }
 
+.nav-item span {
+    flex: 1;
+    white-space: nowrap;
+}
+
+/* Hover and Active States */
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Subtle hover overlay */
+    color: #ffffff;
+}
+
+.nav-item:hover i {
+    color: #ffffff;
+}
+
+/* For active page styling */
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.nav-item.active i {
+    color: #ffffff;
+}
+
+/* Logout Section */
 .logout-container {
-  margin-top: auto;
-  padding-bottom: 30px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.pm i {
-  margin-right: 14px; /* Adjust this value to your liking */
+.logout-container form {
+    margin: 0;
 }
 
-.logout i {
-  margin-right: 14px; /* Adjust this value to your liking */
+.logout-container .nav-item {
+    color: #fca5a5;
+    /* Subtle red tint for logout action */
 }
 
-/* Add media queries for small screens (when the height of the screen is less than 450px, add a smaller padding and font-size) */
-@media screen and (max-height: 450px) {
-  .sidebar {padding-top: 15px;}
-  .sidebar a {font-size: 18px;}
+.logout-container .nav-item i {
+    color: #fca5a5;
+}
+
+.logout-container .nav-item:hover {
+    background-color: rgba(239, 68, 68, 0.15);
+    /* Subtle red hover background */
+    color: #f87171;
+}
+
+.logout-container .nav-item:hover i {
+    color: #f87171;
+}
+
+/* Responsive adjustments */
+@media screen and (max-height: 600px) {
+    .sidebar {
+        padding-top: 20px;
+    }
+
+    .logo-container {
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+    }
+
+    .nav-item {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
 }

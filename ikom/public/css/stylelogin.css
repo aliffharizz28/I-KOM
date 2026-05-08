@@ -1,193 +1,454 @@
-/* Reset default styles */
+/* Reset and Base */
 * {
-    padding: 0;
     margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    background: linear-gradient(-45deg, #0168c9, #002244, #005b9f, #001b36);
-    background-size: 400% 400%;
-    animation: gradientBG 12s ease infinite;
-    min-height: 100vh;
+:root {
+    --primary-color: #004687;
+    --accent-color: #2563EB;
+    --bg-white: #FFFFFF;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --border-color: #E5E7EB;
+    --input-bg: #F9FAFB;
+    --hover-bg: #F3F4F6;
+    --shape-color: rgba(37, 99, 235, 0.03);
 }
 
-@keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-white);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
 
-    50% {
-        background-position: 100% 50%;
+/* Split Layout */
+.split-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Left Side - Branding */
+.left-side {
+    flex: 1;
+    background-color: var(--bg-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+    border-right: 1px solid var(--border-color);
+}
+
+.branding-content {
+    position: relative;
+    z-index: 10;
+    max-width: 500px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.university-logos {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.uni-logo {
+    height: 45px;
+    object-fit: contain;
+    opacity: 0.8;
+}
+
+.main-logo {
+    max-width: 280px;
+    margin-bottom: 30px;
+}
+
+.tagline {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+/* Abstract Background Shapes for Left Side */
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--shape-color);
+    z-index: 1;
+}
+
+.shape-1 {
+    width: 600px;
+    height: 600px;
+    top: -100px;
+    left: -100px;
+}
+
+.shape-2 {
+    width: 400px;
+    height: 400px;
+    bottom: -50px;
+    right: -100px;
+    background-color: rgba(15, 23, 42, 0.02);
+}
+
+.shape-3 {
+    width: 200px;
+    height: 200px;
+    top: 40%;
+    left: 20%;
+    background-color: rgba(37, 99, 235, 0.02);
+}
+
+/* SIG Carousel Section */
+.sig-carousel-section {
+    margin-top: 60px;
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+}
+
+.carousel-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 30px;
+    opacity: 0.6;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+}
+
+/* Soft fade edges */
+.carousel-container::before,
+.carousel-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.carousel-container::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-white), transparent);
+}
+
+.carousel-container::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-white), transparent);
+}
+
+.carousel-track {
+    display: flex;
+    width: max-content;
+    animation: scroll 30s linear infinite;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
     }
 
     100% {
-        background-position: 0% 50%;
+        transform: translateX(-50%);
     }
 }
 
-.background {
-    width: 430px;
-    height: 520px;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-}
-
-.background .shape {
-    height: 200px;
-    width: 200px;
-    position: absolute;
-    border-radius: 50%;
-}
-
-form {
-    max-width: 550px;
+.carousel-item {
+    flex-shrink: 0;
+    width: 100px;
+    margin: 0 15px;
     display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    flex-shrink: 1;
-    height: max-content;
-    width: 90%;
-    max-height: 550px;
-    background-color: rgba(255, 255, 255, 0.693);
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    padding: 50px 35px;
-
-}
-
-form * {
-    font-family: 'Inter', sans-serif;
-    color: #000000;
-    letter-spacing: 1px;
-    outline: none;
-    border: none;
-}
-
-form h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 32px;
-    font-weight: bold;
-    line-height: max-content;
-    text-align: center;
-    margin-top: 10px;
-    padding-bottom: 10px;
-}
-
-
-label {
-    display: flex;
-    margin-top: 5px;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-input {
-    display: flex;
-    height: 50px;
-    width: 100%;
-    background-color: #f9f9fc;
-    border: 1.5px solid #e1e1e1;
-    /* Subtle border */
-    border-radius: 8px;
-    /* Slightly rounder edges */
-    padding: 0 10px;
-    margin-top: 8px;
-    font-size: 17px;
-    font-weight: 300;
-}
-
-.submit-container {
-    display: flex;
-    justify-content: center;
-    /* Centers the button horizontally */
-}
-
-button {
-    width: 50%;
-    margin-top: 30px;
-    background-color: #004687;
-    color: #ffffff;
-    padding: 15px 0;
-    font-size: 18px;
-    font-weight: 600;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.logo-container {
-    display: flex;
-    justify-content: center;
-    /* Centers the logos horizontally */
     align-items: center;
-    /* Centers the logos vertically if they are different heights */
-    gap: 40px;
-    /* Adds a specific amount of space between each logo */
-    margin-bottom: 20px;
-    /* Adds space below the logos */
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.logo {
-    flex-shrink: 1;
-    max-width: 120px;
-    /* Adjust this based on how big you want your logos */
+.carousel-item img {
+    width: 100%;
     height: auto;
-    /* Keeps the image proportions correct */
+    max-height: 50px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.5;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.password-container {
+.carousel-item:hover {
+    transform: scale(1.15);
+}
+
+.carousel-item:hover img {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* Responsive adjustments for carousel */
+@media (max-width: 992px) {
+    .sig-carousel-section {
+        margin-top: 40px;
+    }
+
+    .carousel-item {
+        width: 100px;
+        margin: 0 20px;
+    }
+}
+
+/* Right Side - Login Form */
+.right-side {
+    flex: 1;
+    background-color: #F8FAFC;
+    /* Very light cool gray for contrast */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-card {
+    background-color: var(--bg-white);
+    width: 100%;
+    max-width: 480px;
+    padding: 50px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.login-header {
+    margin-bottom: 35px;
+}
+
+.login-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.login-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Form Styles */
+.input-group {
+    margin-bottom: 24px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
     position: relative;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 14px 16px 14px 45px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    transition: all 0.2s ease;
+}
+
+.input-wrapper input::placeholder {
+    color: #9CA3AF;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background-color: var(--bg-white);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
 .toggle-password {
     position: absolute;
-    right: 15px;
-    bottom: 25px; /* input height is 50px, half is 25px */
-    transform: translateY(50%); /* perfectly centers the icon on the line */
+    right: 16px;
+    color: var(--text-secondary);
     cursor: pointer;
-    color: #000000;
-    font-size: 18px;
-    user-select: none;
+    font-size: 1.1rem;
+    padding: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
 }
 
 .toggle-password:hover {
-    color: #c3c3c3;
+    opacity: 1;
+    color: var(--primary-color);
 }
 
-.forgotpass {
-    text-decoration: none;
-    margin-top: 8px;
-    text-align: right;
-    font-size: 13px;
+/* Actions: Remember Me & Forgot Password */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
 }
 
-#success, #error {
-    padding: 12px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 14px;
+.remember-me {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
-#success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+.remember-me input {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-color);
+    cursor: pointer;
 }
 
-#error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+.forgot-password {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.forgot-password:hover {
+    color: #1D4ED8;
+    text-decoration: underline;
+}
+
+/* Button */
+.btn-primary {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(194, 196, 201, 0.925);
+}
+
+.btn-primary:hover {
+    background-color: #003366;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(194, 196, 201, 0.925);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Alerts */
+.alert {
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+}
+
+.alert-error {
+    background-color: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .split-layout {
+        flex-direction: column;
+    }
+
+    .left-side {
+        padding: 60px 20px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .shape {
+        display: none;
+        /* Hide shapes on mobile for cleaner look */
+    }
+
+    .right-side {
+        padding: 40px 20px;
+    }
+
+    .login-card {
+        padding: 40px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+
+    .login-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
 }

@@ -56,8 +56,8 @@
                     {{ $sigName }}
                 </div>
                 
-                <div class="sig-status" style="color: {{ $hasPenyelaras ? '#3b82f6' : '#94a3b8' }};">
-                    <i class="fas {{ $hasPenyelaras ? 'fa-user-check' : 'fa-user-times' }}" style="margin-right: 5px;"></i> 
+                <div class="sig-status {{ $hasPenyelaras ? 'has-penyelaras' : 'no-penyelaras' }}">
+                    <i class="fas {{ $hasPenyelaras ? 'fa-user-check' : 'fa-user-times' }}"></i>
                     {{ $namaPenyelarasText }}
                 </div>
             </div>

@@ -1,13 +1,13 @@
 @extends('layouts.appikom')
 
-@section('title', '- Sub-Kriteria Markah')
+@section('title', '- Rubrik Pemarkahan')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/stylesubkriteria.css') }}?v={{ filemtime(public_path('css/stylesubkriteria.css')) }}">
 
 <div class="subkriteria-wrapper">
     @if(session('success'))
-        <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #c3e6cb; font-weight: 500;">
+        <div class="alert alert-success">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
     @endif

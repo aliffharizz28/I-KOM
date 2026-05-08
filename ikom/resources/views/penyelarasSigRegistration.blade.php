@@ -64,8 +64,8 @@
                     {{ $sigName }}
                 </div>
                 
-                <div class="sig-status" style="color: {{ $hasPenyelaras ? '#3b82f6' : '#94a3b8' }};">
-                    <i class="fas {{ $hasPenyelaras ? 'fa-user-check' : 'fa-user-times' }}" style="margin-right: 5px;"></i> 
+                <div class="sig-status {{ $hasPenyelaras ? 'has-penyelaras' : 'no-penyelaras' }}">
+                    <i class="fas {{ $hasPenyelaras ? 'fa-user-check' : 'fa-user-times' }}"></i>
                     {{ $namaPenyelarasText }}
                 </div>
             </div>
@@ -97,7 +97,7 @@
             <button class="btn-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
         </div>
         
-        <p id="modalSubtitle" style="color:#64748b; margin-bottom: 20px; font-size: 15px;">
+        <p id="modalSubtitle" class="modal-subtitle">
             Sila masukkan maklumat penyelaras untuk <strong id="sigContextName"></strong>.
         </p>
 
@@ -110,15 +110,14 @@
             <div class="form-group">
                 <label for="penyelaras_id">Pilih Penyelaras SIG</label>
                 <div class="input-wrapper">
-                    <select id="penyelaras_id" name="penyelaras_id" style="width:100%; padding:14px 15px 14px 45px; border:2px solid #e2e8f0; border-radius:12px; font-size:15px; background-color:#f8fafc; font-family:'Inter', sans-serif; appearance: none; cursor: pointer;">
+                    <select id="penyelaras_id" name="penyelaras_id">
                         <option value="">Sila Pilih Penyelaras</option>
                         @foreach($availablePenyelaras as $user)
                             <option value="{{ $user->fld_user_id }}">{{ $user->fld_user_nama }}</option>
                         @endforeach
                     </select>
                     <i class="fas fa-user-tie icon"></i>
-                    <!-- Custom dropdown arrow -->
-                    <i class="fas fa-chevron-down" style="position:absolute; right:15px; color:#94a3b8; pointer-events:none;"></i>
+                    <i class="fas fa-chevron-down select-arrow"></i>
                 </div>
             </div>
 

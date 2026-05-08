@@ -1,66 +1,59 @@
+/* Minimalist Penyelaras SIG Theme */
+:root {
+    --bg-color: #F8FAFC;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --primary-blue: #004687;
+    --accent-blue: #2563EB;
+    --border-color: #E5E7EB;
+    --card-bg: #FFFFFF;
+}
+
+/* ===== Dashboard ===== */
 .sig-dashboard {
-    padding: 30px 20px;
+    padding: 20px;
     font-family: 'Inter', sans-serif;
-    max-width: 1200px;
-    margin: 0 auto;
+    color: var(--text-primary);
+    width: 100%;
 }
 
-.dashboard-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.dashboard-header h2 {
-    font-size: 32px;
-    color: #1a202c;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.dashboard-header p {
-    color: #718096;
-    font-size: 16px;
-}
-
+/* ===== SIG Grid ===== */
 .sig-grid {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
 }
 
+/* ===== SIG Card ===== */
 .sig-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 20px 30px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border: 1px solid #f1f5f9;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px 24px;
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: row;
     align-items: center;
     text-align: left;
     position: relative;
+    transition: background-color 0.2s ease;
 }
 
 .sig-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-    border-color: #cbd5e1;
+    background-color: #FAFBFC;
 }
 
+/* ===== Card Logo ===== */
 .card-image-wrapper {
-    width: 65px;
-    height: 65px;
-    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 25px;
+    margin-right: 20px;
     flex-shrink: 0;
     overflow: hidden;
-    background: transparent;
-    border: 1px solid #f8fafc;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-color);
 }
 
 .sig-logo {
@@ -69,6 +62,7 @@
     object-fit: cover;
 }
 
+/* ===== SIG Info ===== */
 .sig-info {
     display: flex;
     flex-direction: column;
@@ -76,65 +70,89 @@
 }
 
 .sig-title {
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: 600;
-    color: #1e293b;
-    margin-bottom: 6px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
     line-height: 1.3;
 }
 
 .sig-status {
-    font-size: 14.5px;
+    font-size: 0.9rem;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
+.sig-status.has-penyelaras {
+    color: var(--primary-blue);
+}
+
+.sig-status.no-penyelaras {
+    color: var(--text-secondary);
+}
+
+/* ===== Card Action Buttons ===== */
 .card-actions {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     margin-left: 20px;
 }
 
 .btn-action {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
     cursor: pointer;
-    font-size: 16px;
-    color: white;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    background-color: var(--card-bg);
 }
 
 .btn-add {
-    background: linear-gradient(135deg, #10b981, #059669);
+    color: #059669;
+    border-color: #A7F3D0;
+}
+
+.btn-add:hover {
+    background-color: #ECFDF5;
+    color: #065F46;
 }
 
 .btn-edit {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #D97706;
+    border-color: #FDE68A;
+}
+
+.btn-edit:hover {
+    background-color: #FFFBEB;
+    color: #B45309;
 }
 
 .btn-delete {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #DC2626;
+    border-color: #FECACA;
 }
 
-.btn-action:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
+.btn-delete:hover {
+    background-color: #FEF2F2;
+    color: #991B1B;
 }
 
-/* Modal Form Styles */
+/* ===== Modal ===== */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -150,49 +168,59 @@
 }
 
 .modal-content {
-    background: white;
+    background-color: var(--card-bg);
     width: 100%;
     max-width: 500px;
-    border-radius: 24px;
-    padding: 35px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-    transform: translateY(-20px) scale(0.95);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 8px;
+    padding: 32px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
     position: relative;
 }
 
 .modal-overlay.active .modal-content {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .modal-header h3 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
     margin: 0;
 }
 
 .btn-close {
     background: none;
     border: none;
-    font-size: 20px;
-    color: #94a3b8;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
 }
 
 .btn-close:hover {
-    color: #1e293b;
+    color: #DC2626;
 }
 
-/* Reused Elegant Form from previous */
+/* ===== Modal Subtitle ===== */
+.modal-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* ===== Form ===== */
 .elegant-form .form-group {
     margin-bottom: 20px;
 }
@@ -200,9 +228,9 @@
 .elegant-form label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 600;
-    color: #475569;
-    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.95rem;
 }
 
 .input-wrapper {
@@ -213,60 +241,86 @@
 
 .input-wrapper .icon {
     position: absolute;
-    left: 16px;
-    color: #94a3b8;
-    font-size: 15px;
+    left: 14px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
     z-index: 2;
-    transition: color 0.3s;
 }
 
 .input-wrapper input,
 .input-wrapper select {
     width: 100%;
-    padding: 14px 15px 14px 45px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 15px;
-    color: #1e293b;
-    background-color: #f8fafc;
-    transition: all 0.3s;
+    padding: 10px 14px 10px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background-color: var(--card-bg);
     font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .input-wrapper input:focus,
 .input-wrapper select:focus {
-    border-color: #3b82f6;
-    background-color: #ffffff;
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 70, 135, 0.1);
 }
 
-.input-wrapper input:focus+.icon,
-.input-wrapper select:focus+.icon {
-    color: #3b82f6;
+/* ===== Dropdown Arrow ===== */
+.select-arrow {
+    position: absolute;
+    right: 14px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    font-size: 0.75rem;
 }
 
+/* ===== Submit Button ===== */
 .btn-submit {
     width: 100%;
-    padding: 15px;
-    margin-top: 15px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
+    padding: 12px;
+    margin-top: 12px;
+    background-color: var(--primary-blue);
+    color: #FFFFFF;
     border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 8px 15px rgba(59, 130, 246, 0.2);
     font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease;
 }
 
 .btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3);
+    background-color: #003366;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .sig-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .card-image-wrapper {
+        margin-right: 0;
+    }
+
+    .card-actions {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .btn-action {
+        flex: 1;
+    }
 }

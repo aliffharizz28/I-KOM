@@ -8,8 +8,8 @@
 <div class="penilaian-wrapper">
 
     <!-- Page Header: SIG Logo + Name -->
-    <div class="sig-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 20px;">
+    <div class="sig-header">
+        <div class="sig-header-left">
             <div class="sig-logo-wrapper">
                 @if($sigLogo)
                     <img src="{{ asset($sigLogo) }}" alt="{{ $sigNama }}" class="sig-logo">
@@ -26,30 +26,30 @@
         </div>
 
         <div class="sig-actions">
-            <a href="{{ route('penilaian.export') }}" class="btn-submit" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 10px 20px; font-weight: 600; text-decoration: none; color: white; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);">
+            <a href="{{ route('penilaian.export') }}" class="btn-export">
                 <i class="fas fa-file-excel"></i> Muat Turun Markah
             </a>
         </div>
     </div>
 
     <!-- Controls Row -->
-    <div class="controls-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+    <div class="controls-row">
         <!-- Search Bar -->
-        <div class="search-bar" style="margin-bottom: 0; flex: 1; min-width: 250px;">
+        <div class="search-bar">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="searchInput" class="search-input" placeholder="Cari pelajar mengikut nama atau no. matrik..." oninput="filterStudents()">
             <span class="search-count" id="searchCount">{{ $pelajars->count() }} pelajar</span>
         </div>
 
         <!-- Publish Controls -->
-        <div class="publish-controls" style="display: flex; gap: 10px; align-items: center; background: #ffffff; padding: 6px 12px; border-radius: 14px; border: 1px solid #e2e8f0;">
-            <span style="font-size: 0.9rem; font-weight: 600; color: #475569;"><i class="fas fa-bullhorn" style="color: #3b82f6;"></i> Terbitkan Markah:</span>
-            <select id="publishSelect" class="publish-select" onchange="updatePublishStatus(this.value)" style="padding: 8px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; font-weight: 500; outline: none; background: #f8fafc; cursor: pointer;">
+        <div class="publish-controls">
+            <span class="publish-label"><i class="fas fa-bullhorn"></i> Terbitkan Markah:</span>
+            <select id="publishSelect" class="publish-select" onchange="updatePublishStatus(this.value)">
                 <option value="0" {{ $publishStatus == 0 ? 'selected' : '' }}>Draf (Tidak Diterbit)</option>
                 <option value="1" {{ $publishStatus == 1 ? 'selected' : '' }}>Fasa 1 (60% PB)</option>
                 <option value="2" {{ $publishStatus == 2 ? 'selected' : '' }}>Fasa 2 (100% Keseluruhan)</option>
             </select>
-            <span id="publishLoading" style="display: none; color: #3b82f6;"><i class="fas fa-spinner fa-spin"></i></span>
+            <span id="publishLoading" style="display: none; color: var(--primary-blue);"><i class="fas fa-spinner fa-spin"></i></span>
         </div>
     </div>
 

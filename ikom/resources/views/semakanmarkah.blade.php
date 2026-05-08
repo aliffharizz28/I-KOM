@@ -28,9 +28,9 @@
         <div class="top-row">
             <!-- Overall Score -->
             <div class="overall-card">
-                <h3>Markah {{ $isPhase1 ? 'Berterusan' : 'Keseluruhan' }}</h3>
+                <h3>Markah {{ $isPhase1 ? 'Penilaian Berterusan' : 'Keseluruhan' }}</h3>
                 <div class="overall-score {{ $scoreClass }}">
-                    <span class="score-value">{{ rtrim(rtrim(number_format($score, 2), '0'), '.') }}<span style="font-size: 1rem; color: #94a3b8; font-weight: 600;">/{{ $maxScore }}</span></span>
+                    <span class="score-value">{{ rtrim(rtrim(number_format($score, 2), '0'), '.') }}<span class="score-max">/{{ $maxScore }}</span></span>
                     @if(!$isPhase1)
                         <span class="score-label">Gred: {{ $keputusan->fld_nilai_gred ?? '-' }}</span>
                     @endif
@@ -52,7 +52,7 @@
 
         <!-- Details Grid -->
         @if($penilaians && count($penilaians) > 0)
-            <div class="comment-section" style="padding-bottom: 20px;">
+            <div class="comment-section">
                 <h3 class="section-title"><i class="fas fa-list-ul"></i> Pecahan Markah</h3>
                 
                 <div class="details-grid">
