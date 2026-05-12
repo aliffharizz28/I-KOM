@@ -80,14 +80,15 @@
 
             <!-- VIEW MODE: Read-only display -->
             <div id="view-{{ $kriteria->fld_krit_id }}" class="subkriteria-view-list">
-                @forelse($kriteria->subkriteria as $sub)
+                @forelse($kriteria->sigSubkriteria as $allocation)
+                @php $sub = $allocation->subkriteria; @endphp
                 <div class="subkriteria-view-card">
                     <div class="subkriteria-view-item" onclick="this.parentElement.classList.toggle('expanded')">
                         <div class="view-sub-left">
                             <i class="fas fa-chevron-right view-expand-icon"></i>
                             <span class="view-sub-nama">{{ $sub->fld_sub_nama }}</span>
                         </div>
-                        <span class="view-sub-markah">{{ $sub->fld_sub_markah ?? 0 }}%</span>
+                        <span class="view-sub-markah">{{ $allocation->fld_sub_markah ?? 0 }}%</span>
                     </div>
                     @if($sub->descriptions->count() > 0)
                     <div class="view-desc-list">
@@ -110,18 +111,21 @@
 
             <!-- EDIT MODE: Editable inputs (hidden by default) -->
             <div id="list-{{ $kriteria->fld_krit_id }}" class="subkriteria-list edit-mode-only" style="display:none;">
-                @foreach($kriteria->subkriteria as $sub)
+                {{-- Always submit this kriteria's ID so the controller knows it was visible,
+                     even if all subkriteria rows have been deleted from this card. --}}
+                <input type="hidden" name="active_krit_ids[]" value="{{ $kriteria->fld_krit_id }}">
+                @foreach($kriteria->sigSubkriteria as $allocation)
                 <div class="subkriteria-item">
                     <input type="hidden" name="krit_id[]" value="{{ $kriteria->fld_krit_id }}">
                     <select name="sub_id[]" class="subkriteria-select form-control" required onchange="refreshAllDropdowns()">
                         <option value="" disabled>Pilih Subkriteria</option>
                         @foreach($subkriterias as $option)
-                            <option value="{{ $option->fld_sub_id }}" {{ $sub->fld_sub_id == $option->fld_sub_id ? 'selected' : '' }}>
+                            <option value="{{ $option->fld_sub_id }}" {{ $allocation->fld_sub_id == $option->fld_sub_id ? 'selected' : '' }}>
                                 {{ $option->fld_sub_nama }}
                             </option>
                         @endforeach
                     </select>
-                    <input type="number" name="markah[]" class="subkriteria-input form-control" value="{{ $sub->fld_sub_markah }}" min="0" max="{{ $kriteria->fld_krit_markah }}" required oninput="if(parseFloat(this.value) > {{ $kriteria->fld_krit_markah }}) { alert('Markah tidak boleh melebihi markah penuh kriteria ({{ $kriteria->fld_krit_markah }}%)'); this.value = {{ $kriteria->fld_krit_markah }}; } updateProgress('{{ $kriteria->fld_krit_id }}', {{ $kriteria->fld_krit_markah }});">
+                    <input type="number" name="markah[]" class="subkriteria-input form-control" value="{{ $allocation->fld_sub_markah }}" min="0" max="{{ $kriteria->fld_krit_markah }}" required oninput="if(parseFloat(this.value) > {{ $kriteria->fld_krit_markah }}) { alert('Markah tidak boleh melebihi markah penuh kriteria ({{ $kriteria->fld_krit_markah }}%)'); this.value = {{ $kriteria->fld_krit_markah }}; } updateProgress('{{ $kriteria->fld_krit_id }}', {{ $kriteria->fld_krit_markah }});">
                     <button type="button" class="btn-remove-subkriteria" onclick="this.parentElement.remove(); updateProgress('{{ $kriteria->fld_krit_id }}', {{ $kriteria->fld_krit_markah }}); refreshAllDropdowns();">
                         <i class="fas fa-trash"></i>
                     </button>

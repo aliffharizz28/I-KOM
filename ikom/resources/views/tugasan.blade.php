@@ -20,6 +20,16 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert-danger">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Header Actions -->
     <div id="tugasanHeader" class="list-header">
         <button class="btn-submit btn-submit-auto" onclick="showCreateForm()">
@@ -213,7 +223,7 @@
         document.getElementById('tugasanForm').reset();
         document.getElementById('jenis_individu').checked = true;
         document.getElementById('tugasanForm').action = storeRoute;
-        document.getElementById('formMethod').value = 'POST';
+        document.getElementById('formMethod').disabled = true; // Remove _method for POST
         document.getElementById('formTitle').innerHTML = '<i class="fas fa-file-alt"></i> Tambah Tugasan';
         document.getElementById('submitBtnText').innerHTML = '<i class="fas fa-paper-plane"></i> Hantar Tugasan';
     }
@@ -237,6 +247,7 @@
         
         // Set update mode parameters
         document.getElementById('tugasanForm').action = "/tugasan/" + id;
+        document.getElementById('formMethod').disabled = false;
         document.getElementById('formMethod').value = 'PUT';
         
         document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Kemaskini Tugasan';

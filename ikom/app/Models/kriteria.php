@@ -14,10 +14,16 @@ class kriteria extends Model
         'fld_krit_markah',
     ];
 
-    // Hubungan dengan model Subkriteria
+    // Global subkriteria pool linked to this kriteria (legacy / unused for SIG allocation)
     public function subkriteria()
     {
         return $this->hasMany(subkriteria::class, 'fld_krit_id', 'fld_krit_id');
+    }
+
+    // SIG-specific subkriteria allocation
+    public function sigSubkriteria()
+    {
+        return $this->hasMany(SigSubkriteria::class, 'fld_krit_id', 'fld_krit_id');
     }
 
     // Hubungan dengan model Penilaian

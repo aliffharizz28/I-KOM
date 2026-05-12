@@ -40,45 +40,55 @@ class tugasanController extends Controller
             'tugasan_file' => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,png,jpg|max:5120',
         ]);
 
-        $userId = Auth::user()->fld_user_id;
-
+        $userId = Auth::id(); // Use Auth::id() for consistency with primary key type (string)
         $penyelaras = penyelarassig::where('fld_user_id', $userId)->first();
         
         if (!$penyelaras) {
-            return back()->with('error', 'Anda tidak ditugaskan kepada mana-mana SIG. Tidak boleh mencipta tugasan.');
+            return back()->with('error', 'Akaun anda tidak dikaitkan dengan mana-mana SIG. Tidak boleh mencipta tugasan.');
         }
 
-        $tugasan = new tugasan();
-        $tugasan->fld_tgs_nama = $request->tugasan_title;
-        $tugasan->fld_tgs_desc = $request->tugasan_desc;
-        $tugasan->fld_tgs_tarikh = $request->due_date;
-        $tugasan->fld_tgs_jenis = $request->tugasan_jenis;
-        $tugasan->fld_sig_id = $penyelaras->fld_sig_id;
+        try {
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($request, $penyelaras) {
+                $tugasan = new tugasan();
+                $tugasan->fld_tgs_nama = $request->tugasan_title;
+                $tugasan->fld_tgs_desc = $request->tugasan_desc;
+                $tugasan->fld_tgs_tarikh = $request->due_date;
+                $tugasan->fld_tgs_jenis = $request->tugasan_jenis;
+                $tugasan->fld_sig_id = $penyelaras->fld_sig_id;
 
-        // Automatically determine status based on due date
-        if (\Carbon\Carbon::parse($request->due_date)->startOfDay()->lt(\Carbon\Carbon::today())) {
-            $tugasan->fld_tgs_status = 'Tidak Aktif';
-        } else {
-            $tugasan->fld_tgs_status = 'Aktif';
+                // Status automatically determined by due date
+                if (\Carbon\Carbon::parse($request->due_date)->startOfDay()->lt(\Carbon\Carbon::today())) {
+                    $tugasan->fld_tgs_status = 'Tidak Aktif';
+                } else {
+                    $tugasan->fld_tgs_status = 'Aktif';
+                }
+
+                if ($request->hasFile('tugasan_file')) {
+                    $file = $request->file('tugasan_file');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('lampiran_tugasan'), $filename);
+                    $tugasan->fld_tgs_file = $filename;
+                }
+
+                $tugasan->is_published = 0;
+                $tugasan->save();
+
+                // Check if a subkriteria with this name already exists to avoid duplication
+                $existingSub = \App\Models\subkriteria::where('fld_sub_nama', $request->tugasan_title)->first();
+                if (!$existingSub) {
+                    $subkriteria = new \App\Models\subkriteria();
+                    $subkriteria->fld_sub_nama = $request->tugasan_title;
+                    // Note: In this system, subkriteria are often linked to SIGs via sig_subkriteria pivot.
+                    // For now we just create the global entry if it doesn't exist.
+                    $subkriteria->save();
+                }
+
+                return redirect()->route('tugasan')->with('success', 'Tugasan berjaya ditambah dan disimpan (Status: Disembunyikan).');
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Tugasan Store Error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal menyimpan tugasan. Sila cuba lagi. ' . $e->getMessage());
         }
-
-        if ($request->hasFile('tugasan_file')) {
-            $file = $request->file('tugasan_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('lampiran_tugasan'), $filename);
-            $tugasan->fld_tgs_file = $filename;
-        }
-
-        // Default to not published
-        $tugasan->is_published = 0;
-        $tugasan->save();
-
-        // Automatically create a sub criteria for the assignment
-        $subkriteria = new \App\Models\subkriteria();
-        $subkriteria->fld_sub_nama = $request->tugasan_title;
-        $subkriteria->save();
-
-        return redirect()->route('tugasan')->with('success', 'Tugasan berjaya ditambah dan disimpan (Masih belum disiarkan kepada pelajar).');
     }
 
     public function togglePublish(Request $request, $id)
