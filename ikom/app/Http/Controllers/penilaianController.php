@@ -8,6 +8,7 @@ use App\Models\penilaian;
 use App\Models\keputusan;
 use App\Models\penyelarassig;
 use App\Models\kriteria;
+use App\Models\SigSubkriteria;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -67,11 +68,21 @@ class penilaianController extends Controller
         $sigNama = $sig ? $sig->fld_sig_nama : 'SIG';
         $sigId = $penyelaras->fld_sig_id;
 
-        // Get all criteria with their assigned subkriteria + descriptions
-        $kriterias = kriteria::with(['subkriteria' => function($q) {
-            $q->whereNotNull('fld_krit_id');
-            $q->with('descriptions');
+        // Get all criteria with their SIG-specific subkriteria + descriptions
+        $kriterias = kriteria::with(['sigSubkriteria' => function($q) use ($sigId) {
+            $q->where('fld_sig_id', $sigId)->with('subkriteria.descriptions');
         }])->get();
+
+        // Map sigSubkriteria to subkriteria for view compatibility
+        foreach ($kriterias as $k) {
+            $k->subkriteria = $k->sigSubkriteria->map(function($sigSub) {
+                $sub = $sigSub->subkriteria;
+                if ($sub) {
+                    $sub->fld_sub_markah = $sigSub->fld_sub_markah;
+                }
+                return $sub;
+            })->filter();
+        }
 
         // Load existing marks for this student from the JSON detail fields
         $penilaianRows = penilaian::where('fld_pel_nomat', $nomat)
@@ -154,11 +165,22 @@ class penilaianController extends Controller
         $marks = $request->input('marks', []);
         $komen = $request->input('komen', '');
 
-        // Load all kriterias with subkriteria and descriptions for percentage calculation
-        $kriterias = kriteria::with(['subkriteria' => function($q) {
-            $q->whereNotNull('fld_krit_id');
-            $q->with('descriptions');
-        }])->get()->keyBy('fld_krit_id');
+        // Load all kriterias with SIG-specific subkriteria and descriptions for percentage calculation
+        $kriterias = kriteria::with(['sigSubkriteria' => function($q) use ($sigId) {
+            $q->where('fld_sig_id', $sigId)->with('subkriteria.descriptions');
+        }])->get();
+
+        // Map and key by kriteria ID
+        foreach ($kriterias as $k) {
+            $k->subkriteria = $k->sigSubkriteria->map(function($sigSub) {
+                $sub = $sigSub->subkriteria;
+                if ($sub) {
+                    $sub->fld_sub_markah = $sigSub->fld_sub_markah;
+                }
+                return $sub;
+            })->filter();
+        }
+        $kriterias = $kriterias->keyBy('fld_krit_id');
 
         // Fetch assignment marks (penghantaran) mapped to subkriteria
         $tugasans = \App\Models\tugasan::where('fld_sig_id', $sigId)->get();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\tugasan;
 use App\Models\penyelarassig;
+use App\Models\subkriteria;
 use Illuminate\Support\Facades\Auth;
 
 class tugasanController extends Controller
@@ -127,36 +128,63 @@ class tugasanController extends Controller
             'tugasan_file' => 'nullable|file|mimes:pdf,doc,docx,zip,jpeg,png,jpg|max:5120',
         ]);
 
-        $tugasan = tugasan::findOrFail($id);
-        $tugasan->fld_tgs_nama = $request->tugasan_title;
-        $tugasan->fld_tgs_desc = $request->tugasan_desc;
-        $tugasan->fld_tgs_tarikh = $request->due_date;
-        $tugasan->fld_tgs_jenis = $request->tugasan_jenis;
+        try {
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($request, $id) {
+                $tugasan = tugasan::findOrFail($id);
+                $oldTitle = $tugasan->fld_tgs_nama;
 
-        // Automatically determine status based on updated due date
-        if (\Carbon\Carbon::parse($request->due_date)->startOfDay()->lt(\Carbon\Carbon::today())) {
-            $tugasan->fld_tgs_status = 'Tidak Aktif';
-        } else {
-            $tugasan->fld_tgs_status = 'Aktif';
+                $tugasan->fld_tgs_nama = $request->tugasan_title;
+                $tugasan->fld_tgs_desc = $request->tugasan_desc;
+                $tugasan->fld_tgs_tarikh = $request->due_date;
+                $tugasan->fld_tgs_jenis = $request->tugasan_jenis;
+
+                // Automatically determine status based on updated due date
+                if (\Carbon\Carbon::parse($request->due_date)->startOfDay()->lt(\Carbon\Carbon::today())) {
+                    $tugasan->fld_tgs_status = 'Tidak Aktif';
+                } else {
+                    $tugasan->fld_tgs_status = 'Aktif';
+                }
+
+                if ($request->hasFile('tugasan_file')) {
+                    $file = $request->file('tugasan_file');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('lampiran_tugasan'), $filename);
+                    $tugasan->fld_tgs_file = $filename;
+                }
+
+                $tugasan->save();
+
+                // Sync with subkriteria table if title changed
+                if ($oldTitle !== $request->tugasan_title) {
+                    subkriteria::where('fld_sub_nama', $oldTitle)
+                        ->update(['fld_sub_nama' => $request->tugasan_title]);
+                }
+
+                return redirect()->route('tugasan')->with('success', 'Tugasan berjaya dikemaskini!');
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Tugasan Update Error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal mengemaskini tugasan. Sila cuba lagi.');
         }
-
-        if ($request->hasFile('tugasan_file')) {
-            $file = $request->file('tugasan_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('lampiran_tugasan'), $filename);
-            $tugasan->fld_tgs_file = $filename;
-        }
-
-        $tugasan->save();
-
-        return redirect()->route('tugasan')->with('success', 'Tugasan berjaya dikemaskini!');
     }
 
     public function destroy($id)
     {
-        $tugasan = tugasan::findOrFail($id);
-        $tugasan->delete();
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($id) {
+                $tugasan = tugasan::findOrFail($id);
+                $titleToDelete = $tugasan->fld_tgs_nama;
 
-        return redirect()->route('tugasan')->with('success', 'Tugasan berjaya dipadam!');
+                $tugasan->delete();
+
+                // Also delete matching subkriteria entry by name
+                subkriteria::where('fld_sub_nama', $titleToDelete)->delete();
+            });
+
+            return redirect()->route('tugasan')->with('success', 'Tugasan berjaya dipadam!');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Tugasan Delete Error: ' . $e->getMessage());
+            return back()->with('error', 'Gagal memadam tugasan. Sila cuba lagi.');
+        }
     }
 }
