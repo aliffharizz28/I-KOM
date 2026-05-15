@@ -14,7 +14,7 @@
             <a href="{{ route('laporanSIG') }}" class="nav-item {{ request()->routeIs('laporanSIG') ? 'active' : '' }}"><i class="fas fa-file-excel"></i> <span>Laporan SIG</span></a>
         @endif
 
-        @if(Auth::check() && Auth::user()->fld_user_role == 2)
+        @if(Auth::check() && Auth::user()->fld_user_role == 2) 
             <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka test cicd</span></a>
             <a href="{{ route('registration') }}" class="nav-item {{ request()->routeIs('registration') ? 'active' : '' }}"><i class="fa fa-users"></i> <span>Pendaftaran Pelajar</span></a>
             <a href="{{ route('subkriteria') }}" class="nav-item {{ request()->routeIs('subkriteria') ? 'active' : '' }}"><i class="fa fa-pencil-square"></i> <span>Rubrik Pemarkahan</span></a>
@@ -23,7 +23,7 @@
             <a href="{{ route('kehadiran') }}" class="nav-item {{ request()->routeIs('kehadiran') ? 'active' : '' }}"><i class="fas fa-check-circle"></i> <span>Kehadiran</span></a>
         @endif
         
-        @if(Auth::check() && Auth::user()->fld_user_role == 3)
+        @if(Auth::check() && Auth::user()->fld_user_role == 3) 
             <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka</span></a>
             <a href="{{ route('tugasanPelajar') }}" class="nav-item {{ request()->routeIs('tugasanPelajar') ? 'active' : '' }}"><i class="fas fa-tasks"></i> <span>Tugasan</span></a>
             <a href="{{ route('semakanmarkah') }}" class="nav-item {{ request()->routeIs('semakanmarkah') ? 'active' : '' }}"><i class="fas fa-graduation-cap"></i> <span>Semakan Markah</span></a>
