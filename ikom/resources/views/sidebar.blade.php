@@ -24,7 +24,7 @@
         @endif
         
         @if(Auth::check() && Auth::user()->fld_user_role == 3)
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka Pelajar</span></a>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka</span></a>
             <a href="{{ route('tugasanPelajar') }}" class="nav-item {{ request()->routeIs('tugasanPelajar') ? 'active' : '' }}"><i class="fas fa-tasks"></i> <span>Tugasan</span></a>
             <a href="{{ route('semakanmarkah') }}" class="nav-item {{ request()->routeIs('semakanmarkah') ? 'active' : '' }}"><i class="fas fa-graduation-cap"></i> <span>Semakan Markah</span></a>
             @if(Auth::user()->pelajar && Auth::user()->pelajar->fld_pel_mt == 1)
