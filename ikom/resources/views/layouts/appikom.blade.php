@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="{{ asset('css/stylesidebar.css') }}?v=1.1">
+    <link rel="stylesheet" href="{{ asset('css/stylesidebar.css') }}?v=2.0">
     <style>
         /* CSS Tambahan untuk mengawal layout besar */
         body {
@@ -27,16 +27,16 @@
             width: 100%;
         }
         .content-area {
-            flex: 1; /* Ambil baki ruang yang ada */
-            margin-left: 280px; /* Offset the 250px + 30px padding fixed sidebar */
+            flex: 1;
+            margin-left: 280px; /* Match sidebar width */
             background-color: #f8f9fa;
-            padding: 40px; /* Jarak selesa untuk dashboard */
+            padding: 40px;
             box-sizing: border-box;
-            transition: margin-left 0.3s ease-in-out; /* Smooth transition */
+            transition: margin-left 0.3s ease-in-out;
         }
-        .content-area.expanded {
+        /* When sidebar is collapsed, content fills the full width */
+        .content-area.sidebar-hidden {
             margin-left: 0;
-            padding-left: 80px; /* Make room for the open button */
         }
     </style>
 </head>

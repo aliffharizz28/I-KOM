@@ -1,18 +1,13 @@
-<!-- Hamburger button to open sidebar -->
-<button id="openSidebarBtn" class="sidebar-open-btn">
-    <i class="fas fa-bars"></i>
-</button>
-
 <div class="sidebar" id="mainSidebar">
-    
-    <!-- Close button inside the sidebar -->
-    <button id="closeSidebarBtn" class="sidebar-close-btn">
-        <i class="fas fa-times"></i>
+
+    {{-- Toggle button to collapse sidebar (chevron left icon) --}}
+    <button id="closeSidebarBtn" class="sidebar-toggle-btn" title="Minimize Sidebar">
+        <i class="fas fa-chevron-left"></i>
     </button>
 
     <a href="{{ route('dashboard') }}" class="logo-container" style="text-decoration: none;">
         <img src="{{ asset('pic/logoikomputih.png') }}" alt="logo I-KOM" class="logo">   
-        <h3>Sistem Penilaian dan Pengurusan Kursus <br>Inovasi Digital & Komuniti Digital</h3> 
+        <h3>Sistem Penilaian dan Pengurusan Kursus <br>Inovasi Digital &amp; Komuniti Digital</h3> 
     </a>
 
     <div class="nav-container">
@@ -55,33 +50,49 @@
 
 </div>
 
+{{-- Floating button shown only when sidebar is hidden --}}
+<button id="openSidebarBtn" class="sidebar-open-fab" title="Open Sidebar">
+    <i class="fas fa-bars"></i>
+</button>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const sidebar = document.getElementById('mainSidebar');
-        const openBtn = document.getElementById('openSidebarBtn');
-        const closeBtn = document.getElementById('closeSidebarBtn');
+        const sidebar   = document.getElementById('mainSidebar');
+        const openBtn   = document.getElementById('openSidebarBtn');
+        const closeBtn  = document.getElementById('closeSidebarBtn');
         const contentArea = document.querySelector('.content-area');
 
-        // Check local storage for sidebar state
-        const sidebarState = localStorage.getItem('sidebarState');
-        
-        if (sidebarState === 'collapsed') {
-            if (sidebar) sidebar.classList.add('collapsed');
-            if (contentArea) contentArea.classList.add('expanded');
+        function collapseSidebar() {
+            sidebar.classList.add('collapsed');
+            if (contentArea) contentArea.classList.add('sidebar-hidden');
+            // Show open FAB after transition ends
+            setTimeout(() => openBtn.classList.add('visible'), 280);
+            localStorage.setItem('sidebarState', 'collapsed');
         }
 
-        if(openBtn && closeBtn && sidebar) {
-            openBtn.addEventListener('click', function() {
-                sidebar.classList.remove('collapsed');
-                if (contentArea) contentArea.classList.remove('expanded');
-                localStorage.setItem('sidebarState', 'open');
-            });
+        function expandSidebar() {
+            sidebar.classList.remove('collapsed');
+            if (contentArea) contentArea.classList.remove('sidebar-hidden');
+            openBtn.classList.remove('visible');
+            localStorage.setItem('sidebarState', 'open');
+        }
 
-            closeBtn.addEventListener('click', function() {
-                sidebar.classList.add('collapsed');
-                if (contentArea) contentArea.classList.add('expanded');
-                localStorage.setItem('sidebarState', 'collapsed');
+        // Restore state from localStorage
+        if (localStorage.getItem('sidebarState') === 'collapsed') {
+            // Apply instantly (no animation on page load)
+            sidebar.classList.add('collapsed', 'no-transition');
+            if (contentArea) contentArea.classList.add('sidebar-hidden', 'no-transition');
+            openBtn.classList.add('visible');
+            // Re-enable transitions after paint
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    sidebar.classList.remove('no-transition');
+                    if (contentArea) contentArea.classList.remove('no-transition');
+                });
             });
         }
+
+        closeBtn.addEventListener('click', collapseSidebar);
+        openBtn.addEventListener('click', expandSidebar);
     });
 </script>

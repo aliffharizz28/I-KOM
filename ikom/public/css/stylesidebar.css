@@ -1,17 +1,17 @@
-/* Minimalistic Sidebar with Blue Theme */
+/* ============================================================
+   I-KOM Sidebar — Clean Collapsible Sidebar
+   ============================================================ */
 
+/* ---- Sidebar Shell ---------------------------------------- */
 .sidebar {
-    transition: transform 0.3s ease-in-out;
     box-sizing: border-box;
     height: 100vh;
     width: 280px;
-    /* Slightly wider for modern feel */
     position: fixed;
-    z-index: 10;
+    z-index: 100;
     top: 0;
     left: 0;
     background-color: #004687;
-    /* Kept the exact requested blue */
     overflow-y: auto;
     overflow-x: hidden;
     padding: 30px 16px;
@@ -19,196 +19,190 @@
     flex-direction: column;
     font-family: 'Inter', sans-serif;
     color: #ffffff;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-    /* Extremely subtle shadow */
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    /* Smooth slide-out to the left */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-/* Custom Scrollbar for Sidebar */
-.sidebar::-webkit-scrollbar {
-    width: 4px;
+/* Collapsed state — slides fully off-screen to the left */
+.sidebar.collapsed {
+    transform: translateX(-100%);
+    box-shadow: none;
 }
 
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
+/* Disable transitions during page-load restore (prevent flash) */
+.sidebar.no-transition {
+    transition: none !important;
 }
 
+/* ---- Custom Scrollbar ------------------------------------ */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
 }
 
+/* ---- Collapse toggle button (inside sidebar, top-right) -- */
+.sidebar-toggle-btn {
+    position: absolute;
+    top: 16px;
+    right: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+/* ---- Logo / Brand area ----------------------------------- */
 .logo-container {
     display: block;
     text-align: center;
-    margin-bottom: 30px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    /* Minimalist separator instead of <hr> */
+    margin-top: 10px;       /* leave room for the toggle btn */
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .sidebar .logo {
     display: block;
     margin: 0 auto 12px auto;
-    max-width: 140px;
+    max-width: 130px;
     height: auto;
     transition: transform 0.3s ease;
 }
 
-.sidebar .logo:hover {
-    transform: scale(1.05);
-}
+.sidebar .logo:hover { transform: scale(1.05); }
 
 .sidebar h3 {
     font-family: 'Montserrat', sans-serif;
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 11px;
-    line-height: 1.5;
+    line-height: 1.55;
     font-weight: 500;
     margin: 0;
     letter-spacing: 0.3px;
 }
 
+/* ---- Navigation items ------------------------------------ */
 .nav-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    /* Proper spacing between items */
+    gap: 4px;
     flex: 1;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    padding: 11px 14px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.82);
     border-radius: 8px;
-    /* Modern rounded selection styling */
-    transition: all 0.2s ease;
-}
-
-.nav-item i {
-    font-size: 16px;
-    width: 24px;
-    text-align: center;
-    margin-right: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    transition: color 0.2s ease;
-}
-
-.nav-item span {
-    flex: 1;
+    transition: background 0.2s, color 0.2s;
     white-space: nowrap;
 }
 
-/* Hover and Active States */
+.nav-item i {
+    font-size: 15px;
+    width: 22px;
+    text-align: center;
+    margin-right: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.nav-item span { flex: 1; }
+
 .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    /* Subtle hover overlay */
+    background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
 }
+.nav-item:hover i { color: #ffffff; }
 
-.nav-item:hover i {
-    color: #ffffff;
-}
-
-/* For active page styling */
 .nav-item.active {
-    background-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.16);
     color: #ffffff;
     font-weight: 600;
 }
+.nav-item.active i { color: #ffffff; }
 
-.nav-item.active i {
-    color: #ffffff;
-}
-
-/* Logout Section */
+/* ---- Logout section -------------------------------------- */
 .logout-container {
     margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
+.logout-container form { margin: 0; }
 
-.logout-container form {
-    margin: 0;
-}
-
-.logout-container .nav-item {
-    color: #fca5a5;
-    /* Subtle red tint for logout action */
-}
-
-.logout-container .nav-item i {
-    color: #fca5a5;
-}
+.logout-container .nav-item { color: #fca5a5; }
+.logout-container .nav-item i { color: #fca5a5; }
 
 .logout-container .nav-item:hover {
-    background-color: rgba(239, 68, 68, 0.15);
-    /* Subtle red hover background */
+    background: rgba(239, 68, 68, 0.15);
     color: #f87171;
 }
+.logout-container .nav-item:hover i { color: #f87171; }
 
-.logout-container .nav-item:hover i {
-    color: #f87171;
-}
-
-/* Responsive adjustments */
-@media screen and (max-height: 600px) {
-    .sidebar {
-        padding-top: 20px;
-    }
-
-    .logo-container {
-        margin-bottom: 20px;
-        padding-bottom: 16px;
-    }
-
-    .nav-item {
-        padding: 10px 14px;
-        font-size: 13px;
-    }
-}
-
-/* Sidebar Toggle Buttons and State */
-.sidebar-open-btn {
+/* ---- Floating open button (visible only when collapsed) -- */
+.sidebar-open-fab {
     position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 5;
-    background-color: #004687;
-    color: white;
+    top: 18px;
+    left: 18px;
+    z-index: 200;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #004687;
+    color: #ffffff;
     border: none;
-    padding: 10px 15px;
-    font-size: 18px;
-    border-radius: 8px;
+    font-size: 17px;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0, 70, 135, 0.35);
+    /* Hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.85);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s;
 }
 
-.sidebar-open-btn:hover {
-    background-color: #003366;
+/* Show the button when sidebar is collapsed */
+.sidebar-open-fab.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
 }
 
-.sidebar-close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.7);
-    font-size: 20px;
-    cursor: pointer;
-    transition: color 0.2s;
+.sidebar-open-fab:hover { background: #003570; }
+
+/* ---- Disable transition on load (no-flash) --------------- */
+.content-area.no-transition {
+    transition: none !important;
 }
 
-.sidebar-close-btn:hover {
-    color: white;
-}
-
-.sidebar.collapsed {
-    transform: translateX(-100%);
+/* ---- Responsive small screens ---------------------------- */
+@media screen and (max-height: 600px) {
+    .sidebar { padding-top: 20px; }
+    .logo-container { margin-bottom: 18px; padding-bottom: 14px; }
+    .nav-item { padding: 9px 12px; font-size: 13px; }
 }
