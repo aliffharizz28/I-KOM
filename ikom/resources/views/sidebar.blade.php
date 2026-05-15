@@ -1,4 +1,14 @@
-<div class="sidebar">
+<!-- Hamburger button to open sidebar -->
+<button id="openSidebarBtn" class="sidebar-open-btn">
+    <i class="fas fa-bars"></i>
+</button>
+
+<div class="sidebar" id="mainSidebar">
+    
+    <!-- Close button inside the sidebar -->
+    <button id="closeSidebarBtn" class="sidebar-close-btn">
+        <i class="fas fa-times"></i>
+    </button>
 
     <a href="{{ route('dashboard') }}" class="logo-container" style="text-decoration: none;">
         <img src="{{ asset('pic/logoikomputih.png') }}" alt="logo I-KOM" class="logo">   
@@ -9,18 +19,18 @@
 
         @if(Auth::check() && Auth::user()->fld_user_role == 1)
             <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka</span></a>
-            <a href="{{ route('coursereg') }}" class="nav-item {{ request()->routeIs('coursereg') ? 'active' : '' }}"><i class="fa fa-plus-square"></i> <span>Daftar Kursus</span></a>
-            <a href="{{ route('penyelarasSigRegistration') }}" class="nav-item {{ request()->routeIs('penyelarasSigRegistration') ? 'active' : '' }}"><i class="fa fa-id-card"></i> <span>Daftar Penyelaras SIG</span></a>
+            <a href="{{ route('coursereg') }}" class="nav-item {{ request()->routeIs('coursereg') ? 'active' : '' }}"><i class="fa fa-plus-square"></i> <span>Pendaftaran Kursus</span></a>
+            <a href="{{ route('penyelarasSigRegistration') }}" class="nav-item {{ request()->routeIs('penyelarasSigRegistration') ? 'active' : '' }}"><i class="fa fa-id-card"></i> <span>Pendaftaran Penyelaras SIG</span></a>
             <a href="{{ route('laporanSIG') }}" class="nav-item {{ request()->routeIs('laporanSIG') ? 'active' : '' }}"><i class="fas fa-file-excel"></i> <span>Laporan SIG</span></a>
         @endif
 
         @if(Auth::check() && Auth::user()->fld_user_role == 2) 
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka test cicd</span></a>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka</span></a>
             <a href="{{ route('registration') }}" class="nav-item {{ request()->routeIs('registration') ? 'active' : '' }}"><i class="fa fa-users"></i> <span>Pendaftaran Pelajar</span></a>
             <a href="{{ route('subkriteria') }}" class="nav-item {{ request()->routeIs('subkriteria') ? 'active' : '' }}"><i class="fa fa-pencil-square"></i> <span>Rubrik Pemarkahan</span></a>
             <a href="{{ route('tugasan') }}" class="nav-item {{ request()->routeIs('tugasan') ? 'active' : '' }}"><i class="fas fa-tasks"></i> <span>Tugasan</span></a>
             <a href="{{ route('penilaian') }}" class="nav-item {{ request()->routeIs('penilaian') ? 'active' : '' }}"><i class="fas fa-chart-line"></i> <span>Penilaian Markah</span></a>
-            <a href="{{ route('kehadiran') }}" class="nav-item {{ request()->routeIs('kehadiran') ? 'active' : '' }}"><i class="fas fa-check-circle"></i> <span>Kehadiran</span></a>
+            <a href="{{ route('kehadiran') }}" class="nav-item {{ request()->routeIs('kehadiran') ? 'active' : '' }}"><i class="fas fa-check-circle"></i> <span>Semakan Kehadiran</span></a>
         @endif
         
         @if(Auth::check() && Auth::user()->fld_user_role == 3) 
@@ -44,3 +54,21 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('mainSidebar');
+        const openBtn = document.getElementById('openSidebarBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+
+        if(openBtn && closeBtn && sidebar) {
+            openBtn.addEventListener('click', function() {
+                sidebar.classList.remove('collapsed');
+            });
+
+            closeBtn.addEventListener('click', function() {
+                sidebar.classList.add('collapsed');
+            });
+        }
+    });
+</script>
