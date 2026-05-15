@@ -60,14 +60,27 @@
         const sidebar = document.getElementById('mainSidebar');
         const openBtn = document.getElementById('openSidebarBtn');
         const closeBtn = document.getElementById('closeSidebarBtn');
+        const contentArea = document.querySelector('.content-area');
+
+        // Check local storage for sidebar state
+        const sidebarState = localStorage.getItem('sidebarState');
+        
+        if (sidebarState === 'collapsed') {
+            if (sidebar) sidebar.classList.add('collapsed');
+            if (contentArea) contentArea.classList.add('expanded');
+        }
 
         if(openBtn && closeBtn && sidebar) {
             openBtn.addEventListener('click', function() {
                 sidebar.classList.remove('collapsed');
+                if (contentArea) contentArea.classList.remove('expanded');
+                localStorage.setItem('sidebarState', 'open');
             });
 
             closeBtn.addEventListener('click', function() {
                 sidebar.classList.add('collapsed');
+                if (contentArea) contentArea.classList.add('expanded');
+                localStorage.setItem('sidebarState', 'collapsed');
             });
         }
     });

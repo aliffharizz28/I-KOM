@@ -32,6 +32,11 @@
             background-color: #f8f9fa;
             padding: 40px; /* Jarak selesa untuk dashboard */
             box-sizing: border-box;
+            transition: margin-left 0.3s ease-in-out; /* Smooth transition */
+        }
+        .content-area.expanded {
+            margin-left: 0;
+            padding-left: 80px; /* Make room for the open button */
         }
     </style>
 </head>
