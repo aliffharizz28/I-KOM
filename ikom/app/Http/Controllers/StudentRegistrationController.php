@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pelajar;
+use App\Models\pelajar;
 use App\Models\penyelarassig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +18,7 @@ class StudentRegistrationController extends Controller
         $registeredStudents = [];
         
         if ($penyelaras && $penyelaras->fld_sig_id) {
-            $registeredStudents = Pelajar::with('pengguna')->where('fld_sig_id', $penyelaras->fld_sig_id)->get();
+            $registeredStudents = pelajar::with('pengguna')->where('fld_sig_id', $penyelaras->fld_sig_id)->get();
         }
 
         return view('studentRegistration', compact('registeredStudents'));
@@ -30,7 +30,7 @@ class StudentRegistrationController extends Controller
     public function fetchStudent(Request $request)
     {
         $matric = $request->input('matric_number');
-        $pelajar = Pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
+        $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
 
         if ($pelajar) {
             // Strict directory mapping using the Matric Number
@@ -59,7 +59,7 @@ class StudentRegistrationController extends Controller
     public function registerIndividual(Request $request)
     {
         $matric = $request->input('matric_number');
-        $pelajar = Pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
+        $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
 
         if (!$pelajar) {
             return response()->json(['success' => false, 'message' => 'Pelajar tidak ditemui']);
@@ -116,7 +116,7 @@ class StudentRegistrationController extends Controller
             $matric = trim($row[0]);
             if (empty($matric)) continue;
 
-            $pelajar = Pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
+            $pelajar =  pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
 
             if ($pelajar) {
                 if (!$pelajar->fld_sig_id) {
