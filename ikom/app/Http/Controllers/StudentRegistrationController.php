@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pelajar;
-use App\Models\Penyelarassig;
+use App\Models\penyelarassig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +14,7 @@ class StudentRegistrationController extends Controller
      */
     public function index()
     {
-        $penyelaras = Penyelarassig::where('fld_user_id', Auth::id())->first();
+        $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
         $registeredStudents = [];
         
         if ($penyelaras && $penyelaras->fld_sig_id) {
@@ -69,7 +69,7 @@ class StudentRegistrationController extends Controller
             return response()->json(['success' => false, 'message' => 'Pelajar sudah didaftarkan ke SIG']);
         }
 
-        $penyelaras = Penyelarassig::where('fld_user_id', Auth::id())->first();
+        $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
 
         if (!$penyelaras || !$penyelaras->fld_sig_id) {
             return response()->json(['success' => false, 'message' => 'Anda tidak mempunyai SIG']);
@@ -99,7 +99,7 @@ class StudentRegistrationController extends Controller
             'csv_file' => 'required|file|mimes:csv,txt'
         ]);
 
-        $penyelaras = Penyelarassig::where('fld_user_id', Auth::id())->first();
+        $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
 
         if (!$penyelaras || !$penyelaras->fld_sig_id) {
             return response()->json(['success' => false, 'message' => 'Anda tidak mempunyai SIG']);
