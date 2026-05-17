@@ -93,7 +93,7 @@ class tugasanController extends Controller
             });
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Tugasan Store Error: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Gagal menyimpan tugasan. Sila cuba lagi.');
+            return back()->withInput()->with('error', 'Gagal menyimpan tugasan: ' . $e->getMessage());
         }
     }
 
