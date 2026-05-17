@@ -4,145 +4,182 @@ namespace App\Http\Controllers;
 
 use App\Models\pelajar;
 use App\Models\penyelarassig;
+use App\Models\PendaftaranPelajar;
+use App\Models\kursus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StudentRegistrationController extends Controller
 {
     /**
-     * Display the registration page with bulk and individual toggle.
+     * Resolve the active session, returning null if none is active.
+     */
+    private function getActiveSesi(): ?kursus
+    {
+        return kursus::getActive();
+    }
+
+    /**
+     * Display the registration page with student list for this session.
      */
     public function index()
     {
         $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
-        $registeredStudents = [];
-        
-        if ($penyelaras && $penyelaras->fld_sig_id) {
-            $registeredStudents = pelajar::with('pengguna')->where('fld_sig_id', $penyelaras->fld_sig_id)->get();
+        $sesiAktif  = $this->getActiveSesi();
+        $registeredStudents = collect();
+
+        if ($penyelaras && $penyelaras->fld_sig_id && $sesiAktif) {
+            // Load students enrolled in THIS session for THIS SIG
+            $registeredStudents = PendaftaranPelajar::with('pelajar.pengguna')
+                ->where('fld_sig_id', $penyelaras->fld_sig_id)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->get()
+                ->map(fn($d) => $d->pelajar)
+                ->filter();
         }
 
-        return view('studentRegistration', compact('registeredStudents'));
+        return view('studentRegistration', compact('registeredStudents', 'sesiAktif'));
     }
 
     /**
-     * Fetch individual student info for the Read-Only form.
+     * Fetch individual student info for the read-only preview form.
      */
     public function fetchStudent(Request $request)
     {
-        $matric = $request->input('matric_number');
+        $matric  = $request->input('matric_number');
         $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
 
         if ($pelajar) {
-            // Strict directory mapping using the Matric Number
             $picUrl = asset('pic/' . $pelajar->fld_pel_nomat . '.jpg');
 
             return response()->json([
                 'success' => true,
-                'data' => [
+                'data'    => [
                     'matric_number' => $pelajar->fld_pel_nomat,
-                    'name' => $pelajar->pengguna ? $pelajar->pengguna->fld_user_nama : 'No Name',
-                    'email' => $pelajar->pengguna ? $pelajar->pengguna->fld_user_email : '',
-                    'program' => $pelajar->fld_pel_jurusan,
-                    'year' => $pelajar->fld_pel_tahun,
-                    'pic' => $picUrl,
-                    'sig_id' => $pelajar->fld_sig_id,
+                    'name'          => $pelajar->pengguna?->fld_user_nama ?? 'No Name',
+                    'email'         => $pelajar->pengguna?->fld_user_email ?? '',
+                    'program'       => $pelajar->fld_pel_jurusan,
+                    'year'          => $pelajar->fld_pel_tahun,
+                    'pic'           => $picUrl,
                 ]
             ]);
         }
 
-        return response()->json(['success' => false, 'message' => 'Student not found']);
+        return response()->json(['success' => false, 'message' => 'Pelajar tidak ditemui dalam sistem.']);
     }
 
     /**
-     * Register an individual student to the authenticated user's SIG.
+     * Enroll an individual student into the active session for this SIG.
      */
     public function registerIndividual(Request $request)
     {
-        $matric = $request->input('matric_number');
-        $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
+        $matric  = $request->input('matric_number');
+        $pelajar = pelajar::where('fld_pel_nomat', $matric)->first();
 
         if (!$pelajar) {
             return response()->json(['success' => false, 'message' => 'Pelajar tidak ditemui']);
         }
 
-        if ($pelajar->fld_sig_id) {
-            return response()->json(['success' => false, 'message' => 'Pelajar sudah didaftarkan ke SIG']);
+        $sesiAktif = $this->getActiveSesi();
+        if (!$sesiAktif) {
+            return response()->json(['success' => false, 'message' => 'Tiada sesi kursus aktif. Sila hubungi Penyelaras Kursus.']);
         }
 
         $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
-
         if (!$penyelaras || !$penyelaras->fld_sig_id) {
-            return response()->json(['success' => false, 'message' => 'Anda tidak mempunyai SIG']);
+            return response()->json(['success' => false, 'message' => 'Akaun anda tidak dikaitkan dengan mana-mana SIG.']);
         }
 
-        $pelajar->fld_sig_id = $penyelaras->fld_sig_id;
-        $pelajar->save();
+        // Check if already enrolled in this session
+        $alreadyEnrolled = PendaftaranPelajar::where('fld_pel_nomat', $matric)
+            ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+            ->exists();
+
+        if ($alreadyEnrolled) {
+            return response()->json(['success' => false, 'message' => 'Pelajar sudah didaftarkan untuk sesi ini.']);
+        }
+
+        PendaftaranPelajar::create([
+            'fld_pel_nomat' => $matric,
+            'fld_krs_id'    => $sesiAktif->fld_krs_id,
+            'fld_sig_id'    => $penyelaras->fld_sig_id,
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Pelajar berjaya didaftarkan.',
-            'data' => [
+            'message' => 'Pelajar berjaya didaftarkan untuk sesi ' . $sesiAktif->fld_krs_nama . '.',
+            'data'    => [
                 'matric_number' => $pelajar->fld_pel_nomat,
-                'name' => $pelajar->pengguna ? $pelajar->pengguna->fld_user_nama : 'No Name',
-                'program' => $pelajar->fld_pel_jurusan,
-                'status' => 'Registered'
+                'name'          => $pelajar->pengguna?->fld_user_nama ?? 'No Name',
+                'program'       => $pelajar->fld_pel_jurusan,
+                'status'        => 'Registered'
             ]
         ]);
     }
 
     /**
-     * Process bulk registration via uploaded CSV.
+     * Bulk enroll students from a CSV file into the active session.
      */
     public function registerBulk(Request $request)
     {
-        $request->validate([
-            'csv_file' => 'required|file|mimes:csv,txt'
-        ]);
+        $request->validate(['csv_file' => 'required|file|mimes:csv,txt']);
 
-        $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
-
-        if (!$penyelaras || !$penyelaras->fld_sig_id) {
-            return response()->json(['success' => false, 'message' => 'Anda tidak mempunyai SIG']);
+        $sesiAktif = $this->getActiveSesi();
+        if (!$sesiAktif) {
+            return response()->json(['success' => false, 'message' => 'Tiada sesi kursus aktif. Sila hubungi Penyelaras Kursus.']);
         }
 
-        $file = $request->file('csv_file');
-        $fileHandle = fopen($file->getRealPath(), 'r');
-        
-        $registeredStudents = [];
-        $errors = [];
+        $penyelaras = penyelarassig::where('fld_user_id', Auth::id())->first();
+        if (!$penyelaras || !$penyelaras->fld_sig_id) {
+            return response()->json(['success' => false, 'message' => 'Akaun anda tidak dikaitkan dengan mana-mana SIG.']);
+        }
 
-        // Read CSV rows
+        $file       = $request->file('csv_file');
+        $fileHandle = fopen($file->getRealPath(), 'r');
+
+        $registeredStudents = [];
+        $errors             = [];
+
         while (($row = fgetcsv($fileHandle, 1000, ',')) !== false) {
             $matric = trim($row[0]);
             if (empty($matric)) continue;
 
-            $pelajar =  pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
+            $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $matric)->first();
 
-            if ($pelajar) {
-                if (!$pelajar->fld_sig_id) {
-                    $pelajar->fld_sig_id = $penyelaras->fld_sig_id;
-                    $pelajar->save();
-                    
-                    $registeredStudents[] = [
-                        'matric_number' => $pelajar->fld_pel_nomat,
-                        'name' => $pelajar->pengguna ? $pelajar->pengguna->fld_user_nama : 'No Name',
-                        'program' => $pelajar->fld_pel_jurusan,
-                        'status' => 'Registered'
-                    ];
-                } else {
-                    $errors[] = $matric . ' (Already registered)';
-                }
-            } else {
-                $errors[] = $matric . ' (Not found)';
+            if (!$pelajar) {
+                $errors[] = $matric . ' (Tidak ditemui dalam sistem)';
+                continue;
             }
+
+            $alreadyEnrolled = PendaftaranPelajar::where('fld_pel_nomat', $matric)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->exists();
+
+            if ($alreadyEnrolled) {
+                $errors[] = $matric . ' (Sudah didaftarkan untuk sesi ini)';
+                continue;
+            }
+
+            PendaftaranPelajar::create([
+                'fld_pel_nomat' => $matric,
+                'fld_krs_id'    => $sesiAktif->fld_krs_id,
+                'fld_sig_id'    => $penyelaras->fld_sig_id,
+            ]);
+
+            $registeredStudents[] = [
+                'matric_number' => $pelajar->fld_pel_nomat,
+                'name'          => $pelajar->pengguna?->fld_user_nama ?? 'No Name',
+                'program'       => $pelajar->fld_pel_jurusan,
+                'status'        => 'Registered'
+            ];
         }
-        
+
         fclose($fileHandle);
 
         return response()->json([
-            'success' => true,
+            'success'    => true,
             'registered' => $registeredStudents,
-            'errors' => $errors
+            'errors'     => $errors
         ]);
     }
 }

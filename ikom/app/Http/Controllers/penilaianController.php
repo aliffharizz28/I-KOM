@@ -9,6 +9,8 @@ use App\Models\keputusan;
 use App\Models\penyelarassig;
 use App\Models\kriteria;
 use App\Models\SigSubkriteria;
+use App\Models\kursus;
+use App\Models\PendaftaranPelajar;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -16,57 +18,70 @@ class penilaianController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-
-        // Get the lecturer's SIG ID via penyelarassig table
+        $user       = Auth::user();
         $penyelaras = penyelarassig::where('fld_user_id', $user->fld_user_id)->first();
+        $sesiAktif  = kursus::getActive();
 
         if (!$penyelaras) {
             return view('penilaian', [
-                'pelajars' => collect(),
-                'sigNama' => 'Tiada SIG',
-                'sigLogo' => null,
-                'sigId' => null,
+                'pelajars'     => collect(),
+                'sigNama'      => 'Tiada SIG',
+                'sigLogo'      => null,
+                'sigId'        => null,
+                'sesiAktif'    => $sesiAktif,
             ]);
         }
 
         $sigId = $penyelaras->fld_sig_id;
 
-        // Get all students in the same SIG, eager-load the pengguna (user) relationship for names
+        // Fetch students enrolled in the ACTIVE session for this SIG
+        $pelajarIds = $sesiAktif
+            ? PendaftaranPelajar::where('fld_sig_id', $sigId)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->pluck('fld_pel_nomat')
+            : collect();
+
         $pelajars = pelajar::with('pengguna')
-            ->where('fld_sig_id', $sigId)
+            ->whereIn('fld_pel_nomat', $pelajarIds)
             ->get();
 
-        // Get the SIG details
-        $sig = $penyelaras->sig;
-        $sigNama = $sig ? $sig->fld_sig_nama : 'SIG';
-        $sigLogo = $sig && $sig->fld_sig_logo
-            ? str_replace('\\', '/', preg_replace('#^public[\\\\/]#', '', $sig->fld_sig_logo))
+        $sig          = $penyelaras->sig;
+        $sigNama      = $sig ? $sig->fld_sig_nama : 'SIG';
+        $sigLogo      = $sig && $sig->fld_sig_logo
+            ? str_replace('\\', '/', preg_replace('#^public[\\/]#', '', $sig->fld_sig_logo))
             : null;
         $publishStatus = $sig ? $sig->fld_publish_status : 0;
 
-        return view('penilaian', compact('pelajars', 'sigNama', 'sigLogo', 'sigId', 'publishStatus'));
+        return view('penilaian', compact('pelajars', 'sigNama', 'sigLogo', 'sigId', 'publishStatus', 'sesiAktif'));
     }
 
     public function markah($nomat)
     {
-        $user = Auth::user();
+        $user       = Auth::user();
         $penyelaras = penyelarassig::where('fld_user_id', $user->fld_user_id)->first();
+        $sesiAktif  = kursus::getActive();
 
         if (!$penyelaras) {
             return redirect()->route('penilaian')->with('error', 'Anda tidak mempunyai SIG.');
         }
 
-        // Find the student and ensure they belong to the same SIG
-        $pelajar = pelajar::with('pengguna')
-            ->where('fld_pel_nomat', $nomat)
-            ->where('fld_sig_id', $penyelaras->fld_sig_id)
-            ->firstOrFail();
-
-        // Get SIG details
-        $sig = $penyelaras->sig;
-        $sigNama = $sig ? $sig->fld_sig_nama : 'SIG';
         $sigId = $penyelaras->fld_sig_id;
+
+        // Ensure student is enrolled in this SIG for the active session
+        $enrolled = $sesiAktif
+            ? PendaftaranPelajar::where('fld_pel_nomat', $nomat)
+                ->where('fld_sig_id', $sigId)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->exists()
+            : false;
+
+        if (!$enrolled) {
+            return redirect()->route('penilaian')->with('error', 'Pelajar tidak didaftarkan dalam sesi aktif SIG ini.');
+        }
+
+        $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $nomat)->firstOrFail();
+        $sig     = $penyelaras->sig;
+        $sigNama = $sig ? $sig->fld_sig_nama : 'SIG';
 
         // Get all criteria with their SIG-specific subkriteria + descriptions
         $kriterias = kriteria::with(['sigSubkriteria' => function($q) use ($sigId) {
@@ -252,25 +267,25 @@ class penilaianController extends Controller
 
                 // Save ONE row per kriteria, injecting the raw marks into fld_markah_detail
                 penilaian::create([
-                    'fld_pel_nomat' => $nomat,
-                    'fld_krit_id' => $kritId,
+                    'fld_pel_nomat'    => $nomat,
+                    'fld_krit_id'      => $kritId,
                     'fld_nilai_markah' => round($kriteriaEarned, 2),
-                    'fld_sig_id' => $sigId,
+                    'fld_sig_id'       => $sigId,
+                    'fld_krs_id'       => $sesiAktif ? $sesiAktif->fld_krs_id : null,
                     'fld_markah_detail' => empty($descMarksForKriteria) ? null : $descMarksForKriteria,
                 ]);
             }
 
-            // Determine grade based on overall score
             $grade = $this->calculateGrade($overallScore);
 
-            // Save the overall result and comment to the keputusan table
             keputusan::updateOrCreate(
-                ['fld_pel_nomat' => $nomat],
+                ['fld_pel_nomat' => $nomat, 'fld_sig_id' => $sigId],
                 [
                     'fld_total_markah' => round($overallScore, 2),
-                    'fld_nilai_gred' => $grade,
-                    'fld_nilai_komen' => $komen,
-                    'fld_sig_id' => $sigId,
+                    'fld_nilai_gred'   => $grade,
+                    'fld_nilai_komen'  => $komen,
+                    'fld_sig_id'       => $sigId,
+                    'fld_krs_id'       => $sesiAktif ? $sesiAktif->fld_krs_id : null,
                 ]
             );
 
@@ -336,16 +351,23 @@ class penilaianController extends Controller
             return redirect()->route('penilaian')->with('error', 'Kumpulan SIG tidak ditemui.');
         }
 
-        $sigId = $penyelaras->fld_sig_id;
-        $sigName = $penyelaras->sig->fld_sig_nama;
-        $fileName = 'Laporan_Penilaian_' . str_replace(' ', '_', $sigName) . '_' . date('Ymd_His') . '.csv';
+        $sigId    = $penyelaras->fld_sig_id;
+        $sigNama  = $penyelaras->sig->fld_sig_nama;
+        $fileName = 'Laporan_Penilaian_' . str_replace(' ', '_', $sigNama) . '_' . date('Ymd_His') . '.csv';
+        $sesiAktif = kursus::getActive();
 
-        // Get students with necessary relationships
+        // Only export students enrolled in the active session
+        $pelajarIds = $sesiAktif
+            ? PendaftaranPelajar::where('fld_sig_id', $sigId)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->pluck('fld_pel_nomat')
+            : collect();
+
         $pelajars = pelajar::with(['pengguna', 'penilaian'])
-                           ->where('fld_sig_id', $sigId)
+                           ->whereIn('fld_pel_nomat', $pelajarIds)
                            ->orderBy('fld_pel_nomat', 'asc')
                            ->get();
-                           
+
         $kriterias = kriteria::orderBy('fld_krit_id', 'asc')->get();
 
         $headers = [

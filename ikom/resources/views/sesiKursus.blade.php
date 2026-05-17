@@ -1,14 +1,10 @@
 @extends('layouts.appikom')
-@section('title', '- Tetapan Sesi Kursus')
+@section('title', '- Pendaftaran Kursus')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/stylesesiKursus.css') }}">
 
 <div class="page-header">
-    <div class="header-info">
-        <h1 class="page-title-main">Tetapan Sesi Kursus</h1>
-        <p class="page-subtitle">Urus dan aktifkan sesi kursus untuk setiap semester baharu.</p>
-    </div>
     @if($sesiAktif)
         <div class="active-badge">
             <i class="fas fa-circle pulse-dot"></i>

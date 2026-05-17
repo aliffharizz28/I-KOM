@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\sig;
 use App\Models\pelajar;
 use App\Models\kriteria;
+use App\Models\kursus;
+use App\Models\PendaftaranPelajar;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanSIGController extends Controller
@@ -16,11 +18,9 @@ class LaporanSIGController extends Controller
         if ($user->fld_user_role != 1) {
             return redirect()->route('dashboard')->with('error', 'Akses ditolak.');
         }
-
-        // Fetch all SIGs to display in the grid
-        $dbSigs = sig::with('penyelarassig.pengguna')->get();
-
-        return view('laporanSIG', compact('dbSigs'));
+        $sesiAktif = kursus::getActive();
+        $dbSigs    = sig::with('penyelarassig.pengguna')->get();
+        return view('laporanSIG', compact('dbSigs', 'sesiAktif'));
     }
 
     public function exportSIG($sigId)
@@ -31,19 +31,17 @@ class LaporanSIGController extends Controller
         }
 
         $sig = sig::find($sigId);
-        if (!$sig) {
-            return redirect()->back()->with('error', 'Kumpulan SIG tidak ditemui.');
-        }
-
-        $sigName = $sig->fld_sig_nama;
-        $fileName = 'Laporan_Markah_Pelajar_' . str_replace(' ', '_', $sigName) . '_' . date('Ymd_His') . '.csv';
-
-        // Get students with necessary relationships
+        if (!$sig) return redirect()->back()->with('error', 'Kumpulan SIG tidak ditemui.');
+        $sesiAktif = kursus::getActive();
+        $sigName   = $sig->fld_sig_nama;
+        $fileName  = 'Laporan_Markah_Pelajar_' . str_replace(' ', '_', $sigName) . '_' . date('Ymd_His') . '.csv';
+        $pelajarIds = $sesiAktif
+            ? PendaftaranPelajar::where('fld_sig_id', $sigId)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)->pluck('fld_pel_nomat')
+            : collect();
         $pelajars = pelajar::with(['pengguna', 'penilaian'])
-                           ->where('fld_sig_id', $sigId)
-                           ->orderBy('fld_pel_nomat', 'asc')
-                           ->get();
-                           
+                           ->whereIn('fld_pel_nomat', $pelajarIds)
+                           ->orderBy('fld_pel_nomat', 'asc')->get();
         $kriterias = kriteria::orderBy('fld_krit_id', 'asc')->get();
 
         $headers = [
@@ -103,21 +101,19 @@ class LaporanSIGController extends Controller
         }
 
         $sig = sig::find($sigId);
-        if (!$sig) {
-            return redirect()->back()->with('error', 'Kumpulan SIG tidak ditemui.');
-        }
-
-        // Get students with necessary relationships
-        $pelajars = pelajar::with(['pengguna', 'penilaian'])
-                           ->where('fld_sig_id', $sigId)
-                           ->orderBy('fld_pel_nomat', 'asc')
-                           ->get();
-                           
+        if (!$sig) return redirect()->back()->with('error', 'Kumpulan SIG tidak ditemui.');
+        $sesiAktif  = kursus::getActive();
+        $pelajarIds = $sesiAktif
+            ? PendaftaranPelajar::where('fld_sig_id', $sigId)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)->pluck('fld_pel_nomat')
+            : collect();
+        $pelajars  = pelajar::with(['pengguna', 'penilaian'])
+                           ->whereIn('fld_pel_nomat', $pelajarIds)
+                           ->orderBy('fld_pel_nomat', 'asc')->get();
         $kriterias = kriteria::orderBy('fld_krit_id', 'asc')->get();
-        
-        // Fetch all decisions (keputusan) manually to map efficiently
-        $keputusans = \App\Models\keputusan::where('fld_sig_id', $sigId)->get()->keyBy('fld_pel_nomat');
-
-        return view('viewLaporanSIG', compact('sig', 'pelajars', 'kriterias', 'keputusans'));
+        $keputusans = \App\Models\keputusan::where('fld_sig_id', $sigId)
+            ->when($sesiAktif, fn($q) => $q->where('fld_krs_id', $sesiAktif->fld_krs_id))
+            ->get()->keyBy('fld_pel_nomat');
+        return view('viewLaporanSIG', compact('sig', 'pelajars', 'kriterias', 'keputusans', 'sesiAktif'));
     }
 }
