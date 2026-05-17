@@ -46,6 +46,48 @@ body {
     border-right: 1px solid var(--border-color);
 }
 
+/* Animated dot-grid layer — sits behind all branding content */
+.left-side::before {
+    content: "";
+    position: absolute;
+    inset: -60px;          /* oversized so drift doesn't reveal edges */
+    background-image: radial-gradient(circle, rgba(0, 70, 135, 0.13) 1px, transparent 1px);
+    background-size: 28px 28px;
+    animation: drift 18s ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Diagonal shimmer sweep on top of the dot grid */
+.left-side::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.45) 48%,
+        rgba(255, 255, 255, 0.55) 52%,
+        transparent 70%
+    );
+    background-size: 200% 200%;
+    animation: shimmer 7s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes drift {
+    0%   { transform: translate(0px, 0px) rotate(0deg); }
+    33%  { transform: translate(8px, -10px) rotate(0.4deg); }
+    66%  { transform: translate(-6px, 6px) rotate(-0.3deg); }
+    100% { transform: translate(4px, -4px) rotate(0.2deg); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0%; }
+    100% { background-position: -200% 0%; }
+}
+
 .branding-content {
     position: relative;
     z-index: 10;
@@ -83,95 +125,39 @@ body {
     max-width: 400px;
 }
 
-/* Abstract Background Shapes for Left Side */
-.shape {
-    position: absolute;
-    border-radius: 50%;
-    background-color: var(--shape-color);
-    z-index: 1;
-}
-
-.shape-1 {
-    width: 600px;
-    height: 600px;
-    top: -100px;
-    left: -100px;
-}
-
-.shape-2 {
-    width: 400px;
-    height: 400px;
-    bottom: -50px;
-    right: -100px;
-    background-color: rgba(15, 23, 42, 0.02);
-}
-
-.shape-3 {
-    width: 200px;
-    height: 200px;
-    top: 40%;
-    left: 20%;
-    background-color: rgba(37, 99, 235, 0.02);
-}
+/* Shape divs removed — background animation handled by .left-side::before and ::after */
 
 /* SIG Carousel Section */
 .sig-carousel-section {
-    margin-top: 50px;
+    margin-top: 60px;
     width: 100%;
-    max-width: 520px;
-    /* Frosted-glass pill container */
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 70, 135, 0.08);
-    border-radius: 20px;
-    padding: 22px 0 18px;
-    box-shadow:
-        0 2px 16px rgba(0, 70, 135, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    max-width: 600px;
     overflow: hidden;
 }
 
-/* Decorative header inside the card */
 .carousel-title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    margin-bottom: 0;
-    padding: 0 24px 14px;
-    opacity: 0.45;
-    position: relative;
-    text-align: center;
-}
-
-/* Thin divider line below the title */
-.carousel-title::after {
-    content: "";
-    display: block;
-    width: 32px;
-    height: 2px;
-    background: linear-gradient(to right, transparent, var(--primary-color), transparent);
-    border-radius: 2px;
-    margin: 8px auto 0;
-    opacity: 0.3;
+    letter-spacing: 0.1em;
+    margin-bottom: 30px;
+    opacity: 0.6;
 }
 
 .carousel-container {
     position: relative;
     width: 100%;
-    padding: 14px 0 6px;
-    overflow: hidden;
+    padding: 20px 0;
 }
 
-/* Wide soft fade edges — match the container bg (white) */
+/* Soft fade edges */
 .carousel-container::before,
 .carousel-container::after {
     content: "";
     position: absolute;
     top: 0;
-    width: 80px;
+    width: 100px;
     height: 100%;
     z-index: 2;
     pointer-events: none;
@@ -179,80 +165,68 @@ body {
 
 .carousel-container::before {
     left: 0;
-    background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0.85) 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        transparent 100%
-    );
+    background: linear-gradient(to right, var(--bg-white), transparent);
 }
 
 .carousel-container::after {
     right: 0;
-    background: linear-gradient(
-        to left,
-        rgba(255, 255, 255, 0.85) 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        transparent 100%
-    );
+    background: linear-gradient(to left, var(--bg-white), transparent);
 }
 
 .carousel-track {
     display: flex;
     width: max-content;
-    animation: scroll 25s linear infinite;
-}
-
-/* Pause animation on hover for better UX */
-.carousel-container:hover .carousel-track {
-    animation-play-state: paused;
+    animation: scroll 30s linear infinite;
 }
 
 @keyframes scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .carousel-item {
     flex-shrink: 0;
-    width: 80px;
-    margin: 0 18px;
+    width: 100px;
+    margin: 0 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .carousel-item img {
     width: 100%;
     height: auto;
-    max-height: 46px;
+    max-height: 50px;
     object-fit: contain;
-    /* Softer grayscale — still subtle but more visible */
-    filter: grayscale(80%) brightness(0.85);
-    opacity: 0.65;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: grayscale(100%);
+    opacity: 0.5;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .carousel-item:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
 }
 
 .carousel-item:hover img {
-    filter: grayscale(0%) brightness(1);
+    filter: grayscale(0%);
     opacity: 1;
 }
 
 /* Responsive adjustments for carousel */
 @media (max-width: 992px) {
     .sig-carousel-section {
-        margin-top: 36px;
-        max-width: 420px;
+        margin-top: 40px;
     }
 
     .carousel-item {
-        width: 70px;
-        margin: 0 14px;
+        width: 100px;
+        margin: 0 20px;
     }
 }
 
@@ -462,10 +436,7 @@ body {
         border-bottom: 1px solid var(--border-color);
     }
 
-    .shape {
-        display: none;
-        /* Hide shapes on mobile for cleaner look */
-    }
+    /* No shape divs to hide */
 
     .right-side {
         padding: 40px 20px;
