@@ -47,9 +47,28 @@ class penilaianController extends Controller
 
         $sig          = $penyelaras->sig;
         $sigNama      = $sig ? $sig->fld_sig_nama : 'SIG';
-        $sigLogo      = $sig && $sig->fld_sig_logo
-            ? str_replace('\\', '/', preg_replace('#^public[\\/]#', '', $sig->fld_sig_logo))
-            : null;
+        
+        $logoMaps = [
+            'Intelligence Machines Club' => 'imachine.png',
+            'CyberHack & Ethic' => 'cyber.png',
+            'Inovasi Bisnes' => 'ibisnes.png',
+            'Interactive Multimedia Club' => 'imec.png',
+            'Mobile Application Development Club' => 'mad.png',
+            'Autonomous Robot and Vision Systems' => 'arvis.png',
+            'Programming Club' => 'pc.png',
+            'Video Innovation Club' => 'vic.png',
+        ];
+        
+        $logoFile = $sig ? ($logoMaps[$sig->fld_sig_nama] ?? null) : null;
+        $sigLogo = null;
+        if ($sig) {
+            if ($sig->fld_sig_logo) {
+                $sigLogo = str_replace('\\', '/', preg_replace('#^public[\\/]#', '', $sig->fld_sig_logo));
+            } elseif ($logoFile) {
+                $sigLogo = 'pic/logoSIG/' . $logoFile;
+            }
+        }
+        
         $publishStatus = $sig ? $sig->fld_publish_status : 0;
 
         return view('penilaian', compact('pelajars', 'sigNama', 'sigLogo', 'sigId', 'publishStatus', 'sesiAktif'));
