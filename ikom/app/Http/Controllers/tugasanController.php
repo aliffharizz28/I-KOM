@@ -72,9 +72,13 @@ class tugasanController extends Controller
                     ? 'Tidak Aktif' : 'Aktif';
 
                 if ($request->hasFile('tugasan_file')) {
+                    $uploadDir = public_path('lampiran_tugasan');
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
                     $file     = $request->file('tugasan_file');
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('lampiran_tugasan'), $filename);
+                    $file->move($uploadDir, $filename);
                     $tugasan->fld_tgs_file = $filename;
                 }
 
@@ -85,7 +89,7 @@ class tugasanController extends Controller
             });
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Tugasan Store Error: ' . $e->getMessage());
-            return back()->withInput()->with('error', '[DEBUG] ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal menyimpan tugasan. Sila cuba lagi.');
         }
 
         // Create global subkriteria entry separately (non-critical, won't fail the assignment)
