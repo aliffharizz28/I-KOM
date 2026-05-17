@@ -13,6 +13,7 @@ class penyelaraskursus extends Model
     protected $fillable = [
         'fld_pk_id',
         'fld_user_id',
+        'fld_krs_id',
     ];
 
     // Hubungan dengan model Pengguna
@@ -20,4 +21,11 @@ class penyelaraskursus extends Model
     {
         return $this->belongsTo(pengguna::class, 'fld_user_id', 'fld_user_id');
     }
+
+    // Hubungan dengan sesi kursus yang diaktifkan
+    public function kursus()
+    {
+        return $this->belongsTo(kursus::class, 'fld_krs_id', 'fld_krs_id');
+    }
 }
+

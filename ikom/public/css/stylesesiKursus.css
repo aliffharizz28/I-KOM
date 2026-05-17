@@ -1,0 +1,313 @@
+/* ===== Tetapan Sesi Kursus Styles ===== */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.page-title-main {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #004687;
+    margin: 0 0 4px;
+}
+
+.page-subtitle {
+    color: #6B7280;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Active Session Badge */
+.active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1D4ED8;
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.active-badge.badge-warning {
+    background: #FFFBEB;
+    border-color: #FCD34D;
+    color: #B45309;
+}
+
+.pulse-dot {
+    font-size: 0.5rem;
+    color: #22C55E;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+/* Flash Alerts */
+.alert-flash {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.alert-flash-success {
+    background: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+}
+
+.alert-flash-error {
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+/* Two Column Layout */
+.two-col-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .two-col-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards */
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #F3F4F6;
+    background: #FAFAFA;
+}
+
+.card-header i {
+    color: #004687;
+    font-size: 1.1rem;
+}
+
+.card-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.card-body.no-padding {
+    padding: 0;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    color: #1F2937;
+    background: #F9FAFB;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    cursor: pointer;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #004687;
+    box-shadow: 0 0 0 3px rgba(0, 70, 135, 0.1);
+    background: #fff;
+}
+
+.btn-primary-full {
+    width: 100%;
+    padding: 13px;
+    background: #004687;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 8px;
+}
+
+.btn-primary-full:hover {
+    background: #003366;
+    transform: translateY(-1px);
+}
+
+/* Table */
+.sesi-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sesi-table thead th {
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6B7280;
+    background: #F9FAFB;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.sesi-table tbody tr {
+    border-bottom: 1px solid #F3F4F6;
+    transition: background 0.15s;
+}
+
+.sesi-table tbody tr:hover {
+    background: #F8FAFF;
+}
+
+.sesi-table tbody tr.row-active {
+    background: #F0F7FF;
+}
+
+.sesi-table tbody td {
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    color: #374151;
+    vertical-align: middle;
+}
+
+/* Course Pills */
+.course-pill {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pill-inovasi {
+    background: #EFF6FF;
+    color: #1D4ED8;
+}
+
+.pill-komuniti {
+    background: #F0FDF4;
+    color: #15803D;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-aktif {
+    background: #ECFDF5;
+    color: #065F46;
+}
+
+.status-aktif i {
+    font-size: 0.45rem;
+    color: #22C55E;
+    animation: pulse 1.5s infinite;
+}
+
+.status-tidak-aktif {
+    background: #F3F4F6;
+    color: #6B7280;
+}
+
+/* Activate Button */
+.btn-activate {
+    padding: 7px 16px;
+    background: #004687;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.btn-activate:hover {
+    background: #003366;
+}
+
+.text-muted-sm {
+    color: #9CA3AF;
+    font-size: 0.85rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: #9CA3AF;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.empty-state p {
+    font-size: 0.95rem;
+}

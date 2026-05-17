@@ -16,6 +16,7 @@ use App\Http\Controllers\semakanTugasanController;
 use App\Http\Controllers\SigCoordinatorController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\subkriteriaController;
+use App\Http\Controllers\SesiKursusController;
 use App\Http\Controllers\tugasanController;
 use App\Http\Controllers\tugasanPelajarController;
 
@@ -50,7 +51,12 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 // Pentadbir (Role 1)
 Route::middleware(['auth', 'role:1'])->group(function () {
-    // Pengurusan Kursus
+    // Pengurusan Sesi Kursus (Tetapan Semester)
+    Route::get('/sesiKursus', [SesiKursusController::class, 'index'])->name('sesiKursus.index');
+    Route::post('/sesiKursus', [SesiKursusController::class, 'store'])->name('sesiKursus.store');
+    Route::patch('/sesiKursus/{id}/aktif', [SesiKursusController::class, 'aktif'])->name('sesiKursus.aktif');
+
+    // Legacy: Pengurusan Kursus (kept for backward compatibility)
     Route::get('/coursereg', [CourseregController::class, 'index'])->name('coursereg');
     Route::post('/coursereg', [CourseregController::class, 'store'])->name('coursereg.store');
 

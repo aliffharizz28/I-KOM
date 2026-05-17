@@ -14,7 +14,7 @@
 
         @if(Auth::check() && Auth::user()->fld_user_role == 1)
             <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka</span></a>
-            <a href="{{ route('coursereg') }}" class="nav-item {{ request()->routeIs('coursereg') ? 'active' : '' }}"><i class="fa fa-plus-square"></i> <span>Pendaftaran Kursus</span></a>
+            <a href="{{ route('sesiKursus.index') }}" class="nav-item {{ request()->routeIs('sesiKursus.*') ? 'active' : '' }}"><i class="fas fa-calendar-alt"></i> <span>Tetapan Sesi Kursus</span></a>
             <a href="{{ route('penyelarasSigRegistration') }}" class="nav-item {{ request()->routeIs('penyelarasSigRegistration') ? 'active' : '' }}"><i class="fa fa-id-card"></i> <span>Pendaftaran Penyelaras SIG</span></a>
             <a href="{{ route('laporanSIG') }}" class="nav-item {{ request()->routeIs('laporanSIG') ? 'active' : '' }}"><i class="fas fa-file-excel"></i> <span>Laporan SIG</span></a>
         @endif
