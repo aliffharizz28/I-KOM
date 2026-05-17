@@ -89,7 +89,7 @@ class tugasanController extends Controller
             });
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Tugasan Store Error: ' . $e->getMessage());
-            return back()->withInput()->with('error', '[DEBUG] ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal menyimpan tugasan. Sila cuba lagi.');
         }
 
         // Create global subkriteria entry separately (non-critical, won't fail the assignment)
