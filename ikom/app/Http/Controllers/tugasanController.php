@@ -59,14 +59,14 @@ class tugasanController extends Controller
         }
 
         try {
-            return \Illuminate\Support\Facades\DB::transaction(function () use ($request, $penyelaras, $sesiAktif) {
+            $savedTugasan = \Illuminate\Support\Facades\DB::transaction(function () use ($request, $penyelaras, $sesiAktif) {
                 $tugasan = new tugasan();
                 $tugasan->fld_tgs_nama   = $request->tugasan_title;
                 $tugasan->fld_tgs_desc   = $request->tugasan_desc;
                 $tugasan->fld_tgs_tarikh = $request->due_date;
                 $tugasan->fld_tgs_jenis  = $request->tugasan_jenis;
                 $tugasan->fld_sig_id     = $penyelaras->fld_sig_id;
-                $tugasan->fld_krs_id     = $sesiAktif->fld_krs_id; // Tag with active session
+                $tugasan->fld_krs_id     = $sesiAktif->fld_krs_id;
 
                 $tugasan->fld_tgs_status = \Carbon\Carbon::parse($request->due_date)->startOfDay()->lt(\Carbon\Carbon::today())
                     ? 'Tidak Aktif' : 'Aktif';
@@ -81,20 +81,28 @@ class tugasanController extends Controller
                 $tugasan->is_published = 0;
                 $tugasan->save();
 
-                // Create global subkriteria entry if it doesn't exist
-                $existingSub = \App\Models\subkriteria::where('fld_sub_nama', $request->tugasan_title)->first();
-                if (!$existingSub) {
-                    $subkriteria = new \App\Models\subkriteria();
-                    $subkriteria->fld_sub_nama = $request->tugasan_title;
-                    $subkriteria->save();
-                }
-
-                return redirect()->route('tugasan')->with('success', 'Tugasan berjaya ditambah (Status: Disembunyikan).');
+                return $tugasan;
             });
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Tugasan Store Error: ' . $e->getMessage());
             return back()->withInput()->with('error', 'Gagal menyimpan tugasan. Sila cuba lagi.');
         }
+
+        // Create global subkriteria entry separately (non-critical, won't fail the assignment)
+        try {
+            $existingSub = \App\Models\subkriteria::where('fld_sub_nama', $request->tugasan_title)->first();
+            if (!$existingSub) {
+                \App\Models\subkriteria::create([
+                    'fld_sub_nama'  => $request->tugasan_title,
+                    'fld_sub_markah' => null,
+                    'fld_krit_id'   => null,
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Subkriteria auto-create skipped: ' . $e->getMessage());
+        }
+
+        return redirect()->route('tugasan')->with('success', 'Tugasan berjaya ditambah (Status: Disembunyikan).');
     }
 
     public function togglePublish(Request $request, $id)
