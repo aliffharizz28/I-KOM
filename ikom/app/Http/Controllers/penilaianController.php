@@ -47,7 +47,6 @@ class penilaianController extends Controller
 
         $sig          = $penyelaras->sig;
         $sigNama      = $sig ? $sig->fld_sig_nama : 'SIG';
-        
         $logoMaps = [
             'Intelligence Machines Club' => 'imachine.png',
             'CyberHack & Ethic' => 'cyber.png',
@@ -60,14 +59,7 @@ class penilaianController extends Controller
         ];
         
         $logoFile = $sig ? ($logoMaps[$sig->fld_sig_nama] ?? null) : null;
-        $sigLogo = null;
-        if ($sig) {
-            if ($sig->fld_sig_logo) {
-                $sigLogo = str_replace('\\', '/', preg_replace('#^public[\\/]#', '', $sig->fld_sig_logo));
-            } elseif ($logoFile) {
-                $sigLogo = 'pic/logoSIG/' . $logoFile;
-            }
-        }
+        $sigLogo = $logoFile ? 'pic/logoSIG/' . $logoFile : null;
         
         $publishStatus = $sig ? $sig->fld_publish_status : 0;
 
