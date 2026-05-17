@@ -18,6 +18,7 @@ class tugasan extends Model
         'is_published',
         'fld_sig_id',
         'fld_tgs_file',
+        'fld_krs_id',
     ];
 
     // Hubungan dengan model SIG
