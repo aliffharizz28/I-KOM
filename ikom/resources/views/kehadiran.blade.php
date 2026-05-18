@@ -87,10 +87,19 @@
                             <td>
                                 {!! $p->fld_meet_verify ? '<span class="status-badge confirmed">Disahkan</span>' : '<span class="status-badge pending">Belum Disahkan</span>' !!}
                             </td>
-                            <td>
-                                <a href="{{ route('kehadiran.rekod', $p->fld_meet_id) }}" class="btn-action">
-                                    <i class="fas fa-clipboard-check"></i> Rekod Kehadiran
+                            <td style="display: flex; gap: 8px;">
+                                <a href="{{ route('kehadiran.rekod', $p->fld_meet_id) }}" class="btn-action" style="margin-bottom: 0;">
+                                    <i class="fas fa-clipboard-check"></i> Rekod
                                 </a>
+                                @if(!$p->fld_meet_verify)
+                                    <form action="{{ route('kehadiran.deletePerjumpaan', $p->fld_meet_id) }}" method="POST" onsubmit="return confirm('Adakah anda pasti mahu memadam perjumpaan ini? Semua rekod kehadiran untuk perjumpaan ini akan turut dipadam.')" style="margin: 0;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action" style="background-color: #DC2626; border-color: #DC2626; color: white;">
+                                            <i class="fas fa-trash-alt"></i> Padam
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

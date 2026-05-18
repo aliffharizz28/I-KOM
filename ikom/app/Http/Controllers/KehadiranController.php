@@ -171,4 +171,30 @@ class KehadiranController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function destroyPerjumpaan($id)
+    {
+        $user = Auth::user();
+        if ($user->fld_user_role != 3) {
+            return redirect()->route('kehadiran')->with('error', 'Akses ditolak.');
+        }
+
+        $perjumpaan = perjumpaan::findOrFail($id);
+
+        // Hanya boleh padam jika belum disahkan
+        if ($perjumpaan->fld_meet_verify == 1) {
+            return redirect()->route('kehadiran')->with('error', 'Perjumpaan telah disahkan dan tidak boleh dipadam.');
+        }
+
+        $sigId = $user->pelajar->fld_sig_id ?? null;
+        if ($perjumpaan->fld_sig_id !== $sigId) {
+            return redirect()->route('kehadiran')->with('error', 'Akses ditolak.');
+        }
+
+        // Delete associated kehadirans first
+        kehadiran::where('fld_meet_id', $id)->delete();
+        $perjumpaan->delete();
+
+        return redirect()->route('kehadiran')->with('success', 'Perjumpaan berjaya dipadam.');
+    }
 }

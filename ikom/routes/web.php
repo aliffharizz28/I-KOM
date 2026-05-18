@@ -127,10 +127,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/kehadiran/rekod/{id}', [KehadiranController::class, 'simpanKehadiran'])->name('kehadiran.simpan');
     });
 
-    // Create Perjumpaan (MT - Role 3)
+    // Create & Delete Perjumpaan (MT - Role 3)
     Route::post('/kehadiran/perjumpaan', [KehadiranController::class, 'storePerjumpaan'])
         ->middleware('role:3')
         ->name('kehadiran.storePerjumpaan');
+        
+    Route::delete('/kehadiran/perjumpaan/{id}', [KehadiranController::class, 'destroyPerjumpaan'])
+        ->middleware('role:3')
+        ->name('kehadiran.deletePerjumpaan');
         
     // Sahkan & Export (Penyelaras - Role 2)
     Route::middleware('role:2')->group(function () {
