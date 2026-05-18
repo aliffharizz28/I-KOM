@@ -280,11 +280,8 @@
             closeConfirmModal();
             
             if (data.success) {
-                // Clear submitted map for this task so checkboxes show up again
-                if (submittedMap[resubmitId]) {
-                    submittedMap[resubmitId] = []; 
-                }
-                showHantarForm(resubmitId, resubmitTitle);
+                // Reload the page to refresh the view
+                window.location.reload();
             } else {
                 alert('Ralat: ' + data.message);
             }
