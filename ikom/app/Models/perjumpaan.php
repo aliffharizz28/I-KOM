@@ -14,6 +14,7 @@ class perjumpaan extends Model
         'fld_meet_tarikh',
         'fld_meet_verify',
         'fld_sig_id',
+        'fld_krs_id',
     ];
 
     // Hubungan dengan model SIG
