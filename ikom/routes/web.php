@@ -114,6 +114,7 @@ Route::middleware(['auth', 'role:2'])->group(function () {
 Route::middleware(['auth', 'role:3'])->group(function () {
     Route::get('/tugasanPelajar', [tugasanPelajarController::class, 'index'])->name('tugasanPelajar');
     Route::post('/tugasanPelajar', [tugasanPelajarController::class, 'store'])->name('tugasanPelajar.store');
+    Route::delete('/tugasanPelajar/{id}', [tugasanPelajarController::class, 'destroySubmission'])->name('tugasanPelajar.delete');
     Route::get('/semakanmarkah', [SemakanMarkahController::class, 'index'])->name('semakanmarkah');
 });
 

@@ -56,27 +56,7 @@ class tugasanPelajarController extends Controller
             return back()->with('error', 'Rekod pelajar tidak dijumpai.');
         }
 
-        // --- STEP 1: Handle resubmission - delete ALL old group records ---
-        $existing = penghantaran::where('fld_tgs_id', $request->tugasan_id)
-                                ->where('fld_pel_nomat', $pelajar->fld_pel_nomat)
-                                ->first();
-
-        if ($existing) {
-            $oldFile = $existing->fld_pgh_fail;
-
-            // Delete the physical file from disk
-            if ($oldFile && file_exists(public_path('lampiran_penghantaran/' . $oldFile))) {
-                @unlink(public_path('lampiran_penghantaran/' . $oldFile));
-            }
-
-            // Delete ALL penghantaran records sharing the same old file for this tugasan
-            // This clears the submitter AND all previously tagged group members
-            penghantaran::where('fld_tgs_id', $request->tugasan_id)
-                        ->where('fld_pgh_fail', $oldFile)
-                        ->delete();
-        }
-
-        // --- STEP 2: Validate new group members (check for OTHER groups' submissions) ---
+        // --- STEP 1: Validate new group members (check for OTHER groups' submissions) ---
         $membersToSave = [];
         if ($request->has('group_members')) {
             foreach ($request->group_members as $nomat) {
@@ -121,5 +101,38 @@ class tugasanPelajarController extends Controller
             \Illuminate\Support\Facades\Log::error('DB Save error: ' . $e->getMessage());
             return back()->with('error', 'Ralat menyimpan ke pangkalan data: ' . $e->getMessage());
         }
+    }
+
+    public function destroySubmission(Request $request, $id)
+    {
+        $userId = Auth::user()->fld_user_id;
+        $pelajar = pelajar::where('fld_user_id', $userId)->first();
+
+        if (!$pelajar) {
+            return response()->json(['success' => false, 'message' => 'Rekod pelajar tidak dijumpai.']);
+        }
+
+        $existing = penghantaran::where('fld_tgs_id', $id)
+                                ->where('fld_pel_nomat', $pelajar->fld_pel_nomat)
+                                ->first();
+
+        if ($existing) {
+            $oldFile = $existing->fld_pgh_fail;
+
+            // Delete the physical file from disk
+            if ($oldFile && file_exists(public_path('lampiran_penghantaran/' . $oldFile))) {
+                @unlink(public_path('lampiran_penghantaran/' . $oldFile));
+            }
+
+            // Delete ALL penghantaran records sharing the same old file for this tugasan
+            penghantaran::where('fld_tgs_id', $id)
+                        ->where('fld_pgh_fail', $oldFile)
+                        ->delete();
+
+            return response()->json(['success' => true, 'message' => 'Penghantaran lama berjaya dipadam.']);
+        }
+
+        // If no record found, it's already deleted, so we can still proceed
+        return response()->json(['success' => true, 'message' => 'Tiada rekod lama, boleh teruskan.']);
     }
 }

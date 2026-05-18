@@ -208,6 +208,26 @@
     </div>
 </div>
 
+<!-- Custom Confirmation Modal -->
+<div id="confirmResubmitModal" class="members-modal" style="display:none;">
+    <div class="modal-content confirm-resubmit-content">
+        <div class="confirm-icon-wrapper">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="confirm-title">Amaran Hantar Semula</h3>
+        <p class="confirm-message">
+            Tindakan ini akan:<br><br>
+            • <strong>Memadam</strong> penghantaran lama ANDA<br>
+            • <strong>Memadam</strong> penghantaran semua ahli kumpulan yang ditag sebelum ini<br><br>
+            Selepas menghantar semula, anda perlu <strong>TAG SEMULA</strong> semua ahli kumpulan. Teruskan?
+        </p>
+        <div class="modal-footer confirm-footer">
+            <button type="button" class="btn-modal-cancel" onclick="closeConfirmModal()">Batal</button>
+            <button type="button" class="btn-modal-confirm danger" onclick="proceedResubmit()">Ya, Teruskan</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const submittedMap = {};
     @foreach($tugasans as $tgs)
@@ -223,17 +243,58 @@
         taskTypes[{{ $tgs->fld_tgs_id }}] = "{{ $tgs->fld_tgs_jenis }}";
     @endforeach
 
+    let resubmitId = null;
+    let resubmitTitle = null;
+
     function confirmResubmit(id, title) {
-        if (confirm(
-            '⚠️ Amaran Hantar Semula\n\n' +
-            'Tindakan ini akan:\n' +
-            '• Memadam penghantaran lama ANDA\n' +
-            '• Memadam penghantaran semua ahli kumpulan yang ditag sebelum ini\n\n' +
-            'Selepas menghantar semula, anda perlu TAG SEMULA semua ahli kumpulan.\n\n' +
-            'Teruskan?'
-        )) {
-            showHantarForm(id, title);
-        }
+        resubmitId = id;
+        resubmitTitle = title;
+        document.getElementById('confirmResubmitModal').style.display = 'flex';
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmResubmitModal').style.display = 'none';
+        resubmitId = null;
+        resubmitTitle = null;
+    }
+
+    function proceedResubmit() {
+        if (!resubmitId) return;
+        
+        const btnConfirm = document.querySelector('#confirmResubmitModal .btn-modal-confirm');
+        const originalText = btnConfirm.innerText;
+        btnConfirm.innerText = 'Memadam...';
+        btnConfirm.disabled = true;
+
+        fetch(`{{ url('tugasanPelajar') }}/${resubmitId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            btnConfirm.innerText = originalText;
+            btnConfirm.disabled = false;
+            closeConfirmModal();
+            
+            if (data.success) {
+                // Clear submitted map for this task so checkboxes show up again
+                if (submittedMap[resubmitId]) {
+                    submittedMap[resubmitId] = []; 
+                }
+                showHantarForm(resubmitId, resubmitTitle);
+            } else {
+                alert('Ralat: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            btnConfirm.innerText = originalText;
+            btnConfirm.disabled = false;
+            alert('Ralat sistem semasa memadam penghantaran lama.');
+        });
     }
 
     function showHantarForm(id, title) {

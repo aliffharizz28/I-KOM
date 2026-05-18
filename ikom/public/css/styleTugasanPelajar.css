@@ -710,3 +710,40 @@
         width: 100%;
     }
 }
+
+/* ===== Confirm Resubmit Modal ===== */
+.confirm-resubmit-content {
+    max-width: 400px !important;
+    text-align: center;
+}
+
+.confirm-icon-wrapper {
+    color: #DC2626;
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.confirm-title {
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.confirm-message {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.confirm-footer {
+    justify-content: center !important;
+}
+
+.btn-modal-confirm.danger {
+    background-color: #DC2626;
+}
+
+.btn-modal-confirm.danger:hover {
+    background-color: #B91C1C;
+}
