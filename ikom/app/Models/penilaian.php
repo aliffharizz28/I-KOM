@@ -12,6 +12,7 @@ class penilaian extends Model
         'fld_nilai_id',
         'fld_nilai_markah',
         'fld_sig_id',
+        'fld_krs_id',
         'fld_pel_nomat',
         'fld_krit_id',
         'fld_markah_detail',

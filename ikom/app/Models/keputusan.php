@@ -18,6 +18,7 @@ class keputusan extends Model
         'fld_nilai_gred',
         'fld_nilai_komen',
         'fld_sig_id',
+        'fld_krs_id',
     ];
 
     public function pelajar()
