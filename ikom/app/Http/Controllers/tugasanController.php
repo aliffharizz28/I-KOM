@@ -155,7 +155,7 @@ class tugasanController extends Controller
                     }
                 } else {
                     \Illuminate\Support\Facades\Log::warning('[togglePublish] Skipped pelajar ' .
-                        $pel->fld_pel_nomat . ' — no email address found.');
+                        $pel->fld_pel_nomat . ' - no email address found.');
                 }
             }
 
