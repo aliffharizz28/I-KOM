@@ -56,7 +56,7 @@
         <!-- Letak Kanan: Senarai Pelajar & Markah -->
         <div class="list-side">
             <div class="glass-panel marks-panel">
-                <form action="{{ route('semakanTugasan.saveMarks', $tugasan->fld_tgs_id) }}" method="POST">
+                <form class="marks-form" action="{{ route('semakanTugasan.saveMarks', $tugasan->fld_tgs_id) }}" method="POST">
                     @csrf
                     <div class="list-header">
                         <h3><i class="fas fa-highlighter"></i> Pemarkahan Pelajar</h3>

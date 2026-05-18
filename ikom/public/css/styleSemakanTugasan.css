@@ -88,6 +88,13 @@
     overflow: hidden;
 }
 
+/* Form Wrapper */
+.marks-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 /* Preview Area */
 .preview-header, .list-header {
     padding: 20px 24px;
