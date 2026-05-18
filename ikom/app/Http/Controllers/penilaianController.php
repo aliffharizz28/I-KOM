@@ -113,6 +113,7 @@ class penilaianController extends Controller
         // Load existing marks for this student from the JSON detail fields
         $penilaianRows = penilaian::where('fld_pel_nomat', $nomat)
             ->whereNotNull('fld_krit_id')
+            ->where('fld_krs_id', $sesiAktif ? $sesiAktif->fld_krs_id : null)
             ->get();
             
         $existingMarks = [];
@@ -125,7 +126,9 @@ class penilaianController extends Controller
             }
         }
 
-        $keputusan = keputusan::where('fld_pel_nomat', $nomat)->first();
+        $keputusan = keputusan::where('fld_pel_nomat', $nomat)
+            ->where('fld_krs_id', $sesiAktif ? $sesiAktif->fld_krs_id : null)
+            ->first();
         $existingKomen = $keputusan ? $keputusan->fld_nilai_komen : '';
 
         // Fetch assignment marks (penghantaran) mapped to subkriteria
@@ -177,7 +180,8 @@ class penilaianController extends Controller
             return response()->json(['success' => false, 'message' => 'Anda tidak mempunyai SIG.'], 403);
         }
 
-        $sigId = $penyelaras->fld_sig_id;
+        $sigId     = $penyelaras->fld_sig_id;
+        $sesiAktif = kursus::getActive();
 
         // Ensure the student belongs to the same SIG
         $pelajar = pelajar::where('fld_pel_nomat', $nomat)
@@ -225,7 +229,10 @@ class penilaianController extends Controller
             }
 
             // Remove old marks for this student to maintain the 7-row flat structure
-            penilaian::where('fld_pel_nomat', $nomat)->delete();
+            // Remove old marks for this student scoped to the ACTIVE session only
+            penilaian::where('fld_pel_nomat', $nomat)
+                ->where('fld_krs_id', $sesiAktif ? $sesiAktif->fld_krs_id : null)
+                ->delete();
 
             $overallScore = 0;
 
@@ -290,7 +297,11 @@ class penilaianController extends Controller
             $grade = $this->calculateGrade($overallScore);
 
             keputusan::updateOrCreate(
-                ['fld_pel_nomat' => $nomat, 'fld_sig_id' => $sigId],
+                [
+                    'fld_pel_nomat' => $nomat,
+                    'fld_sig_id'    => $sigId,
+                    'fld_krs_id'    => $sesiAktif ? $sesiAktif->fld_krs_id : null,
+                ],
                 [
                     'fld_total_markah' => round($overallScore, 2),
                     'fld_nilai_gred'   => $grade,
