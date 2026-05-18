@@ -126,21 +126,44 @@ class tugasanController extends Controller
                     ->pluck('fld_pel_nomat')
                 : collect();
 
+            \Illuminate\Support\Facades\Log::info('[togglePublish] Publishing tugasan ID=' . $tugasan->fld_tgs_id .
+                ' | SIG=' . $tugasan->fld_sig_id .
+                ' | KRS=' . ($sesiAktif ? $sesiAktif->fld_krs_id : 'null') .
+                ' | Target pelajar count=' . $pelajarIds->count() .
+                ' | MAIL_MAILER=' . config('mail.default'));
+
             $pelajars = \App\Models\pelajar::with('pengguna')
                 ->whereIn('fld_pel_nomat', $pelajarIds)
                 ->get();
+
+            \Illuminate\Support\Facades\Log::info('[togglePublish] Pelajar loaded: ' . $pelajars->count());
+
+            $sent   = 0;
+            $failed = 0;
 
             foreach ($pelajars as $pel) {
                 if ($pel->pengguna && !empty($pel->pengguna->fld_user_email)) {
                     try {
                         \Illuminate\Support\Facades\Mail::to($pel->pengguna->fld_user_email)
                             ->send(new \App\Mail\NewAssignmentMail($tugasan));
+                        \Illuminate\Support\Facades\Log::info('[togglePublish] Mail sent to: ' . $pel->pengguna->fld_user_email);
+                        $sent++;
                     } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error('Failed to send mail: ' . $e->getMessage());
+                        \Illuminate\Support\Facades\Log::error('[togglePublish] Failed to send mail to ' .
+                            $pel->pengguna->fld_user_email . ': ' . $e->getMessage());
+                        $failed++;
                     }
+                } else {
+                    \Illuminate\Support\Facades\Log::warning('[togglePublish] Skipped pelajar ' .
+                        $pel->fld_pel_nomat . ' — no email address found.');
                 }
             }
-            return back()->with('success', 'Tugasan telah disiarkan. Emel makluman dihantar kepada pelajar!');
+
+            $msg = "Tugasan telah disiarkan. Emel dihantar: {$sent}";
+            if ($failed > 0) {
+                $msg .= ", Gagal: {$failed} (semak log)";
+            }
+            return back()->with('success', $msg);
         }
 
         return back()->with('success', 'Tugasan telah disembunyikan daripada pelajar.');
