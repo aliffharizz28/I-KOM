@@ -44,7 +44,7 @@ class tugasanPelajarController extends Controller
     {
         $request->validate([
             'tugasan_id' => 'required|exists:tugasan,fld_tgs_id',
-            'tugasan_file' => 'required|file|mimes:pdf,doc,docx,zip,rar|max:5120',
+            'tugasan_file' => 'required|file|mimes:pdf,doc,docx,zip,rar|max:51200',
             'group_members' => 'nullable|array',
             'group_members.*' => 'exists:pelajar,fld_pel_nomat'
         ]);
