@@ -114,7 +114,7 @@
                                     <div class="task-action">
                                         @if($hasSubmitted)
                                             <div class="task-action-buttons">
-                                                <button class="btn-hantar" onclick="showHantarForm({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}')">Hantar Semula</button>
+                                                <button class="btn-hantar" onclick="confirmResubmit({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}')">Hantar Semula</button>
                                                 <a class="btn-semak" href="{{ asset('lampiran_penghantaran/'.($tgs->penghantaran->first()->fld_pgh_fail ?? '')) }}" target="_blank">Semak Fail Tugasan</a>
                                             </div>
                                         @else
@@ -222,6 +222,19 @@
     @foreach($tugasans as $tgs)
         taskTypes[{{ $tgs->fld_tgs_id }}] = "{{ $tgs->fld_tgs_jenis }}";
     @endforeach
+
+    function confirmResubmit(id, title) {
+        if (confirm(
+            '⚠️ Amaran Hantar Semula\n\n' +
+            'Tindakan ini akan:\n' +
+            '• Memadam penghantaran lama ANDA\n' +
+            '• Memadam penghantaran semua ahli kumpulan yang ditag sebelum ini\n\n' +
+            'Selepas menghantar semula, anda perlu TAG SEMULA semua ahli kumpulan.\n\n' +
+            'Teruskan?'
+        )) {
+            showHantarForm(id, title);
+        }
+    }
 
     function showHantarForm(id, title) {
         document.getElementById('tasksMainContainer').style.display = 'none';

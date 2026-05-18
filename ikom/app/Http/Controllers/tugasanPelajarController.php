@@ -56,7 +56,27 @@ class tugasanPelajarController extends Controller
             return back()->with('error', 'Rekod pelajar tidak dijumpai.');
         }
 
-        // Semak ahli kumpulan jika mereka telah mempunyai penghantaran bagi tugasan ini
+        // --- STEP 1: Handle resubmission - delete ALL old group records ---
+        $existing = penghantaran::where('fld_tgs_id', $request->tugasan_id)
+                                ->where('fld_pel_nomat', $pelajar->fld_pel_nomat)
+                                ->first();
+
+        if ($existing) {
+            $oldFile = $existing->fld_pgh_fail;
+
+            // Delete the physical file from disk
+            if ($oldFile && file_exists(public_path('lampiran_penghantaran/' . $oldFile))) {
+                @unlink(public_path('lampiran_penghantaran/' . $oldFile));
+            }
+
+            // Delete ALL penghantaran records sharing the same old file for this tugasan
+            // This clears the submitter AND all previously tagged group members
+            penghantaran::where('fld_tgs_id', $request->tugasan_id)
+                        ->where('fld_pgh_fail', $oldFile)
+                        ->delete();
+        }
+
+        // --- STEP 2: Validate new group members (check for OTHER groups' submissions) ---
         $membersToSave = [];
         if ($request->has('group_members')) {
             foreach ($request->group_members as $nomat) {
@@ -70,38 +90,29 @@ class tugasanPelajarController extends Controller
             }
         }
 
-        // Semak jika current user sudah ada penghantaran
-        $existing = penghantaran::where('fld_tgs_id', $request->tugasan_id)
-                                ->where('fld_pel_nomat', $pelajar->fld_pel_nomat)
-                                ->first();
-                                
-        if ($existing) {
-            $penghantaran = $existing;
-            if ($penghantaran->fld_pgh_fail && file_exists(public_path('lampiran_penghantaran/' . $penghantaran->fld_pgh_fail))) {
-                @unlink(public_path('lampiran_penghantaran/' . $penghantaran->fld_pgh_fail));
-            }
-        } else {
-            $penghantaran = new penghantaran();
-            $penghantaran->fld_tgs_id = $request->tugasan_id;
-            $penghantaran->fld_pel_nomat = $pelajar->fld_pel_nomat;
-        }
-
+        // --- STEP 3: Upload new file ---
+        $filename = null;
         if ($request->hasFile('tugasan_file')) {
             $file = $request->file('tugasan_file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('lampiran_penghantaran'), $filename);
-            $penghantaran->fld_pgh_fail = $filename;
         }
 
+        // --- STEP 4: Save fresh records ---
         try {
+            // Save submitter's record
+            $penghantaran = new penghantaran();
+            $penghantaran->fld_tgs_id = $request->tugasan_id;
+            $penghantaran->fld_pel_nomat = $pelajar->fld_pel_nomat;
+            $penghantaran->fld_pgh_fail = $filename;
             $penghantaran->save();
 
-            // Simpan penghantaran untuk setiap ahli kumpulan dengan fail yang sama
+            // Save record for each tagged group member (same file)
             foreach ($membersToSave as $nomat) {
                 $memberPenghantaran = new penghantaran();
                 $memberPenghantaran->fld_tgs_id = $request->tugasan_id;
                 $memberPenghantaran->fld_pel_nomat = $nomat;
-                $memberPenghantaran->fld_pgh_fail = $penghantaran->fld_pgh_fail; // Use the same uploaded file
+                $memberPenghantaran->fld_pgh_fail = $filename;
                 $memberPenghantaran->save();
             }
 
