@@ -20,10 +20,8 @@ class KehadiranController extends Controller
 
         if ($user->fld_user_role == 2) {
             $sigId = $user->penyelarassig->fld_sig_id ?? null;
-        } elseif ($user->fld_user_role == 3 && $sesiAktif) {
-            $daftar = PendaftaranPelajar::where('fld_pel_nomat', $user->pelajar->fld_pel_nomat ?? null)
-                ->where('fld_krs_id', $sesiAktif->fld_krs_id)->first();
-            $sigId = $daftar?->fld_sig_id;
+        } elseif ($user->fld_user_role == 3) {
+            $sigId = $user->pelajar->fld_sig_id ?? null;
         }
 
         $perjumpaans = [];
@@ -42,9 +40,7 @@ class KehadiranController extends Controller
         $user      = Auth::user();
         $sesiAktif = kursus::getActive();
         if (!$sesiAktif) return redirect()->back()->with('error', 'Tiada sesi kursus aktif.');
-        $daftar = PendaftaranPelajar::where('fld_pel_nomat', $user->pelajar->fld_pel_nomat ?? null)
-            ->where('fld_krs_id', $sesiAktif->fld_krs_id)->first();
-        $sigId = $daftar?->fld_sig_id;
+        $sigId = $user->pelajar->fld_sig_id ?? null;
         if (!$sigId) return redirect()->back()->with('error', 'Kumpulan SIG tidak ditemui untuk sesi semasa.');
         perjumpaan::create([
             'fld_meet_topik'  => $request->topik,
@@ -64,20 +60,15 @@ class KehadiranController extends Controller
         $sigId      = null;
         if ($user->fld_user_role == 2) {
             $sigId = $user->penyelarassig->fld_sig_id ?? null;
-        } elseif ($user->fld_user_role == 3 && $sesiAktif) {
-            $daftar = PendaftaranPelajar::where('fld_pel_nomat', $user->pelajar->fld_pel_nomat ?? null)
-                ->where('fld_krs_id', $sesiAktif->fld_krs_id)->first();
-            $sigId = $daftar?->fld_sig_id;
+        } elseif ($user->fld_user_role == 3) {
+            $sigId = $user->pelajar->fld_sig_id ?? null;
         }
         if ($perjumpaan->fld_sig_id !== $sigId) {
             return redirect()->route('kehadiran')->with('error', 'Akses ditolak.');
         }
-        $pelajarIds = $sesiAktif
-            ? PendaftaranPelajar::where('fld_sig_id', $sigId)
-                ->where('fld_krs_id', $sesiAktif->fld_krs_id)->pluck('fld_pel_nomat')
-            : collect();
+
         $pelajars = pelajar::with(['pengguna', 'kehadiran' => fn($q) => $q->where('fld_meet_id', $id)])
-            ->whereIn('fld_pel_nomat', $pelajarIds)->get();
+            ->where('fld_sig_id', $sigId)->get();
         return view('rekodKehadiran', compact('perjumpaan', 'pelajars'));
     }
 
@@ -126,12 +117,9 @@ class KehadiranController extends Controller
         $perjumpaans = perjumpaan::where('fld_sig_id', $sigId)
             ->when($sesiAktif, fn($q) => $q->where('fld_krs_id', $sesiAktif->fld_krs_id))
             ->orderBy('fld_meet_tarikh', 'asc')->get();
-        $pelajarIds = $sesiAktif
-            ? PendaftaranPelajar::where('fld_sig_id', $sigId)
-                ->where('fld_krs_id', $sesiAktif->fld_krs_id)->pluck('fld_pel_nomat')
-            : collect();
+
         $pelajars = pelajar::with(['pengguna', 'kehadiran'])
-                           ->whereIn('fld_pel_nomat', $pelajarIds)->get();
+            ->where('fld_sig_id', $sigId)->get();
 
         $headers = [
             "Content-type"        => "text/csv",
