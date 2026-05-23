@@ -89,8 +89,28 @@
                         @endphp
                         <div class="student-card student-card-default {{ !$hasSubmission ? 'student-card-no-submission' : '' }}">
                             <div class="student-info student-info-center">
-                                @if($pelajar->fld_pel_pic)
-                                    <img src="{{ asset('storage/' . $pelajar->fld_pel_pic) }}" alt="Avatar" class="student-pic">
+                                @php
+                                    $nomat = strtolower($pelajar->fld_pel_nomat);
+                                    $picPath = 'pic/' . $nomat . '.jpg';
+                                    $picUpperPath = 'pic/' . strtoupper($pelajar->fld_pel_nomat) . '.jpg';
+                                    
+                                    $hasPic = false;
+                                    $finalPicUrl = '';
+                                    
+                                    if (file_exists(public_path($picPath))) {
+                                        $hasPic = true;
+                                        $finalPicUrl = asset($picPath);
+                                    } elseif (file_exists(public_path($picUpperPath))) {
+                                        $hasPic = true;
+                                        $finalPicUrl = asset($picUpperPath);
+                                    } elseif ($pelajar->fld_pel_pic && file_exists(public_path('storage/' . $pelajar->fld_pel_pic))) {
+                                        $hasPic = true;
+                                        $finalPicUrl = asset('storage/' . $pelajar->fld_pel_pic);
+                                    }
+                                @endphp
+                                
+                                @if($hasPic)
+                                    <img src="{{ $finalPicUrl }}" alt="Avatar" class="student-pic">
                                 @else
                                     <div class="student-avatar student-avatar-margin">{{ $initials }}</div>
                                 @endif
