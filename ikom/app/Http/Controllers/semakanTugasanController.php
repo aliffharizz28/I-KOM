@@ -40,6 +40,39 @@ class semakanTugasanController extends Controller
                                      ->get()
                                      ->keyBy('fld_pel_nomat');
 
+        // Pre-compute view logic for each student
+        foreach ($pelajars as $pelajar) {
+            $nama = $pelajar->pengguna->fld_user_nama ?? 'Tiada Nama';
+            $pelajar->display_nama = $nama;
+            
+            $pelajar->initials = collect(explode(' ', $nama))
+                                 ->map(function($word) { return strtoupper(substr($word, 0, 1)); })
+                                 ->take(2)->join('');
+            
+            $pelajar->has_submission = isset($penghantarans[$pelajar->fld_pel_nomat]) && !empty($penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_fail);
+            $hasRecord = isset($penghantarans[$pelajar->fld_pel_nomat]);
+            $pelajar->mark = $hasRecord ? $penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_markah : '';
+            
+            // Check for student picture
+            $nomat = strtolower($pelajar->fld_pel_nomat);
+            $picPath = 'pic/' . $nomat . '.jpg';
+            $picUpperPath = 'pic/' . strtoupper($pelajar->fld_pel_nomat) . '.jpg';
+            
+            $pelajar->has_pic = false;
+            $pelajar->final_pic_url = '';
+            
+            if (file_exists(public_path($picPath))) {
+                $pelajar->has_pic = true;
+                $pelajar->final_pic_url = asset($picPath);
+            } elseif (file_exists(public_path($picUpperPath))) {
+                $pelajar->has_pic = true;
+                $pelajar->final_pic_url = asset($picUpperPath);
+            } elseif ($pelajar->fld_pel_pic && file_exists(public_path('storage/' . $pelajar->fld_pel_pic))) {
+                $pelajar->has_pic = true;
+                $pelajar->final_pic_url = asset('storage/' . $pelajar->fld_pel_pic);
+            }
+        }
+
         return view('semakanTugasan', compact('tugasan', 'pelajars', 'penghantarans'));
     }
 

@@ -45,6 +45,26 @@ class penilaianController extends Controller
             ->whereIn('fld_pel_nomat', $pelajarIds)
             ->get();
 
+        foreach ($pelajars as $pelajar) {
+            $nomat = strtolower($pelajar->fld_pel_nomat);
+            $picPath = 'pic/' . $nomat . '.jpg';
+            $picUpperPath = 'pic/' . strtoupper($pelajar->fld_pel_nomat) . '.jpg';
+            
+            $pelajar->has_pic = false;
+            $pelajar->final_pic_url = '';
+            
+            if (file_exists(public_path($picPath))) {
+                $pelajar->has_pic = true;
+                $pelajar->final_pic_url = asset($picPath);
+            } elseif (file_exists(public_path($picUpperPath))) {
+                $pelajar->has_pic = true;
+                $pelajar->final_pic_url = asset($picUpperPath);
+            } elseif ($pelajar->fld_pel_pic && file_exists(public_path('storage/' . $pelajar->fld_pel_pic))) {
+                $pelajar->has_pic = true;
+                $pelajar->final_pic_url = asset('storage/' . $pelajar->fld_pel_pic);
+            }
+        }
+
         $sig          = $penyelaras->sig;
         $sigNama      = $sig ? $sig->fld_sig_nama : 'SIG';
         $logoMaps = [

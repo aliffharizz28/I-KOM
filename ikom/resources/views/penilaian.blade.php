@@ -32,6 +32,14 @@
         </div>
     </div>
 
+    <!-- Notifications -->
+    <div id="successAlert" class="success-alert">
+        <i class="fas fa-check-circle"></i> <span id="successMsg"></span>
+    </div>
+    <div id="errorAlert" class="error-alert">
+        <i class="fas fa-exclamation-circle"></i> <span id="errorMsg"></span>
+    </div>
+
     <!-- Controls Row -->
     <div class="controls-row">
         <!-- Search Bar -->
@@ -44,10 +52,10 @@
         <!-- Publish Controls -->
         <div class="publish-controls">
             <span class="publish-label"><i class="fas fa-bullhorn"></i> Terbitkan Markah:</span>
-            <select id="publishSelect" class="publish-select" onchange="updatePublishStatus(this.value)">
-                <option value="0" {{ $publishStatus == 0 ? 'selected' : '' }}>Draf (Tidak Diterbit)</option>
-                <option value="1" {{ $publishStatus == 1 ? 'selected' : '' }}>Fasa 1 (60% PB)</option>
-                <option value="2" {{ $publishStatus == 2 ? 'selected' : '' }}>Fasa 2 (100% Keseluruhan)</option>
+            <select id="publishSelect" class="publish-select" onchange="promptPublishConfirm(this)">
+                <option value="0" {{ $publishStatus == 0 ? 'selected' : '' }}>Draf (Tidak Diterbitkan Markah)</option>
+                <option value="1" {{ $publishStatus == 1 ? 'selected' : '' }}>Fasa 1 (60% Penilaian Berterusan)</option>
+                <option value="2" {{ $publishStatus == 2 ? 'selected' : '' }}>Fasa 2 (100% Markah Keseluruhan)</option>
             </select>
             <span id="publishLoading" style="display: none; color: var(--primary-blue);"><i class="fas fa-spinner fa-spin"></i></span>
         </div>
@@ -108,6 +116,21 @@
     @endif
 </div>
 
+<!-- Confirmation Modal -->
+<div id="confirmPublishModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3>Pengesahan Terbitan</h3>
+        <p>Adakah anda pasti untuk menukar status penerbitan markah kepada <strong id="publishStatusText"></strong>?</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeConfirmModal()">Batal</button>
+            <button class="btn-confirm" onclick="executePublish()">Ya, Terbitkan</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function filterStudents() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -136,9 +159,34 @@
         }
     }
 
-    function updatePublishStatus(status) {
+    let pendingPublishValue = null;
+    let previousPublishValue = document.getElementById('publishSelect').value;
+
+    function promptPublishConfirm(selectElement) {
+        pendingPublishValue = selectElement.value;
+        const selectedText = selectElement.options[selectElement.selectedIndex].text;
+        
+        document.getElementById('publishStatusText').textContent = selectedText;
+        document.getElementById('confirmPublishModal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmPublishModal').classList.remove('active');
+        // Revert the select box to its previous value since they cancelled
+        document.getElementById('publishSelect').value = previousPublishValue;
+        pendingPublishValue = null;
+    }
+
+    function executePublish() {
+        document.getElementById('confirmPublishModal').classList.remove('active');
+        const status = pendingPublishValue;
+        
         const loading = document.getElementById('publishLoading');
         loading.style.display = 'inline-block';
+        
+        // Hide previous alerts
+        document.getElementById('successAlert').style.display = 'none';
+        document.getElementById('errorAlert').style.display = 'none';
         
         fetch('{{ route("penilaian.publish") }}', {
             method: 'POST',
@@ -153,15 +201,24 @@
         .then(data => {
             loading.style.display = 'none';
             if (data.success) {
-                // optionally show a toast
-                alert('Status penerbitan markah berjaya dikemaskini.');
+                previousPublishValue = status; // Update successful state
+                document.getElementById('successMsg').textContent = 'Status penerbitan markah berjaya dikemaskini.';
+                document.getElementById('successAlert').style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('successAlert').style.display = 'none';
+                }, 5000);
             } else {
-                alert(data.message || 'Ralat berlaku.');
+                document.getElementById('publishSelect').value = previousPublishValue; // Revert
+                document.getElementById('errorMsg').textContent = data.message || 'Ralat berlaku semasa kemaskini.';
+                document.getElementById('errorAlert').style.display = 'block';
             }
         })
         .catch(err => {
             loading.style.display = 'none';
-            alert('Ralat rangkaian.');
+            document.getElementById('publishSelect').value = previousPublishValue; // Revert
+            document.getElementById('errorMsg').textContent = 'Ralat rangkaian. Sila cuba lagi.';
+            document.getElementById('errorAlert').style.display = 'block';
         });
     }
 </script>

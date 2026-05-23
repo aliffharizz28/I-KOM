@@ -80,49 +80,22 @@
 
                     <div class="student-list student-list-container">
                         @foreach($pelajars as $pelajar)
-                        @php
-                            $nama = $pelajar->pengguna->fld_user_nama ?? 'Tiada Nama';
-                            $initials = collect(explode(' ', $nama))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('');
-                            $hasSubmission = isset($penghantarans[$pelajar->fld_pel_nomat]) && !empty($penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_fail);
-                            $hasRecord = isset($penghantarans[$pelajar->fld_pel_nomat]);
-                            $mark = $hasRecord ? $penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_markah : '';
-                        @endphp
-                        <div class="student-card student-card-default {{ !$hasSubmission ? 'student-card-no-submission' : '' }}">
+                        <div class="student-card student-card-default {{ !$pelajar->has_submission ? 'student-card-no-submission' : '' }}">
                             <div class="student-info student-info-center">
-                                @php
-                                    $nomat = strtolower($pelajar->fld_pel_nomat);
-                                    $picPath = 'pic/' . $nomat . '.jpg';
-                                    $picUpperPath = 'pic/' . strtoupper($pelajar->fld_pel_nomat) . '.jpg';
-                                    
-                                    $hasPic = false;
-                                    $finalPicUrl = '';
-                                    
-                                    if (file_exists(public_path($picPath))) {
-                                        $hasPic = true;
-                                        $finalPicUrl = asset($picPath);
-                                    } elseif (file_exists(public_path($picUpperPath))) {
-                                        $hasPic = true;
-                                        $finalPicUrl = asset($picUpperPath);
-                                    } elseif ($pelajar->fld_pel_pic && file_exists(public_path('storage/' . $pelajar->fld_pel_pic))) {
-                                        $hasPic = true;
-                                        $finalPicUrl = asset('storage/' . $pelajar->fld_pel_pic);
-                                    }
-                                @endphp
-                                
-                                @if($hasPic)
-                                    <img src="{{ $finalPicUrl }}" alt="Avatar" class="student-pic">
+                                @if($pelajar->has_pic)
+                                    <img src="{{ $pelajar->final_pic_url }}" alt="Avatar" class="student-pic">
                                 @else
-                                    <div class="student-avatar student-avatar-margin">{{ $initials }}</div>
+                                    <div class="student-avatar student-avatar-margin">{{ $pelajar->initials }}</div>
                                 @endif
                                 <div class="student-details">
-                                    <h4 class="student-name-bold">{{ $nama }}</h4>
-                                    @if(!$hasSubmission)
+                                    <h4 class="student-name-bold">{{ $pelajar->display_nama }}</h4>
+                                    @if(!$pelajar->has_submission)
                                         <small class="student-no-submission-text">Belum Hantar</small>
                                     @endif
                                 </div>
                             </div>
                             <div class="mark-input-group">
-                                <input type="number" name="marks[{{ $pelajar->fld_pel_nomat }}]" class="mark-input" value="{{ $mark }}" placeholder="-" min="0" max="10" step="1">
+                                <input type="number" name="marks[{{ $pelajar->fld_pel_nomat }}]" class="mark-input" value="{{ $pelajar->mark }}" placeholder="-" min="0" max="10" step="1">
                                 <span class="mark-divider">/ 10</span>
                             </div>
                         </div>
