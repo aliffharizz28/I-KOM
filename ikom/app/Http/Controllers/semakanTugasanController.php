@@ -55,23 +55,31 @@ class semakanTugasanController extends Controller
 
         $marks = $request->input('marks', []);
 
-        foreach ($marks as $nomat => $mark) {
-            if ($mark !== null && $mark !== '') {
-                // Ensure mark is out of 10
-                if ($mark > 10) $mark = 10;
-                if ($mark < 0) $mark = 0;
+        try {
+            foreach ($marks as $nomat => $mark) {
+                if ($mark !== null && $mark !== '') {
+                    // Ensure mark is out of 10
+                    if ($mark > 10) $mark = 10;
+                    if ($mark < 0) $mark = 0;
 
-                // Find or create the submission record for this student for this assignment
-                $penghantaran = penghantaran::firstOrNew([
-                    'fld_tgs_id' => $id,
-                    'fld_pel_nomat' => $nomat
-                ]);
-                
-                $penghantaran->fld_pgh_markah = $mark;
-                $penghantaran->save();
+                    // Find or create the submission record for this student for this assignment
+                    $penghantaran = penghantaran::firstOrNew([
+                        'fld_tgs_id' => $id,
+                        'fld_pel_nomat' => $nomat
+                    ]);
+                    
+                    if (!$penghantaran->exists && is_null($penghantaran->fld_pgh_fail)) {
+                        $penghantaran->fld_pgh_fail = '';
+                    }
+                    
+                    $penghantaran->fld_pgh_markah = $mark;
+                    $penghantaran->save();
+                }
             }
+            return back()->with('success', 'Semua markah berjaya disimpan!');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Ralat simpan markah: ' . $e->getMessage());
+            return back()->with('error', 'Gagal menyimpan markah. Sila pastikan pangkalan data membenarkan penyimpanan. Ralat: ' . $e->getMessage());
         }
-
-        return back()->with('success', 'Semua markah berjaya disimpan!');
     }
 }

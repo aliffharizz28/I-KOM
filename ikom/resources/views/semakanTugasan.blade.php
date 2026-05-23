@@ -72,6 +72,12 @@
                         </div>
                     @endif
 
+                    @if(session('error'))
+                        <div class="error-alert" style="background-color: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; padding: 12px 16px; border-radius: 6px; margin: 16px 24px 0 24px; font-size: 0.95rem; font-weight: 500;">
+                            <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="student-list student-list-container">
                         @foreach($pelajars as $pelajar)
                         @php
