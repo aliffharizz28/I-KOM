@@ -12,6 +12,18 @@
 
 <div class="sig-dashboard">
 
+    @if(session('success'))
+        <div class="alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <!-- SIG Grid -->
     <div class="sig-grid">
         
