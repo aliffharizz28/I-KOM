@@ -45,19 +45,19 @@
                     <img id="student_pic" src="{{ asset('pic/picpel1.jpg') }}" alt="Gambar Profil"/>
                 </div>
                 <div class="student-details">
-                    <div class="detail-item full-width">
+                    <div class="detail-item">
                         <span class="detail-label">Nama</span>
                         <strong id="student_name" class="detail-value" style="font-size: 1.1rem;"></strong>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Nombor Matrik</span>
-                        <span id="student_matric" class="detail-value"></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Jurusan</span>
                         <span id="student_program" class="detail-value"></span>
                     </div>
-                    <div class="detail-item full-width">
+                    <div class="detail-item">
+                        <span class="detail-label">No. Matrik</span>
+                        <span id="student_matric" class="detail-value"></span>
+                    </div>
+                    <div class="detail-item">
                         <span class="detail-label">Emel</span>
                         <span id="student_email" class="detail-value"></span>
                     </div>
