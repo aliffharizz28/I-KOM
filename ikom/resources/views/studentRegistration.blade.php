@@ -45,21 +45,21 @@
                     <img id="student_pic" src="{{ asset('pic/picpel1.jpg') }}" alt="Gambar Profil"/>
                 </div>
                 <div class="student-details">
-                    <div class="form-group">
-                        <label>Nombor Matrik</label>
-                        <input type="text" id="student_matric" readonly />
+                    <div class="detail-item full-width">
+                        <span class="detail-label">Nama</span>
+                        <strong id="student_name" class="detail-value" style="font-size: 1.1rem;"></strong>
                     </div>
-                    <div class="form-group">
-                        <label>Jurusan</label>
-                        <input type="text" id="student_program" readonly />
+                    <div class="detail-item">
+                        <span class="detail-label">Nombor Matrik</span>
+                        <span id="student_matric" class="detail-value"></span>
                     </div>
-                    <div class="form-group full-width">
-                        <label>Nama</label>
-                        <input type="text" id="student_name" readonly />
+                    <div class="detail-item">
+                        <span class="detail-label">Jurusan</span>
+                        <span id="student_program" class="detail-value"></span>
                     </div>
-                    <div class="form-group full-width">
-                        <label>Emel</label>
-                        <input type="text" id="student_email" readonly />
+                    <div class="detail-item full-width">
+                        <span class="detail-label">Emel</span>
+                        <span id="student_email" class="detail-value"></span>
                     </div>
                 </div>
             </div>
@@ -141,10 +141,10 @@
             if (data.success) {
                 document.getElementById('student-form-container').style.display = 'block';
                 document.getElementById('student_pic').src = data.data.pic;
-                document.getElementById('student_name').value = data.data.name;
-                document.getElementById('student_matric').value = data.data.matric_number;
-                document.getElementById('student_program').value = data.data.program;
-                document.getElementById('student_email').value = data.data.email;
+                document.getElementById('student_name').textContent = data.data.name;
+                document.getElementById('student_matric').textContent = data.data.matric_number;
+                document.getElementById('student_program').textContent = data.data.program;
+                document.getElementById('student_email').textContent = data.data.email;
             } else {
                 showAlert(data.message, true);
                 document.getElementById('student-form-container').style.display = 'none';
@@ -157,7 +157,7 @@
     }
 
     function registerIndividual() {
-        const matric = document.getElementById('student_matric').value;
+        const matric = document.getElementById('student_matric').textContent;
 
         fetch(`/registration/individual`, {
             method: 'POST',

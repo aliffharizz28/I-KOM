@@ -215,12 +215,13 @@ p {
 }
 
 .student-picture-container {
-    width: 100px;
-    height: 125px;
+    width: 160px;
+    height: 200px;
     background-color: #E2E8F0;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
     border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .student-card img {
@@ -232,16 +233,31 @@ p {
 .student-details {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px 24px;
+    gap: 16px 24px;
+    align-content: center;
 }
 
-.student-details .form-group.full-width {
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item.full-width {
     grid-column: span 2;
 }
 
-.student-card .form-group {
-    margin-bottom: 0;
-    /* Tighten up card spacing */
+.detail-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: var(--text-primary);
 }
 
 /* Table Section */
