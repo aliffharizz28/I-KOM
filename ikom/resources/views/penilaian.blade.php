@@ -75,13 +75,12 @@
             <div class="student-card" style="animation-delay: {{ $index * 0.05 }}s" data-name="{{ strtolower($pelajar->pengguna->fld_user_nama ?? '') }}" data-matric="{{ strtolower($pelajar->fld_pel_nomat) }}">
                 <div class="student-info">
                     <div class="student-avatar">
-                        @if($pelajar->fld_pel_pic)
-                            <img src="{{ asset('storage/' . $pelajar->fld_pel_pic) }}" alt="foto">
-                        @else
-                            <div class="avatar-placeholder">
-                                {{ strtoupper(substr($pelajar->pengguna->fld_user_nama ?? 'P', 0, 1)) }}
-                            </div>
-                        @endif
+                        <img src="{{ $pelajar->final_pic_url }}" 
+                             alt="foto" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="avatar-placeholder" style="display: none;">
+                            {{ strtoupper(substr($pelajar->pengguna->fld_user_nama ?? 'P', 0, 1)) }}
+                        </div>
                     </div>
                     <div class="student-details">
                         <h4 class="student-name">{{ $pelajar->pengguna->fld_user_nama ?? 'Tiada Nama' }}</h4>
