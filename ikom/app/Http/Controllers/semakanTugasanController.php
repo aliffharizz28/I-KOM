@@ -61,15 +61,14 @@ class semakanTugasanController extends Controller
                 if ($mark > 10) $mark = 10;
                 if ($mark < 0) $mark = 0;
 
-                // Find the submission for this student for this assignment
-                $penghantaran = penghantaran::where('fld_tgs_id', $id)
-                                            ->where('fld_pel_nomat', $nomat)
-                                            ->first();
+                // Find or create the submission record for this student for this assignment
+                $penghantaran = penghantaran::firstOrNew([
+                    'fld_tgs_id' => $id,
+                    'fld_pel_nomat' => $nomat
+                ]);
                 
-                if ($penghantaran) {
-                    $penghantaran->fld_pgh_markah = $mark;
-                    $penghantaran->save();
-                }
+                $penghantaran->fld_pgh_markah = $mark;
+                $penghantaran->save();
             }
         }
 

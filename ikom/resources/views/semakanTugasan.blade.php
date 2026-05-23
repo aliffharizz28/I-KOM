@@ -30,7 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($penghantarans as $penghantaran)
+                                @forelse($penghantarans->filter(function($p) { return !empty($p->fld_pgh_fail); }) as $penghantaran)
                                 <tr>
                                     <td>{{ $penghantaran->pelajar->pengguna->fld_user_nama ?? 'Tiada Nama' }}</td>
                                     <td>{{ $penghantaran->created_at ? \Carbon\Carbon::parse($penghantaran->created_at)->format('d M Y h:i A') : 'Tiada Tarikh' }}</td>
@@ -77,8 +77,9 @@
                         @php
                             $nama = $pelajar->pengguna->fld_user_nama ?? 'Tiada Nama';
                             $initials = collect(explode(' ', $nama))->map(function($word) { return strtoupper(substr($word, 0, 1)); })->take(2)->join('');
-                            $hasSubmission = isset($penghantarans[$pelajar->fld_pel_nomat]);
-                            $mark = $hasSubmission ? $penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_markah : '';
+                            $hasSubmission = isset($penghantarans[$pelajar->fld_pel_nomat]) && !empty($penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_fail);
+                            $hasRecord = isset($penghantarans[$pelajar->fld_pel_nomat]);
+                            $mark = $hasRecord ? $penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_markah : '';
                         @endphp
                         <div class="student-card student-card-default {{ !$hasSubmission ? 'student-card-no-submission' : '' }}">
                             <div class="student-info student-info-center">
@@ -95,7 +96,7 @@
                                 </div>
                             </div>
                             <div class="mark-input-group">
-                                <input type="number" name="marks[{{ $pelajar->fld_pel_nomat }}]" class="mark-input" value="{{ $mark }}" placeholder="-" min="0" max="10" step="1" {{ !$hasSubmission ? 'disabled' : '' }}>
+                                <input type="number" name="marks[{{ $pelajar->fld_pel_nomat }}]" class="mark-input" value="{{ $mark }}" placeholder="-" min="0" max="10" step="1">
                                 <span class="mark-divider">/ 10</span>
                             </div>
                         </div>

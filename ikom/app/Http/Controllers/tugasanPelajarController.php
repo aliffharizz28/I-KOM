@@ -62,6 +62,7 @@ class tugasanPelajarController extends Controller
             foreach ($request->group_members as $nomat) {
                 $hasSubmitted = penghantaran::where('fld_tgs_id', $request->tugasan_id)
                                             ->where('fld_pel_nomat', $nomat)
+                                            ->whereNotNull('fld_pgh_fail')
                                             ->exists();
                 if ($hasSubmitted) {
                     return back()->with('error', "Pelajar dengan no matrik $nomat telah pun berada dalam kumpulan lain atau telah menghantar tugasan ini. Sila buang pelajar tersebut daripada senarai ahli.");
@@ -81,17 +82,19 @@ class tugasanPelajarController extends Controller
         // --- STEP 4: Save fresh records ---
         try {
             // Save submitter's record
-            $penghantaran = new penghantaran();
-            $penghantaran->fld_tgs_id = $request->tugasan_id;
-            $penghantaran->fld_pel_nomat = $pelajar->fld_pel_nomat;
+            $penghantaran = penghantaran::firstOrNew([
+                'fld_tgs_id' => $request->tugasan_id,
+                'fld_pel_nomat' => $pelajar->fld_pel_nomat
+            ]);
             $penghantaran->fld_pgh_fail = $filename;
             $penghantaran->save();
 
             // Save record for each tagged group member (same file)
             foreach ($membersToSave as $nomat) {
-                $memberPenghantaran = new penghantaran();
-                $memberPenghantaran->fld_tgs_id = $request->tugasan_id;
-                $memberPenghantaran->fld_pel_nomat = $nomat;
+                $memberPenghantaran = penghantaran::firstOrNew([
+                    'fld_tgs_id' => $request->tugasan_id,
+                    'fld_pel_nomat' => $nomat
+                ]);
                 $memberPenghantaran->fld_pgh_fail = $filename;
                 $memberPenghantaran->save();
             }
