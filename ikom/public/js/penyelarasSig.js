@@ -38,28 +38,41 @@ function closeModal() {
     document.getElementById('formModal').classList.remove('active');
 }
 
-function deleteSig(sigName, pid) {
-    if(confirm(`Adakah anda pasti untuk memadam Penyelaras (${pid}) bagi SIG: ${sigName}? Tindakan ini tidak boleh diundur.`)) {
-        fetch('/penyelarasSigRegistration/delete', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({ id: pid })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                location.reload(); // Reload dashboard
-            } else {
-                location.reload(); // Reload to show error from session
-            }
-        })
-        .catch(err => {
-            alert('Terdapat ralat semasa memproses.');
-        });
-    }
+let currentDeletePid = null;
+
+function openDeleteModal(sigName, pid) {
+    currentDeletePid = pid;
+    document.getElementById('deleteSigContextName').textContent = sigName;
+    document.getElementById('deleteModal').classList.add('active');
+}
+
+function closeDeleteModal() {
+    currentDeletePid = null;
+    document.getElementById('deleteModal').classList.remove('active');
+}
+
+function confirmDelete() {
+    if(!currentDeletePid) return;
+    
+    fetch('/penyelarasSigRegistration/delete', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ id: currentDeletePid })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            location.reload(); // Reload dashboard
+        } else {
+            location.reload(); // Reload to show error from session
+        }
+    })
+    .catch(err => {
+        alert('Terdapat ralat semasa memproses.');
+    });
 }
 
 function submitForm() {

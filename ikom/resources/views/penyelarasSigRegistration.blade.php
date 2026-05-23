@@ -90,7 +90,7 @@
                 <button type="button" class="btn-action btn-edit" title="Kemaskini Penyelaras" onclick="openModal('edit', '{{ $sigId }}', '{{ addslashes($sigName) }}', '{{ addslashes($pid) }}', '{{ addslashes($pname) }}', '{{ addslashes($pemail) }}')">
                     <i class="fas fa-pen"></i>
                 </button>
-                <button type="button" class="btn-action btn-delete" title="Padam Penyelaras" onclick="deleteSig('{{ addslashes($sigName) }}', '{{ addslashes($pid) }}')">
+                <button type="button" class="btn-action btn-delete" title="Padam Penyelaras" onclick="openDeleteModal('{{ addslashes($sigName) }}', '{{ addslashes($pid) }}')">
                     <i class="fas fa-trash"></i>
                 </button>
                 @endif
@@ -138,6 +138,30 @@
                 <i class="fas fa-check-circle"></i>
             </button>
         </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Pengesahan Padam</h3>
+            <button class="btn-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <p class="modal-subtitle">
+            Adakah anda pasti untuk memadam Penyelaras bagi <strong id="deleteSigContextName"></strong>? Tindakan ini tidak boleh diundur.
+        </p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">
+                Batal
+            </button>
+            <button type="button" class="btn-danger" onclick="confirmDelete()">
+                <span>Padam Penyelaras</span>
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
     </div>
 </div>
 

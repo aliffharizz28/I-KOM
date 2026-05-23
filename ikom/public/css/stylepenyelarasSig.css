@@ -328,6 +328,57 @@
     background-color: #003366;
 }
 
+/* ===== Modal Actions (Delete Confirmation) ===== */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-cancel {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--text-secondary);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #4B5563; /* slightly darker grey */
+}
+
+.btn-danger {
+    width: 100%;
+    padding: 12px;
+    background-color: #DC2626;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #B91C1C; /* slightly darker red */
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .sig-card {
