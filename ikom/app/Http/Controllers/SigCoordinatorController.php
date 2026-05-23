@@ -36,7 +36,8 @@ class SigCoordinatorController extends Controller
         $ps->fld_sig_id = $request->sig_id;
         $ps->save();
 
-        return response()->json(['success' => true, 'message' => 'Penyelaras berjaya ditambah!']);
+        session()->flash('success', 'Penyelaras berjaya ditambah!');
+        return response()->json(['success' => true]);
     }
 
     public function update(Request $request)
@@ -52,10 +53,12 @@ class SigCoordinatorController extends Controller
         if($ps) {
             $ps->fld_user_id = $request->id;
             $ps->save();
-            return response()->json(['success' => true, 'message' => 'Maklumat berjaya dikemaskini.']);
+            session()->flash('success', 'Maklumat berjaya dikemaskini.');
+            return response()->json(['success' => true]);
         }
         
-        return response()->json(['success' => false, 'message' => 'Rekod Penyelaras SIG tidak dijumpai.'], 404);
+        session()->flash('error', 'Rekod Penyelaras SIG tidak dijumpai.');
+        return response()->json(['success' => false], 404);
     }
 
     public function destroy(Request $request)
@@ -67,6 +70,7 @@ class SigCoordinatorController extends Controller
         // Remove relationship in penyelarassig only (unassign them)
         \App\Models\penyelarassig::where('fld_user_id', $user_id)->delete();
         
-        return response()->json(['success' => true, 'message' => 'Penyelaras berjaya dibuang dari SIG.']);
+        session()->flash('success', 'Penyelaras berjaya dibuang dari SIG.');
+        return response()->json(['success' => true]);
     }
 }

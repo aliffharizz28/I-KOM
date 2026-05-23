@@ -51,10 +51,9 @@ function deleteSig(sigName, pid) {
         .then(res => res.json())
         .then(data => {
             if(data.success) {
-                alert(data.message);
                 location.reload(); // Reload dashboard
             } else {
-                alert('Ralat semasa memadam: ' + (data.message || 'Error'));
+                location.reload(); // Reload to show error from session
             }
         })
         .catch(err => {
@@ -90,11 +89,10 @@ function submitForm() {
     .then(res => res.json())
     .then(data => {
         if(data.success) {
-            alert(data.message);
             closeModal();
             location.reload(); // Quickly update UI with new data
         } else {
-            alert('Pendaftaran Gagal: ' + (data.message || 'Sila cuba lagi.'));
+            location.reload(); // Reload to show error from session
         }
     })
     .catch(err => {
