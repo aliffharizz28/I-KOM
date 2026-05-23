@@ -354,7 +354,8 @@
 }
 
 .btn-cancel:hover {
-    background-color: #4B5563; /* slightly darker grey */
+    background-color: #4B5563;
+    /* slightly darker grey */
 }
 
 .btn-danger {
@@ -375,8 +376,10 @@
     transition: background-color 0.2s ease;
 }
 
+
 .btn-danger:hover {
-    background-color: #B91C1C; /* slightly darker red */
+    background-color: #B91C1C;
+    /* slightly darker red */
 }
 
 /* ===== Responsive ===== */

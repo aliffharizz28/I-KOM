@@ -35,7 +35,7 @@
         </div>
         <div class="view-laporan-header-actions">
             <a href="{{ route('laporanSIG.export', $sig->fld_sig_id) }}" class="btn-submit btn-view-export">
-                <i class="fas fa-file-excel"></i> Muat Turun
+                <i class="fas fa-file-pdf"></i> Muat Turun PDF
             </a>
             <a href="{{ route('laporanSIG') }}" class="btn-reset btn-view-back">
                 <i class="fas fa-arrow-left"></i> Kembali
@@ -52,9 +52,6 @@
                         <th>Nama Pelajar</th>
                         <th>Tahun</th>
                         <th>Jurusan</th>
-                        @foreach($kriterias as $k)
-                            <th>{{ $k->fld_krit_nama }} ({{ $k->fld_krit_markah }}%)</th>
-                        @endforeach
                         <th>Markah Keseluruhan</th>
                         <th>Gred</th>
                     </tr>
@@ -70,12 +67,6 @@
                             <td>{{ $pelajar->pengguna->fld_user_nama ?? '-' }}</td>
                             <td>{{ $pelajar->fld_pel_tahun }}</td>
                             <td>{{ $pelajar->fld_pel_jurusan }}</td>
-                            @foreach($kriterias as $k)
-                                @php
-                                    $mark = $studentMarks->get($k->fld_krit_id);
-                                @endphp
-                                <td>{{ $mark ? number_format($mark->fld_nilai_markah, 2) : '0.00' }}</td>
-                            @endforeach
                             <td>
                                 <strong class="text-markah-keseluruhan">{{ $keputusan ? number_format($keputusan->fld_total_markah, 2) . '%' : '0.00%' }}</strong>
                             </td>
@@ -91,7 +82,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ 6 + $kriterias->count() }}" class="empty-state-cell">
+                            <td colspan="6" class="empty-state-cell">
                                 Tiada rekod pelajar untuk SIG ini.
                             </td>
                         </tr>
