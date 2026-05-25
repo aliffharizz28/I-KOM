@@ -65,16 +65,21 @@ class pelajar extends Authenticatable
     // Accessor untuk Peratusan Kehadiran (Berdasarkan perjumpaan yang telah disahkan)
     public function getPeratusanKehadiranAttribute()
     {
+        $sesiAktif = \App\Models\kursus::getActive();
+        $krsId = $sesiAktif ? $sesiAktif->fld_krs_id : null;
+
         $totalMeetings = perjumpaan::where('fld_sig_id', $this->fld_sig_id)
                                    ->where('fld_meet_verify', 1)
+                                   ->where('fld_krs_id', $krsId)
                                    ->count();
 
         if ($totalMeetings == 0) return 0;
 
         $attendedMeetings = kehadiran::where('fld_pel_nomat', $this->fld_pel_nomat)
                                      ->where('fld_hdr_status', 'Hadir')
-                                     ->whereHas('perjumpaan', function($q) {
-                                         $q->where('fld_meet_verify', 1);
+                                     ->whereHas('perjumpaan', function($q) use ($krsId) {
+                                         $q->where('fld_meet_verify', 1)
+                                           ->where('fld_krs_id', $krsId);
                                      })
                                      ->count();
 

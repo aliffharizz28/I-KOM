@@ -13,7 +13,8 @@ use App\Models\penyelarassig;
 class subkriteriaController extends Controller
 {
     /**
-     * Get the SIG ID of the currently logged-in penyelaras.
+     * Get the SIG ID of the cur4
+     * recently logged-in penyelaras.
      */
     private function getCurrentSigId(): ?string
     {

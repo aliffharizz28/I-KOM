@@ -138,7 +138,9 @@ class penilaianController extends Controller
         $existingKomen = $keputusan ? $keputusan->fld_nilai_komen : '';
 
         // Fetch assignment marks (penghantaran) mapped to subkriteria
-        $tugasans = \App\Models\tugasan::where('fld_sig_id', $sigId)->get();
+        $tugasans = \App\Models\tugasan::where('fld_sig_id', $sigId)
+            ->where('fld_krs_id', $sesiAktif ? $sesiAktif->fld_krs_id : null)
+            ->get();
         $penghantarans = \App\Models\penghantaran::where('fld_pel_nomat', $nomat)->get()->keyBy('fld_tgs_id');
         $assignmentScores = [];
         
@@ -219,7 +221,9 @@ class penilaianController extends Controller
         $kriterias = $kriterias->keyBy('fld_krit_id');
 
         // Fetch assignment marks (penghantaran) mapped to subkriteria
-        $tugasans = \App\Models\tugasan::where('fld_sig_id', $sigId)->get();
+        $tugasans = \App\Models\tugasan::where('fld_sig_id', $sigId)
+            ->where('fld_krs_id', $sesiAktif ? $sesiAktif->fld_krs_id : null)
+            ->get();
         $penghantarans = \App\Models\penghantaran::where('fld_pel_nomat', $nomat)->get()->keyBy('fld_tgs_id');
 
         DB::beginTransaction();
@@ -396,6 +400,11 @@ class penilaianController extends Controller
                            ->orderBy('fld_pel_nomat', 'asc')
                            ->get();
 
+        $keputusans = \App\Models\keputusan::whereIn('fld_pel_nomat', $pelajarIds)
+                           ->where('fld_krs_id', $sesiAktif ? $sesiAktif->fld_krs_id : null)
+                           ->get()
+                           ->keyBy('fld_pel_nomat');
+
         $kriterias = kriteria::orderBy('fld_krit_id', 'asc')->get();
 
         $headers = [
@@ -406,7 +415,7 @@ class penilaianController extends Controller
             "Expires"             => "0"
         ];
 
-        $callback = function() use($pelajars, $kriterias) {
+        $callback = function() use($pelajars, $kriterias, $keputusans) {
             $file = fopen('php://output', 'w');
             fputs($file, "\xEF\xBB\xBF"); // BOM for UTF-8 Excel
 
@@ -435,7 +444,7 @@ class penilaianController extends Controller
                     $row[] = $mark ? $mark->fld_nilai_markah : '0';
                 }
 
-                $keputusan = \App\Models\keputusan::where('fld_pel_nomat', $pelajar->fld_pel_nomat)->first();
+                $keputusan = $keputusans->get($pelajar->fld_pel_nomat);
                 $row[] = $keputusan ? $keputusan->fld_total_markah : '0';
                 $row[] = $keputusan ? $keputusan->fld_nilai_gred : '-';
 
