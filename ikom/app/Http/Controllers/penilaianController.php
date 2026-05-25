@@ -48,7 +48,11 @@ class penilaianController extends Controller
         foreach ($pelajars as $pelajar) {
             $nomat = strtolower($pelajar->fld_pel_nomat);
             $pelajar->has_pic = true;
-            $pelajar->final_pic_url = asset('pic/' . $nomat . '.jpg');
+            if ($pelajar->fld_pel_pic && file_exists(public_path('storage/' . $pelajar->fld_pel_pic))) {
+                $pelajar->final_pic_url = asset('storage/' . $pelajar->fld_pel_pic);
+            } else {
+                $pelajar->final_pic_url = asset('pic/' . $nomat . '.jpg');
+            }
         }
 
         $sig          = $penyelaras->sig;
@@ -97,6 +101,12 @@ class penilaianController extends Controller
         }
 
         $pelajar = pelajar::with('pengguna')->where('fld_pel_nomat', $nomat)->firstOrFail();
+        $nomatLower = strtolower($pelajar->fld_pel_nomat);
+        if ($pelajar->fld_pel_pic && file_exists(public_path('storage/' . $pelajar->fld_pel_pic))) {
+            $pelajar->final_pic_url = asset('storage/' . $pelajar->fld_pel_pic);
+        } else {
+            $pelajar->final_pic_url = asset('pic/' . $nomatLower . '.jpg');
+        }
         $sig     = $penyelaras->sig;
         $sigNama = $sig ? $sig->fld_sig_nama : 'SIG';
 

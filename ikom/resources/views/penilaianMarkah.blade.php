@@ -17,13 +17,12 @@
     <!-- Student Info Card -->
     <div class="student-header-card">
         <div class="student-header-avatar">
-            @if($pelajar->fld_pel_pic)
-                <img src="{{ asset('storage/' . $pelajar->fld_pel_pic) }}" alt="foto">
-            @else
-                <div class="avatar-lg-placeholder">
-                    {{ strtoupper(substr($pelajar->pengguna->fld_user_nama ?? 'P', 0, 1)) }}
-                </div>
-            @endif
+            <img src="{{ $pelajar->final_pic_url }}" 
+                 alt="foto" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="avatar-lg-placeholder" style="display: none;">
+                {{ strtoupper(substr($pelajar->pengguna->fld_user_nama ?? 'P', 0, 1)) }}
+            </div>
         </div>
         <div class="student-header-info">
             <h2>{{ $pelajar->pengguna->fld_user_nama ?? 'Tiada Nama' }}</h2>
