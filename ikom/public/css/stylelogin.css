@@ -1,3 +1,10 @@
+/* ============================================
+   I-KOM Login — Responsive Design
+   Desktop: Split layout (branding | form)
+   Tablet:  Stacked, condensed branding
+   Mobile:  Compact header + full-bleed form
+   ============================================ */
+
 /* Reset and Base */
 * {
     margin: 0;
@@ -7,14 +14,26 @@
 
 :root {
     --primary-color: #004687;
+    --primary-dark: #003366;
     --accent-color: #2563EB;
     --bg-white: #FFFFFF;
+    --bg-light: #F8FAFC;
     --text-primary: #1F2937;
     --text-secondary: #6B7280;
     --border-color: #E5E7EB;
     --input-bg: #F9FAFB;
     --hover-bg: #F3F4F6;
-    --shape-color: rgba(37, 99, 235, 0.03);
+    --success-bg: #ECFDF5;
+    --success-text: #065F46;
+    --success-border: #A7F3D0;
+    --error-bg: #FEF2F2;
+    --error-text: #991B1B;
+    --error-border: #FECACA;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 10px 40px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+    --shadow-btn: 0 4px 6px rgba(194, 196, 201, 0.925);
+    --radius-md: 12px;
+    --radius-lg: 24px;
 }
 
 body {
@@ -26,14 +45,18 @@ body {
     overflow-x: hidden;
 }
 
-/* Split Layout */
+/* ============================================
+   SPLIT LAYOUT — DESKTOP DEFAULT
+   ============================================ */
 .split-layout {
     display: flex;
     min-height: 100vh;
     width: 100%;
 }
 
-/* Left Side - Branding */
+/* ============================================
+   LEFT SIDE — BRANDING (Desktop only)
+   ============================================ */
 .left-side {
     flex: 1;
     background-color: var(--bg-white);
@@ -46,11 +69,11 @@ body {
     border-right: 1px solid var(--border-color);
 }
 
-/* Animated dot-grid layer — sits behind all branding content */
+/* Animated dot-grid layer */
 .left-side::before {
     content: "";
     position: absolute;
-    inset: -60px;          /* oversized so drift doesn't reveal edges */
+    inset: -60px;
     background-image: radial-gradient(circle, rgba(0, 70, 135, 0.13) 1px, transparent 1px);
     background-size: 28px 28px;
     animation: drift 18s ease-in-out infinite alternate;
@@ -58,7 +81,7 @@ body {
     pointer-events: none;
 }
 
-/* Diagonal shimmer sweep on top of the dot grid */
+/* Diagonal shimmer sweep */
 .left-side::after {
     content: "";
     position: absolute;
@@ -125,9 +148,9 @@ body {
     max-width: 400px;
 }
 
-/* Shape divs removed — background animation handled by .left-side::before and ::after */
-
-/* SIG Carousel Section */
+/* ============================================
+   SIG CAROUSEL (Desktop + Tablet only)
+   ============================================ */
 .sig-carousel-section {
     margin-top: 60px;
     width: 100%;
@@ -180,13 +203,8 @@ body {
 }
 
 @keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-50%);
-    }
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 .carousel-item {
@@ -218,23 +236,20 @@ body {
     opacity: 1;
 }
 
-/* Responsive adjustments for carousel */
-@media (max-width: 992px) {
-    .sig-carousel-section {
-        margin-top: 40px;
-    }
-
-    .carousel-item {
-        width: 100px;
-        margin: 0 20px;
-    }
+/* ============================================
+   MOBILE HEADER — Compact branding bar
+   (Hidden on desktop, shown on mobile)
+   ============================================ */
+.mobile-header {
+    display: none; /* Hidden by default on desktop */
 }
 
-/* Right Side - Login Form */
+/* ============================================
+   RIGHT SIDE — LOGIN FORM
+   ============================================ */
 .right-side {
     flex: 1;
-    background-color: #F8FAFC;
-    /* Very light cool gray for contrast */
+    background-color: var(--bg-light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -246,8 +261,8 @@ body {
     width: 100%;
     max-width: 480px;
     padding: 50px;
-    border-radius: 24px;
-    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
     border: 1px solid rgba(229, 231, 235, 0.5);
 }
 
@@ -268,7 +283,9 @@ body {
     font-size: 1rem;
 }
 
-/* Form Styles */
+/* ============================================
+   FORM STYLES
+   ============================================ */
 .input-group {
     margin-bottom: 24px;
 }
@@ -298,14 +315,15 @@ body {
 
 .input-wrapper input {
     width: 100%;
-    padding: 14px 16px 14px 45px;
+    padding: 15px 16px 15px 45px;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 1rem;
     font-family: 'Inter', sans-serif;
     color: var(--text-primary);
     background-color: var(--input-bg);
     transition: all 0.2s ease;
+    min-height: 50px; /* Touch-friendly */
 }
 
 .input-wrapper input::placeholder {
@@ -325,9 +343,10 @@ body {
     color: var(--text-secondary);
     cursor: pointer;
     font-size: 1.1rem;
-    padding: 4px;
+    padding: 8px;
     opacity: 0.7;
     transition: opacity 0.2s;
+    -webkit-tap-highlight-color: transparent; /* Remove mobile tap flash */
 }
 
 .toggle-password:hover {
@@ -335,29 +354,13 @@ body {
     color: var(--primary-color);
 }
 
-/* Actions: Remember Me & Forgot Password */
+/* Form Actions */
 .form-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 30px;
     font-size: 0.9rem;
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.remember-me input {
-    margin-right: 8px;
-    width: 16px;
-    height: 16px;
-    accent-color: var(--accent-color);
-    cursor: pointer;
 }
 
 .forgot-password {
@@ -365,6 +368,7 @@ body {
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s;
+    padding: 4px 0;
 }
 
 .forgot-password:hover {
@@ -372,74 +376,142 @@ body {
     text-decoration: underline;
 }
 
-/* Button */
+/* ============================================
+   LOGIN BUTTON
+   ============================================ */
 .btn-primary {
     width: 100%;
     background-color: var(--primary-color);
     color: var(--bg-white);
     padding: 16px;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 1.05rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(194, 196, 201, 0.925);
+    box-shadow: var(--shadow-btn);
+    min-height: 52px;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
 }
 
 .btn-primary:hover {
-    background-color: #003366;
+    background-color: var(--primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(194, 196, 201, 0.925);
+    box-shadow: 0 6px 16px rgba(0, 70, 135, 0.3);
+}
+
+.btn-primary:hover::after {
+    transform: translateX(100%);
 }
 
 .btn-primary:active {
     transform: translateY(0);
+    box-shadow: var(--shadow-btn);
 }
 
-/* Alerts */
+/* ============================================
+   ALERTS
+   ============================================ */
 .alert {
     padding: 14px 16px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     margin-bottom: 24px;
     font-size: 0.95rem;
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 500;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .alert-success {
-    background-color: #ECFDF5;
-    color: #065F46;
-    border: 1px solid #A7F3D0;
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
 }
 
 .alert-error {
-    background-color: #FEF2F2;
-    color: #991B1B;
-    border: 1px solid #FECACA;
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
 }
 
-/* Responsive Design */
+/* ============================================
+   RESPONSIVE — TABLET (≤ 992px)
+   Stacked layout, condensed branding
+   ============================================ */
 @media (max-width: 992px) {
     .split-layout {
         flex-direction: column;
     }
 
     .left-side {
-        padding: 60px 20px;
+        padding: 40px 20px 30px;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
+        min-height: auto;
     }
 
-    /* No shape divs to hide */
+    .branding-content {
+        max-width: 400px;
+    }
+
+    .university-logos {
+        margin-bottom: 24px;
+        gap: 20px;
+    }
+
+    .uni-logo {
+        height: 36px;
+    }
+
+    .main-logo {
+        max-width: 200px;
+        margin-bottom: 16px;
+    }
+
+    .tagline {
+        font-size: 1rem;
+        max-width: 340px;
+    }
+
+    .sig-carousel-section {
+        margin-top: 30px;
+    }
+
+    .carousel-item {
+        width: 80px;
+        margin: 0 12px;
+    }
 
     .right-side {
-        padding: 40px 20px;
+        padding: 30px 20px 40px;
     }
 
     .login-card {
@@ -447,18 +519,196 @@ body {
     }
 }
 
-@media (max-width: 480px) {
+/* ============================================
+   RESPONSIVE — MOBILE (≤ 768px)
+   Hide full branding, show compact header,
+   full-bleed form
+   ============================================ */
+@media (max-width: 768px) {
+    .split-layout {
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    }
+
+    /* Hide the full branding panel */
+    .left-side {
+        display: none;
+    }
+
+    /* Show compact mobile header */
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 20px 20px 16px;
+        background-color: var(--bg-white);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .mobile-header .mobile-uni-logos {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .mobile-header .mobile-uni-logos img {
+        height: 26px;
+        object-fit: contain;
+        opacity: 0.7;
+    }
+
+    .mobile-header .mobile-main-logo {
+        height: 40px;
+        object-fit: contain;
+    }
+
+    .mobile-header .mobile-divider {
+        width: 1px;
+        height: 28px;
+        background-color: var(--border-color);
+        flex-shrink: 0;
+    }
+
+    /* Right side becomes full screen */
+    .right-side {
+        flex: 1;
+        padding: 24px 20px 32px;
+        background-color: var(--bg-light);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 32px;
+    }
+
+    /* Remove card on mobile — full-bleed form */
     .login-card {
-        padding: 30px 20px;
+        background-color: transparent;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .login-header {
+        margin-bottom: 28px;
     }
 
     .login-header h1 {
         font-size: 1.75rem;
     }
 
+    .login-header p {
+        font-size: 0.95rem;
+    }
+
+    /* Slightly bigger inputs for thumb-friendliness */
+    .input-wrapper input {
+        padding: 16px 16px 16px 45px;
+        font-size: 1rem;
+        min-height: 52px;
+        border-radius: 14px;
+        background-color: var(--bg-white);
+        border: 1.5px solid var(--border-color);
+    }
+
+    .input-wrapper input:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+    }
+
     .form-actions {
-        flex-direction: column;
+        margin-bottom: 24px;
+    }
+
+    .btn-primary {
+        padding: 17px;
+        font-size: 1.05rem;
+        border-radius: 14px;
+        min-height: 54px;
+    }
+
+    .alert {
+        border-radius: 14px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE — SMALL MOBILE (≤ 380px)
+   Extra compact adjustments
+   ============================================ */
+@media (max-width: 380px) {
+    .mobile-header {
+        padding: 16px 16px 12px;
+        gap: 10px;
+    }
+
+    .mobile-header .mobile-uni-logos img {
+        height: 22px;
+    }
+
+    .mobile-header .mobile-main-logo {
+        height: 34px;
+    }
+
+    .right-side {
+        padding: 20px 16px 28px;
+    }
+
+    .login-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .login-header p {
+        font-size: 0.9rem;
+    }
+
+    .input-group label {
+        font-size: 0.85rem;
+    }
+
+    .forgot-password {
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE — Prevent awkward layout
+   ============================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+    .mobile-header {
+        padding: 12px 20px 10px;
+    }
+
+    .mobile-header .mobile-main-logo {
+        height: 30px;
+    }
+
+    .right-side {
+        padding-top: 16px;
         align-items: flex-start;
-        gap: 15px;
+    }
+
+    .login-header {
+        margin-bottom: 16px;
+    }
+
+    .input-group {
+        margin-bottom: 14px;
+    }
+
+    .form-actions {
+        margin-bottom: 16px;
     }
 }

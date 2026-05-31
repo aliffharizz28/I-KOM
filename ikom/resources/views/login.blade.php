@@ -8,11 +8,21 @@
     <link rel="icon" type="image/png" href="{{ asset('pic/logoikomputih.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/stylelogin.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('css/stylelogin.css') }}?v={{ filemtime(public_path('css/stylelogin.css')) }}">
 </head>
 <body>
+    {{-- Compact header shown only on mobile (≤768px) --}}
+    <div class="mobile-header">
+        <div class="mobile-uni-logos">
+            <img src="{{ asset('pic/LogoRasmiUKM.png') }}" alt="UKM">
+            <img src="{{ asset('pic/ftsm-black.png') }}" alt="FTSM">
+        </div>
+        <div class="mobile-divider"></div>
+        <img src="{{ asset('pic/logoIKOMblack-removebg-preview.png') }}" alt="I-KOM" class="mobile-main-logo">
+    </div>
+
     <div class="split-layout">
-        <!-- Left Side: Branding -->
+        <!-- Left Side: Branding (Desktop & Tablet only) -->
         <div class="left-side">
             <div class="branding-content">
                 <div class="university-logos">
