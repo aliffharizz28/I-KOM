@@ -50,6 +50,12 @@ class ResetPasswordController extends Controller
             return back()->with('error','Permintaan penetapan semula kata laluan tidak sah.');
         }
 
+        // Check token expiry (60 minutes)
+        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_resets')->where('email', $request->email)->delete();
+            return back()->with('error', 'Token telah tamat tempoh. Sila mohon semula.');
+        }
+
         if (!Hash::check($request->token, $reset->token)) {
             return back()->with('error','Token tidak sah.');
         }

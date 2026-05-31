@@ -105,7 +105,7 @@
 
                                         @if($tgs->fld_tgs_file)
                                             <p class="lampiran">
-                                                <a href="{{ asset('lampiran_tugasan/'.$tgs->fld_tgs_file) }}" target="_blank">
+                                                <a href="{{ route('file.tugasan', $tgs->fld_tgs_file) }}" target="_blank">
                                                     <i class="fas fa-paperclip"></i> Muat Turun Lampiran Tugasan
                                                 </a>
                                             </p>
@@ -115,7 +115,7 @@
                                         @if($hasSubmitted)
                                             <div class="task-action-buttons">
                                                 <button class="btn-hantar" onclick="confirmResubmit({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}')">Hantar Semula</button>
-                                                <a class="btn-semak" href="{{ asset('lampiran_penghantaran/'.($tgs->penghantaran->first()->fld_pgh_fail ?? '')) }}" target="_blank">Semak Fail Tugasan</a>
+                                                <a class="btn-semak" href="{{ route('file.penghantaran', $tgs->penghantaran->first()->fld_pgh_fail ?? '') }}" target="_blank">Semak Fail Tugasan</a>
                                             </div>
                                         @else
                                             @if($tgs->fld_tgs_status == 'Aktif')

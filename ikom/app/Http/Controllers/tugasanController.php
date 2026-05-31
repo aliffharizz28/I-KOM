@@ -9,6 +9,7 @@ use App\Models\subkriteria;
 use App\Models\kursus;
 use App\Models\PendaftaranPelajar;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class tugasanController extends Controller
 {
@@ -72,13 +73,9 @@ class tugasanController extends Controller
                     ? 'Tidak Aktif' : 'Aktif';
 
                 if ($request->hasFile('tugasan_file')) {
-                    $uploadDir = public_path('lampiran_tugasan');
-                    if (!file_exists($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
                     $file     = $request->file('tugasan_file');
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move($uploadDir, $filename);
+                    Storage::disk('local')->putFileAs('lampiran_tugasan', $file, $filename);
                     $tugasan->fld_tgs_file = $filename;
                 }
 
@@ -199,7 +196,7 @@ class tugasanController extends Controller
                 if ($request->hasFile('tugasan_file')) {
                     $file = $request->file('tugasan_file');
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('lampiran_tugasan'), $filename);
+                    Storage::disk('local')->putFileAs('lampiran_tugasan', $file, $filename);
                     $tugasan->fld_tgs_file = $filename;
                 }
 

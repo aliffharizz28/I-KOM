@@ -30,20 +30,12 @@ class ForgotPasswordController extends Controller
         try {
             $token = Str::random(60);
 
-            // Delete existing reset tokens
+            // Upsert reset token (insert or update existing)
             DB::table('password_resets')->updateOrInsert(
                 ['email' => $request->email],
                 ['token' => Hash::make($token),
                  'created_at' => now()]
             );
-
-            // Store new reset token (hashed)
-            DB::table('password_resets')->insert([
-                'email' => $request->email,
-                'token' => Hash::make($token),
-                'created_at' => Carbon::now(),
-            ]);
-
 
             // Send email
             Mail::send('auth.verify', ['token' => $token, 'email' => $request->email], function ($message) use ($request) {

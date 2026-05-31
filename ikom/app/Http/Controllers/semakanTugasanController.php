@@ -86,11 +86,26 @@ class semakanTugasanController extends Controller
             return redirect()->route('tugasan')->with('error', 'Akses ditolak.');
         }
 
+        // Verify the assignment belongs to their SIG
+        $tugasan = \App\Models\tugasan::findOrFail($id);
+        if ($tugasan->fld_sig_id != $penyelaras->fld_sig_id) {
+            return redirect()->route('tugasan')->with('error', 'Akses ditolak. Tugasan ini tidak tergolong dalam kumpulan SIG anda.');
+        }
+
+        // Get valid student list for this SIG to prevent cross-SIG grading
+        $validStudents = pelajar::where('fld_sig_id', $penyelaras->fld_sig_id)
+            ->pluck('fld_pel_nomat');
+
         $marks = $request->input('marks', []);
 
         try {
             foreach ($marks as $nomat => $mark) {
                 if ($mark !== null && $mark !== '') {
+                    // Skip students not in this SIG
+                    if (!$validStudents->contains($nomat)) {
+                        continue;
+                    }
+
                     // Ensure mark is out of 10
                     if ($mark > 10) $mark = 10;
                     if ($mark < 0) $mark = 0;

@@ -7,6 +7,7 @@ use App\Models\tugasan;
 use App\Models\pelajar;
 use App\Models\penghantaran;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class tugasanPelajarController extends Controller
 {
@@ -76,7 +77,7 @@ class tugasanPelajarController extends Controller
         if ($request->hasFile('tugasan_file')) {
             $file = $request->file('tugasan_file');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('lampiran_penghantaran'), $filename);
+            Storage::disk('local')->putFileAs('lampiran_penghantaran', $file, $filename);
         }
 
         // --- STEP 4: Save fresh records ---
@@ -122,9 +123,9 @@ class tugasanPelajarController extends Controller
         if ($existing) {
             $oldFile = $existing->fld_pgh_fail;
 
-            // Delete the physical file from disk
-            if ($oldFile && file_exists(public_path('lampiran_penghantaran/' . $oldFile))) {
-                @unlink(public_path('lampiran_penghantaran/' . $oldFile));
+            // Delete the physical file from storage
+            if ($oldFile && Storage::disk('local')->exists('lampiran_penghantaran/' . $oldFile)) {
+                Storage::disk('local')->delete('lampiran_penghantaran/' . $oldFile);
             }
 
             // Delete ALL penghantaran records sharing the same old file for this tugasan

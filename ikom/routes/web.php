@@ -29,7 +29,7 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1');
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -40,7 +40,7 @@ Route::post('/logout', function () {
 
 // Reset Password
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('throttle:3,5')->name('password.email');
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [ResetPasswordController::class, 'updatePassword'])->name('password.update');
 
@@ -141,4 +141,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/kehadiran/sahkan/{id}', [KehadiranController::class, 'sahkanKehadiran'])->name('kehadiran.sahkan');
         Route::get('/kehadiran/export', [KehadiranController::class, 'exportCSV'])->name('kehadiran.export');
     });
+});
+
+// Authenticated File Downloads (files stored in storage/app/)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/file/tugasan/{filename}', function ($filename) {
+        $path = storage_path('app/lampiran_tugasan/' . $filename);
+        if (!file_exists($path)) abort(404);
+        return response()->file($path);
+    })->name('file.tugasan')->where('filename', '.*');
+
+    Route::get('/file/penghantaran/{filename}', function ($filename) {
+        $path = storage_path('app/lampiran_penghantaran/' . $filename);
+        if (!file_exists($path)) abort(404);
+        return response()->file($path);
+    })->name('file.penghantaran')->where('filename', '.*');
 });

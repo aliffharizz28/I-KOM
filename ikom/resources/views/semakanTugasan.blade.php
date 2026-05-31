@@ -35,7 +35,7 @@
                                     <td>{{ $penghantaran->pelajar->pengguna->fld_user_nama ?? 'Tiada Nama' }}</td>
                                     <td>{{ $penghantaran->created_at ? \Carbon\Carbon::parse($penghantaran->created_at)->format('d M Y h:i A') : 'Tiada Tarikh' }}</td>
                                     <td class="text-center">
-                                        <button class="btn-submit btn-view-submission" onclick="viewSubmission('{{ addslashes($penghantaran->pelajar->pengguna->fld_user_nama ?? 'Pelajar') }}', '{{ asset('lampiran_penghantaran/'.$penghantaran->fld_pgh_fail) }}')"><i class="fas fa-eye"></i> Semak Fail</button>
+                                        <button class="btn-submit btn-view-submission" onclick="viewSubmission('{{ addslashes($penghantaran->pelajar->pengguna->fld_user_nama ?? 'Pelajar') }}', '{{ route('file.penghantaran', $penghantaran->fld_pgh_fail) }}')"><i class="fas fa-eye"></i> Semak Fail</button>
                                     </td>
                                 </tr>
                                 @empty

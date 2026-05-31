@@ -201,14 +201,19 @@ class penilaianController extends Controller
         $sigId     = $penyelaras->fld_sig_id;
         $sesiAktif = kursus::getActive();
 
-        // Ensure the student belongs to the same SIG
-        $pelajar = pelajar::where('fld_pel_nomat', $nomat)
-            ->where('fld_sig_id', $sigId)
-            ->first();
+        // Ensure the student is enrolled in the active session for this SIG
+        $enrolled = $sesiAktif
+            ? PendaftaranPelajar::where('fld_pel_nomat', $nomat)
+                ->where('fld_sig_id', $sigId)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->exists()
+            : false;
 
-        if (!$pelajar) {
-            return response()->json(['success' => false, 'message' => 'Pelajar tidak dijumpai dalam SIG anda.'], 404);
+        if (!$enrolled) {
+            return response()->json(['success' => false, 'message' => 'Pelajar tidak didaftarkan dalam sesi aktif SIG ini.'], 404);
         }
+
+        $pelajar = pelajar::where('fld_pel_nomat', $nomat)->first();
 
         $marks = $request->input('marks', []);
         $komen = $request->input('komen', '');
