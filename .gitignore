@@ -1,0 +1,18 @@
+# AI temp files
+tmpclaude-*
+
+# Archives
+*.zip
+
+# Debug/test scripts
+diagnose.php
+test_login.php
+
+# Uploaded files (user data, not source code)
+ikom/public/lampiran_tugasan/
+ikom/public/lampiran_penghantaran/
+
+# Laravel (handled by ikom/.gitignore too)
+ikom/vendor/
+ikom/node_modules/
+ikom/.env

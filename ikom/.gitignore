@@ -22,3 +22,14 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# AI temp files
+tmpclaude-*
+
+# Debug scripts
+diagnose.php
+test_login.php
+
+# Uploaded files (user data)
+public/lampiran_tugasan/
+public/lampiran_penghantaran/
