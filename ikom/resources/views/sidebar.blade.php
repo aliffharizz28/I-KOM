@@ -20,7 +20,7 @@
         @endif
 
         @if(Auth::check() && Auth::user()->fld_user_role == 2) 
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemuka</span></a>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa fa-tachometer"></i> <span>Papan Pemukaaaa</span></a>
             <a href="{{ route('registration') }}" class="nav-item {{ request()->routeIs('registration') ? 'active' : '' }}"><i class="fa fa-users"></i> <span>Pendaftaran Pelajar</span></a>
             <a href="{{ route('subkriteria') }}" class="nav-item {{ request()->routeIs('subkriteria') ? 'active' : '' }}"><i class="fa fa-pencil-square"></i> <span>Rubrik Pemarkahan</span></a>
             <a href="{{ route('tugasan') }}" class="nav-item {{ request()->routeIs('tugasan') ? 'active' : '' }}"><i class="fas fa-tasks"></i> <span>Tugasan</span></a>
