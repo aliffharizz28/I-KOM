@@ -143,16 +143,16 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Authenticated File Downloads (files stored in storage/app/)
+// Authenticated File Downloads (files stored in storage/app/private/ via local disk)
 Route::middleware(['auth'])->group(function () {
     Route::get('/file/tugasan/{filename}', function ($filename) {
-        $path = storage_path('app/lampiran_tugasan/' . $filename);
+        $path = storage_path('app/private/lampiran_tugasan/' . $filename);
         if (!file_exists($path)) abort(404);
         return response()->file($path);
     })->name('file.tugasan')->where('filename', '[^/]+');
 
     Route::get('/file/penghantaran/{filename}', function ($filename) {
-        $path = storage_path('app/lampiran_penghantaran/' . $filename);
+        $path = storage_path('app/private/lampiran_penghantaran/' . $filename);
         if (!file_exists($path)) abort(404);
         return response()->file($path);
     })->name('file.penghantaran')->where('filename', '[^/]+');
