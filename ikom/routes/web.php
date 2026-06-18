@@ -149,11 +149,11 @@ Route::middleware(['auth'])->group(function () {
         $path = storage_path('app/lampiran_tugasan/' . $filename);
         if (!file_exists($path)) abort(404);
         return response()->file($path);
-    })->name('file.tugasan')->where('filename', '.*');
+    })->name('file.tugasan')->where('filename', '[^/]+');
 
     Route::get('/file/penghantaran/{filename}', function ($filename) {
         $path = storage_path('app/lampiran_penghantaran/' . $filename);
         if (!file_exists($path)) abort(404);
         return response()->file($path);
-    })->name('file.penghantaran')->where('filename', '.*');
+    })->name('file.penghantaran')->where('filename', '[^/]+');
 });
