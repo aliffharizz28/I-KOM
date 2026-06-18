@@ -20,12 +20,15 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
+            set -e
+
             # 1. Move to the project folder
             cd /var/www/ikom/ikom
             
-            # 2. Pull the latest code from GitHub
-            # (Change 'main' to 'master' below if your default branch is master)
-            git pull origin main
+            # 2. Pull the latest code from GitHub forcefully
+            # (This prevents 'unmerged files' errors by making the server match GitHub exactly)
+            git fetch origin main
+            git reset --hard origin/main
             
             # 3. Install any new PHP packages
             composer install --no-dev --optimize-autoloader
