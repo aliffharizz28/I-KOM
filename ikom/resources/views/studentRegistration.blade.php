@@ -73,6 +73,7 @@
         <table id="registered-students-table" class="students-table">
             <thead>
                 <tr>
+                    <th>Bil.</th>
                     <th>Nombor Matrik</th>
                     <th>Nama</th>
                     <th>Jurusan</th>
@@ -82,6 +83,7 @@
                 @if(isset($registeredStudents) && count($registeredStudents) > 0)
                     @foreach($registeredStudents as $student)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $student->fld_pel_nomat }}</td>
                             <td>{{ $student->pengguna ? $student->pengguna->fld_user_nama : 'Tiada Nama' }}</td>
                             <td>{{ $student->fld_pel_jurusan }}</td>
@@ -89,7 +91,7 @@
                     @endforeach
                 @else
                     <tr id="no-data-row">
-                        <td colspan="3" class="text-center">Tiada pelajar berdaftar lagi.</td>
+                        <td colspan="4" class="text-center">Tiada pelajar berdaftar lagi.</td>
                     </tr>
                 @endif
             </tbody>
@@ -118,6 +120,16 @@
             document.querySelectorAll('.toggle-btn')[0].classList.add('active');
             document.getElementById('bulk-section').classList.add('active');
         }
+    }
+
+    function updateTableIndices() {
+        const rows = document.querySelectorAll('#registered-students-table tbody tr:not(#no-data-row)');
+        rows.forEach((row, index) => {
+            const firstCell = row.querySelector('td:first-child');
+            if (firstCell) {
+                firstCell.textContent = index + 1;
+            }
+        });
     }
 
     // --- Individual Registration Logic ---
@@ -178,11 +190,13 @@
                 const tbody = document.querySelector('#registered-students-table tbody');
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td></td>
                     <td>${data.data.matric_number}</td>
                     <td>${data.data.name}</td>
                     <td>${data.data.program || ''}</td>
                 `;
                 tbody.prepend(tr);
+                updateTableIndices();
 
                 // Reset form
                 document.getElementById('student-form-container').style.display = 'none';
@@ -260,12 +274,14 @@
                 data.registered.forEach(student => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
+                        <td></td>
                         <td>${student.matric_number}</td>
                         <td>${student.name}</td>
                         <td>${student.program || ''}</td>
                     `;
                     tbody.prepend(tr);
                 });
+                updateTableIndices();
 
                 // Reset file input
                 selectedFile = null;
