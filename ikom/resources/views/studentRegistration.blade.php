@@ -96,6 +96,7 @@
                 @endif
             </tbody>
         </table>
+        <div id="pagination-controls" class="pagination-footer"></div>
     </div>
 </div>
 
@@ -122,6 +123,9 @@
         }
     }
 
+    let currentPage = 1;
+    const rowsPerPage = 10;
+
     function updateTableIndices() {
         const rows = document.querySelectorAll('#registered-students-table tbody tr:not(#no-data-row)');
         rows.forEach((row, index) => {
@@ -130,6 +134,75 @@
                 firstCell.textContent = index + 1;
             }
         });
+    }
+
+    function renderTablePagination() {
+        const rows = document.querySelectorAll('#registered-students-table tbody tr:not(#no-data-row)');
+        const totalRows = rows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage);
+        const paginationControls = document.getElementById('pagination-controls');
+
+        if (totalRows === 0) {
+            if (paginationControls) paginationControls.style.display = 'none';
+            return;
+        }
+        
+        if (paginationControls) paginationControls.style.display = 'flex';
+        
+        // Ensure currentPage is within range
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        // Show/Hide rows based on currentPage
+        rows.forEach((row, index) => {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            if (index >= start && index < end) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Render pagination footer content
+        const startItem = (currentPage - 1) * rowsPerPage + 1;
+        const endItem = Math.min(currentPage * rowsPerPage, totalRows);
+        
+        let html = `
+            <div class="pagination-info">
+                Menunjukkan <strong>${startItem}</strong> hingga <strong>${endItem}</strong> daripada <strong>${totalRows}</strong> rekod
+            </div>
+            <div class="pagination-buttons">
+                <button type="button" class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+                    &laquo;
+                </button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                html += `
+                    <button type="button" class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
+                        ${i}
+                    </button>
+                `;
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                html += `<span class="pagination-btn" style="border: none; background: transparent; cursor: default; pointer-events: none;">...</span>`;
+            }
+        }
+
+        html += `
+                <button type="button" class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+                    &raquo;
+                </button>
+            </div>
+        `;
+
+        if (paginationControls) paginationControls.innerHTML = html;
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        renderTablePagination();
     }
 
     // --- Individual Registration Logic ---
@@ -197,6 +270,8 @@
                 `;
                 tbody.prepend(tr);
                 updateTableIndices();
+                currentPage = 1;
+                renderTablePagination();
 
                 // Reset form
                 document.getElementById('student-form-container').style.display = 'none';
@@ -282,6 +357,8 @@
                     tbody.prepend(tr);
                 });
                 updateTableIndices();
+                currentPage = 1;
+                renderTablePagination();
 
                 // Reset file input
                 selectedFile = null;
@@ -296,5 +373,10 @@
             showAlert('Ralat memuat naik fail.', true);
         });
     }
+
+    // Initialize pagination on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+        renderTablePagination();
+    });
 </script>
 @endsection
