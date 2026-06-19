@@ -106,8 +106,6 @@
             @endforeach
         </div>
 
-        <div id="pagination-controls" class="pagination-footer" style="margin-top: 24px;"></div>
-
         <!-- Empty search result (shown by JS) -->
         <div id="emptySearchState" class="empty-state-card" style="display:none;">
             <i class="fas fa-search"></i>
@@ -133,110 +131,32 @@
 </div>
 
 <script>
-    let currentPage = 1;
-    const cardsPerPage = 10;
-
-    function renderPagination() {
+    function filterStudents() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const cards = Array.from(document.querySelectorAll('.student-card'));
-        
-        // Filter cards matching query
-        const matchedCards = cards.filter(card => {
+        const cards = document.querySelectorAll('.student-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
             const name = card.getAttribute('data-name') || '';
             const matric = card.getAttribute('data-matric') || '';
-            return name.includes(query) || matric.includes(query);
+            const match = name.includes(query) || matric.includes(query);
+            card.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
         });
 
-        const totalRows = matchedCards.length;
-        const totalPages = Math.ceil(totalRows / cardsPerPage);
-        const paginationControls = document.getElementById('pagination-controls');
+        document.getElementById('searchCount').textContent = visibleCount + ' pelajar';
 
-        if (totalRows === 0) {
-            cards.forEach(card => card.style.display = 'none');
-            if (paginationControls) paginationControls.style.display = 'none';
-            
-            const emptySearch = document.getElementById('emptySearchState');
-            if (emptySearch) {
-                emptySearch.style.display = query.length > 0 ? '' : 'none';
-            }
-            document.getElementById('searchCount').textContent = '0 pelajar';
-            return;
-        }
-
+        // Show/hide empty search state
         const emptySearch = document.getElementById('emptySearchState');
-        if (emptySearch) emptySearch.style.display = 'none';
-
-        if (paginationControls) paginationControls.style.display = 'flex';
-
-        // Ensure currentPage is within range
-        if (currentPage > totalPages) currentPage = totalPages;
-        if (currentPage < 1) currentPage = 1;
-
-        // Hide all cards first, then only show the slice for the current page
-        cards.forEach(card => card.style.display = 'none');
-
-        const start = (currentPage - 1) * cardsPerPage;
-        const end = start + cardsPerPage;
-        
-        matchedCards.forEach((card, index) => {
-            if (index >= start && index < end) {
-                card.style.display = '';
-            }
-        });
-
-        // Update search count
-        document.getElementById('searchCount').textContent = totalRows + ' pelajar';
-
-        // Render pagination buttons
-        const startItem = (currentPage - 1) * cardsPerPage + 1;
-        const endItem = Math.min(currentPage * cardsPerPage, totalRows);
-        
-        let html = `
-            <div class="pagination-info">
-                Menunjukkan <strong>${startItem}</strong> hingga <strong>${endItem}</strong> daripada <strong>${totalRows}</strong> pelajar
-            </div>
-            <div class="pagination-buttons">
-                <button type="button" class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
-                    &laquo;
-                </button>
-        `;
-
-        for (let i = 1; i <= totalPages; i++) {
-            if (totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                html += `
-                    <button type="button" class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
-                        ${i}
-                    </button>
-                `;
-            } else if (i === currentPage - 2 || i === currentPage + 2) {
-                html += `<span class="pagination-btn" style="border: none; background: transparent; cursor: default; pointer-events: none;">...</span>`;
+        const studentList = document.querySelector('.student-list');
+        if (emptySearch && studentList) {
+            if (visibleCount === 0 && query.length > 0) {
+                emptySearch.style.display = '';
+            } else {
+                emptySearch.style.display = 'none';
             }
         }
-
-        html += `
-                <button type="button" class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
-                    &raquo;
-                </button>
-            </div>
-        `;
-
-        if (paginationControls) paginationControls.innerHTML = html;
     }
-
-    function goToPage(page) {
-        currentPage = page;
-        renderPagination();
-    }
-
-    function filterStudents() {
-        currentPage = 1;
-        renderPagination();
-    }
-
-    // Initialize pagination on DOM load
-    document.addEventListener('DOMContentLoaded', () => {
-        renderPagination();
-    });
 
     let pendingPublishValue = null;
     let previousPublishValue = document.getElementById('publishSelect').value;
