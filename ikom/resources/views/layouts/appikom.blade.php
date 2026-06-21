@@ -38,6 +38,51 @@
         .content-area.sidebar-hidden {
             margin-left: 0;
         }
+
+        /* Auto-Responsive Table Wrapper */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        .table-responsive table {
+            margin-bottom: 0 !important;
+        }
+        
+        /* Interactive Sortable Headers */
+        th.sortable-header {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            padding-right: 28px !important;
+            transition: background-color 0.2s ease;
+        }
+        th.sortable-header:hover {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+        th.sortable-header::after {
+            content: "\f0dc";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.35;
+            font-size: 0.8em;
+        }
+        th.sortable-header[data-sort-dir="asc"]::after {
+            content: "\f0de";
+            opacity: 0.9;
+        }
+        th.sortable-header[data-sort-dir="desc"]::after {
+            content: "\f0dd";
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -52,5 +97,94 @@
         </div>
 
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Auto-wrap tables in .table-responsive wrappers if they aren't already wrapped
+            document.querySelectorAll("table").forEach(function(table) {
+                // Skip if parent is already table-responsive or table is marked as no-wrap
+                if (table.parentElement.classList.contains("table-responsive") || table.classList.contains("no-wrap")) {
+                    return;
+                }
+                
+                const wrapper = document.createElement("div");
+                wrapper.className = "table-responsive";
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
+
+            // 2. Automatically apply sortable class to headers (excluding action columns or empty headers)
+            document.querySelectorAll("table").forEach(function(table) {
+                if (table.classList.contains("no-sort")) return;
+                
+                const headers = table.querySelectorAll("thead th");
+                headers.forEach(function(th) {
+                    const text = th.textContent.trim().toLowerCase();
+                    // Skip if header is empty, contains action-like names, or is explicitly ignored
+                    if (th.classList.contains("no-sort") || !text || text === "tindakan" || text === "action" || text === "edit" || text === "padam") {
+                        return;
+                    }
+                    th.classList.add("sortable-header");
+                });
+            });
+        });
+
+        // 3. Global click delegate handler for sorting table columns
+        document.addEventListener("click", function(e) {
+            const th = e.target.closest("th.sortable-header");
+            if (!th) return;
+
+            const table = th.closest("table");
+            if (!table) return;
+
+            const tbody = table.querySelector("tbody");
+            if (!tbody) return;
+
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+            if (rows.length <= 1) return; // Nothing to sort
+
+            const columnIndex = Array.from(th.parentNode.children).indexOf(th);
+            const isAscending = th.getAttribute("data-sort-dir") !== "asc";
+
+            // Clear sort state on siblings
+            th.parentNode.querySelectorAll("th").forEach(function(sibling) {
+                sibling.removeAttribute("data-sort-dir");
+            });
+
+            // Set current sort state
+            th.setAttribute("data-sort-dir", isAscending ? "asc" : "desc");
+
+            // Sort logic
+            rows.sort(function(rowA, rowB) {
+                const cellA = rowA.children[columnIndex];
+                const cellB = rowB.children[columnIndex];
+
+                if (!cellA || !cellB) return 0;
+
+                const textA = cellA.textContent.trim();
+                const textB = cellB.textContent.trim();
+
+                // Number parsing
+                const cleanA = textA.replace(/[^\d.-]/g, "");
+                const cleanB = textB.replace(/[^\d.-]/g, "");
+                const numA = parseFloat(cleanA);
+                const numB = parseFloat(cleanB);
+
+                if (!isNaN(numA) && !isNaN(numB) && cleanA !== "" && cleanB !== "") {
+                    return isAscending ? numA - numB : numB - numA;
+                }
+
+                // Text compare
+                return isAscending
+                    ? textA.localeCompare(textB, undefined, { numeric: true, sensitivity: "base" })
+                    : textB.localeCompare(textA, undefined, { numeric: true, sensitivity: "base" });
+            });
+
+            // Reorder
+            rows.forEach(function(row) {
+                tbody.appendChild(row);
+            });
+        });
+    </script>
 </body>
 </html>
