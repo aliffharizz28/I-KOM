@@ -39,19 +39,7 @@
             margin-left: 0;
         }
 
-        /* Auto-Responsive Table Wrapper */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background-color: #ffffff;
-        }
-        .table-responsive table {
-            margin-bottom: 0 !important;
-        }
+
         
         /* Interactive Sortable Headers */
         th.sortable-header {
@@ -100,18 +88,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. Auto-wrap tables in .table-responsive wrappers if they aren't already wrapped
-            document.querySelectorAll("table").forEach(function(table) {
-                // Skip if parent is already table-responsive or table is marked as no-wrap
-                if (table.parentElement.classList.contains("table-responsive") || table.classList.contains("no-wrap")) {
-                    return;
-                }
-                
-                const wrapper = document.createElement("div");
-                wrapper.className = "table-responsive";
-                table.parentNode.insertBefore(wrapper, table);
-                wrapper.appendChild(table);
-            });
+
 
             // 2. Automatically apply sortable class to headers (excluding action columns or empty headers)
             document.querySelectorAll("table").forEach(function(table) {
