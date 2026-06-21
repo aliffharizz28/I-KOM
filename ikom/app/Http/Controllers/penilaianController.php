@@ -400,7 +400,7 @@ class penilaianController extends Controller
 
         $sigId    = $penyelaras->fld_sig_id;
         $sigNama  = $penyelaras->sig->fld_sig_nama;
-        $fileName = 'Laporan_Penilaian_' . str_replace(' ', '_', $sigNama) . '_' . date('Ymd_His') . '.csv';
+        $fileName = 'Laporan_Penilaian_' . str_replace(' ', '_', $sigNama) . '_' . date('Ymd_His') . '.xls';
         $sesiAktif = kursus::getActive();
 
         // Only export students enrolled in the active session
@@ -423,51 +423,132 @@ class penilaianController extends Controller
         $kriterias = kriteria::orderBy('fld_krit_id', 'asc')->get();
 
         $headers = [
-            "Content-type"        => "text/csv",
+            "Content-type"        => "application/vnd.ms-excel",
             "Content-Disposition" => "attachment; filename=$fileName",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         ];
 
-        $callback = function() use($pelajars, $kriterias, $keputusans) {
-            $file = fopen('php://output', 'w');
-            fputs($file, "\xEF\xBB\xBF"); // BOM for UTF-8 Excel
-
-            // Define header columns
-            $columns = ['No. Matrik', 'Nama Pelajar', 'Tahun', 'Jurusan'];
-            foreach ($kriterias as $k) {
-                $columns[] = $k->fld_krit_nama .  '(' . $k->fld_krit_markah . '%)';
+        $callback = function() use($pelajars, $kriterias, $keputusans, $sigNama, $sesiAktif) {
+            $totalCols = 6 + count($kriterias);
+            
+            // Output standard Excel HTML header with UTF-8 BOM
+            echo "\xEF\xBB\xBF";
+            echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+            echo '<head>';
+            echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+            echo '<style>';
+            echo '
+                table {
+                    border-collapse: collapse;
+                    font-family: \'Segoe UI\', Arial, sans-serif;
+                }
+                th {
+                    background-color: #1e3a8a;
+                    color: #ffffff;
+                    border: 1px solid #cbd5e1;
+                    padding: 10px;
+                    font-weight: bold;
+                    text-align: center;
+                    font-size: 11pt;
+                }
+                td {
+                    border: 1px solid #e2e8f0;
+                    padding: 8px;
+                    font-size: 10pt;
+                    vertical-align: middle;
+                }
+                .text-center {
+                    text-align: center;
+                }
+                .text-left {
+                    text-align: left;
+                }
+                .zebra {
+                    background-color: #f8fafc;
+                }
+                .total-row {
+                    font-weight: bold;
+                    background-color: #f1f5f9;
+                }
+                .title-header {
+                    font-size: 16pt;
+                    font-weight: bold;
+                    color: #1e3a8a;
+                    text-align: center;
+                }
+                .subtitle-header {
+                    font-size: 11pt;
+                    color: #64748b;
+                    text-align: center;
+                }
+            ';
+            echo '</style>';
+            echo '</head>';
+            echo '<body>';
+            
+            echo '<table>';
+            
+            // Title Rows
+            echo '<tr><td colspan="' . $totalCols . '" class="title-header" style="border:none;">LAPORAN PENILAIAN MARKAH</td></tr>';
+            echo '<tr><td colspan="' . $totalCols . '" class="subtitle-header" style="border:none;">KUMPULAN SIG: ' . htmlspecialchars(strtoupper($sigNama)) . '</td></tr>';
+            if ($sesiAktif) {
+                echo '<tr><td colspan="' . $totalCols . '" class="subtitle-header" style="border:none;">SESI: ' . htmlspecialchars($sesiAktif->fld_krs_sesi) . ' (' . htmlspecialchars($sesiAktif->fld_krs_semester) . ')</td></tr>';
             }
-            $columns[] = 'Markah Keseluruhan (%)';
-            $columns[] = 'Gred';
-
-            fputcsv($file, $columns);
-
-            // Populate rows
+            echo '<tr><td colspan="' . $totalCols . '" class="subtitle-header" style="border:none; font-style:italic;">Tarikh Dijana: ' . date('d/m/Y H:i:s') . '</td></tr>';
+            echo '<tr><td colspan="' . $totalCols . '" style="border:none; height:15px;"></td></tr>';
+            
+            // Header
+            echo '<thead>';
+            echo '<tr>';
+            echo '<th style="background-color: #1e3a8a; color: #ffffff;">No. Matrik</th>';
+            echo '<th style="background-color: #1e3a8a; color: #ffffff;">Nama Pelajar</th>';
+            echo '<th style="background-color: #1e3a8a; color: #ffffff;">Tahun</th>';
+            echo '<th style="background-color: #1e3a8a; color: #ffffff;">Jurusan</th>';
+            foreach ($kriterias as $k) {
+                echo '<th style="background-color: #1e3a8a; color: #ffffff;">' . htmlspecialchars($k->fld_krit_nama) . ' (' . $k->fld_krit_markah . '%)</th>';
+            }
+            echo '<th style="background-color: #0f766e; color: #ffffff;">Markah Keseluruhan (%)</th>';
+            echo '<th style="background-color: #0f766e; color: #ffffff;">Gred</th>';
+            echo '</tr>';
+            echo '</thead>';
+            
+            // Body
+            echo '<tbody>';
+            $isZebra = false;
             foreach ($pelajars as $pelajar) {
-                $row = [];
-                $row[] = $pelajar->fld_pel_nomat;
-                $row[] = $pelajar->pengguna->fld_user_nama ?? '-';
-                $row[] = $pelajar->fld_pel_tahun;
-                $row[] = $pelajar->fld_pel_jurusan;
-
+                $zebraStyle = $isZebra ? ' class="zebra"' : '';
+                $isZebra = !$isZebra;
+                
+                echo '<tr' . $zebraStyle . '>';
+                echo '<td class="text-center" style="vnd.ms-excel.numberformat:@">' . htmlspecialchars($pelajar->fld_pel_nomat) . '</td>';
+                echo '<td class="text-left">' . htmlspecialchars($pelajar->pengguna->fld_user_nama ?? '-') . '</td>';
+                echo '<td class="text-center">' . htmlspecialchars($pelajar->fld_pel_tahun) . '</td>';
+                echo '<td class="text-left">' . htmlspecialchars($pelajar->fld_pel_jurusan) . '</td>';
+                
                 $studentMarks = $pelajar->penilaian->keyBy('fld_krit_id');
-
                 foreach ($kriterias as $k) {
                     $mark = $studentMarks->get($k->fld_krit_id);
-                    $row[] = $mark ? $mark->fld_nilai_markah : '0';
+                    $val = $mark ? number_format($mark->fld_nilai_markah, 2) : '0.00';
+                    echo '<td class="text-center">' . $val . '</td>';
                 }
-
+                
                 $keputusan = $keputusans->get($pelajar->fld_pel_nomat);
-                $row[] = $keputusan ? $keputusan->fld_total_markah : '0';
-                $row[] = $keputusan ? $keputusan->fld_nilai_gred : '-';
-
-                fputcsv($file, $row);
+                $totalMark = $keputusan ? number_format($keputusan->fld_total_markah, 2) : '0.00';
+                $gred = $keputusan ? htmlspecialchars($keputusan->fld_nilai_gred) : '-';
+                
+                echo '<td class="text-center" style="font-weight:bold; background-color:#f0fdf4;">' . $totalMark . '</td>';
+                echo '<td class="text-center" style="font-weight:bold; background-color:#f0fdf4;">' . $gred . '</td>';
+                echo '</tr>';
             }
-            fclose($file);
+            echo '</tbody>';
+            echo '</table>';
+            echo '</body>';
+            echo '</html>';
         };
 
         return response()->stream($callback, 200, $headers);
     }
 }
+
