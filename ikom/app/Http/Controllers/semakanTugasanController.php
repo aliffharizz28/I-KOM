@@ -29,9 +29,16 @@ class semakanTugasanController extends Controller
             return redirect()->route('tugasan')->with('error', 'Akses ditolak. Tugasan ini tidak tergolong dalam kumpulan SIG anda.');
         }
 
-        // Get all students in this SIG
+        $sesiAktif = \App\Models\kursus::getActive();
+        $pelajarIds = $sesiAktif 
+            ? \App\Models\PendaftaranPelajar::where('fld_sig_id', $penyelaras->fld_sig_id)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->pluck('fld_pel_nomat')
+            : collect();
+
+        // Get all students in this SIG for the active session
         $pelajars = pelajar::with('pengguna')
-                           ->where('fld_sig_id', $penyelaras->fld_sig_id)
+                           ->whereIn('fld_pel_nomat', $pelajarIds)
                            ->get();
 
         // Get all submissions for this assignment (key by student matrix number)
@@ -92,9 +99,14 @@ class semakanTugasanController extends Controller
             return redirect()->route('tugasan')->with('error', 'Akses ditolak. Tugasan ini tidak tergolong dalam kumpulan SIG anda.');
         }
 
+        $sesiAktif = \App\Models\kursus::getActive();
+
         // Get valid student list for this SIG to prevent cross-SIG grading
-        $validStudents = pelajar::where('fld_sig_id', $penyelaras->fld_sig_id)
-            ->pluck('fld_pel_nomat');
+        $validStudents = $sesiAktif
+            ? \App\Models\PendaftaranPelajar::where('fld_sig_id', $penyelaras->fld_sig_id)
+                ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+                ->pluck('fld_pel_nomat')
+            : collect();
 
         $marks = $request->input('marks', []);
 

@@ -22,20 +22,34 @@ class tugasanPelajarController extends Controller
             return redirect()->route('dashboard')->with('error', 'Rekod pelajar tidak dijumpai.');
         }
         
-        if (!$pelajar->fld_sig_id) {
-            return redirect()->route('dashboard')->with('error', 'Anda belum didaftarkan ke mana-mana SIG.');
+        $sesiAktif = \App\Models\kursus::getActive();
+        if (!$sesiAktif) {
+            return redirect()->route('dashboard')->with('error', 'Tiada sesi kursus aktif.');
+        }
+
+        $pendaftaran = \App\Models\PendaftaranPelajar::where('fld_pel_nomat', $pelajar->fld_pel_nomat)
+            ->where('fld_krs_id', $sesiAktif->fld_krs_id)
+            ->first();
+
+        if (!$pendaftaran) {
+            return redirect()->route('dashboard')->with('error', 'Anda belum didaftarkan ke mana-mana SIG untuk sesi ini.');
         }
 
         // Ambil tugasan bagi SIG pelajar tersebut
         $tugasans = tugasan::with('penghantaran')
-            ->where('fld_sig_id', $pelajar->fld_sig_id)
+            ->where('fld_sig_id', $pendaftaran->fld_sig_id)
+            ->where('fld_krs_id', $sesiAktif->fld_krs_id)
             ->where('is_published', 1)
             ->orderBy('fld_tgs_tarikh', 'desc')
             ->get();
 
-        $rakanSigs = pelajar::with('pengguna')
-            ->where('fld_sig_id', $pelajar->fld_sig_id)
+        $rakanSigsNomat = \App\Models\PendaftaranPelajar::where('fld_sig_id', $pendaftaran->fld_sig_id)
+            ->where('fld_krs_id', $sesiAktif->fld_krs_id)
             ->where('fld_pel_nomat', '!=', $pelajar->fld_pel_nomat)
+            ->pluck('fld_pel_nomat');
+
+        $rakanSigs = pelajar::with('pengguna')
+            ->whereIn('fld_pel_nomat', $rakanSigsNomat)
             ->get();
 
         return view('tugasanPelajar', compact('tugasans', 'rakanSigs', 'pelajar'));
