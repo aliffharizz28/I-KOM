@@ -29,7 +29,11 @@ class SemakanMarkahController extends Controller
 
         $keputusan = keputusan::where('fld_pel_nomat', $nomat)->first();
         
-        $sig = $pelajar->sig;
+        $sesiAktif = \App\Models\kursus::getActive();
+        $pendaftaran = $sesiAktif 
+            ? \App\Models\PendaftaranPelajar::where('fld_pel_nomat', $nomat)->where('fld_krs_id', $sesiAktif->fld_krs_id)->first() 
+            : null;
+        $sig = $pendaftaran ? $pendaftaran->sig : null;
         $publishStatus = $sig ? $sig->fld_publish_status : 0;
 
         // Dapatkan data markah terperinci mengikut kriteria

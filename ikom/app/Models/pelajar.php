@@ -68,7 +68,12 @@ class pelajar extends Authenticatable
         $sesiAktif = \App\Models\kursus::getActive();
         $krsId = $sesiAktif ? $sesiAktif->fld_krs_id : null;
 
-        $totalMeetings = perjumpaan::where('fld_sig_id', $this->fld_sig_id)
+        $pendaftaran = $krsId ? \App\Models\PendaftaranPelajar::where('fld_pel_nomat', $this->fld_pel_nomat)
+            ->where('fld_krs_id', $krsId)
+            ->first() : null;
+        $sigId = $pendaftaran ? $pendaftaran->fld_sig_id : null;
+
+        $totalMeetings = perjumpaan::where('fld_sig_id', $sigId)
                                    ->where('fld_meet_verify', 1)
                                    ->where('fld_krs_id', $krsId)
                                    ->count();
