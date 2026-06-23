@@ -46,17 +46,17 @@ class semakanTugasanController extends Controller
                                      ->where('fld_tgs_id', $id)
                                      ->get()
                                      ->keyBy(function($item) {
-                                         return strtoupper($item->fld_pel_nomat);
+                                         return strtoupper(trim($item->fld_pel_nomat));
                                      });
 
         // Key pelajars by uppercase nomat for reliable lookup
         $pelajarsByKey = $pelajars->keyBy(function($p) {
-            return strtoupper($p->fld_pel_nomat);
+            return strtoupper(trim($p->fld_pel_nomat));
         });
 
-        // Fix broken relationships due to case sensitivity
+        // Fix broken relationships due to case sensitivity or whitespace
         foreach ($penghantarans as $penghantaran) {
-            $nomat = strtoupper($penghantaran->fld_pel_nomat);
+            $nomat = strtoupper(trim($penghantaran->fld_pel_nomat));
             if (isset($pelajarsByKey[$nomat])) {
                 $penghantaran->setRelation('pelajar', $pelajarsByKey[$nomat]);
             }
@@ -71,7 +71,7 @@ class semakanTugasanController extends Controller
                                  ->map(function($word) { return strtoupper(substr($word, 0, 1)); })
                                  ->take(2)->join('');
             
-            $nomatUpper = strtoupper($pelajar->fld_pel_nomat);
+            $nomatUpper = strtoupper(trim($pelajar->fld_pel_nomat));
             $pelajar->has_submission = isset($penghantarans[$nomatUpper]) && !empty($penghantarans[$nomatUpper]->fld_pgh_fail);
             $hasRecord = isset($penghantarans[$nomatUpper]);
             $pelajar->mark = $hasRecord ? $penghantarans[$nomatUpper]->fld_pgh_markah : '';
