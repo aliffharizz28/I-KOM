@@ -47,7 +47,7 @@
         $tasksTamat = collect();
 
         foreach($tugasans as $tgs) {
-            $hasSubmitted = $tgs->penghantaran->count() > 0;
+            $hasSubmitted = $tgs->penghantaran->where('fld_pel_nomat', $pelajar->fld_pel_nomat)->count() > 0;
             if ($hasSubmitted) {
                 $tasksTelah->push($tgs);
             } else if ($tgs->fld_tgs_status == 'Aktif') {
@@ -81,7 +81,7 @@
                         <div class="tasks-grid">
                             @foreach($group['tasks'] as $tgs)
                                 @php
-                                    $hasSubmitted = $tgs->penghantaran->count() > 0;
+                                    $hasSubmitted = $tgs->penghantaran->where('fld_pel_nomat', $pelajar->fld_pel_nomat)->count() > 0;
                                 @endphp
                                 <div class="task-card" data-status="{{ $groupId }}">
                                     <div class="task-info">
@@ -115,7 +115,7 @@
                                         @if($hasSubmitted)
                                             <div class="task-action-buttons">
                                                 <button class="btn-hantar" onclick="confirmResubmit({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}')">Hantar Semula</button>
-                                                <a class="btn-semak" href="{{ route('file.penghantaran', $tgs->penghantaran->first()->fld_pgh_fail ?? '') }}" target="_blank">Semak Fail Tugasan</a>
+                                                <a class="btn-semak" href="{{ route('file.penghantaran', $tgs->penghantaran->where('fld_pel_nomat', $pelajar->fld_pel_nomat)->first()->fld_pgh_fail ?? '') }}" target="_blank">Semak Fail Tugasan</a>
                                             </div>
                                         @else
                                             @if($tgs->fld_tgs_status == 'Aktif')
