@@ -41,11 +41,26 @@ class semakanTugasanController extends Controller
                            ->whereIn('fld_pel_nomat', $pelajarIds)
                            ->get();
 
-        // Get all submissions for this assignment (key by student matrix number)
+        // Get all submissions for this assignment (key by uppercase student matrix number)
         $penghantarans = penghantaran::with('pelajar.pengguna')
                                      ->where('fld_tgs_id', $id)
                                      ->get()
-                                     ->keyBy('fld_pel_nomat');
+                                     ->keyBy(function($item) {
+                                         return strtoupper($item->fld_pel_nomat);
+                                     });
+
+        // Key pelajars by uppercase nomat for reliable lookup
+        $pelajarsByKey = $pelajars->keyBy(function($p) {
+            return strtoupper($p->fld_pel_nomat);
+        });
+
+        // Fix broken relationships due to case sensitivity
+        foreach ($penghantarans as $penghantaran) {
+            $nomat = strtoupper($penghantaran->fld_pel_nomat);
+            if (isset($pelajarsByKey[$nomat])) {
+                $penghantaran->setRelation('pelajar', $pelajarsByKey[$nomat]);
+            }
+        }
 
         // Pre-compute view logic for each student
         foreach ($pelajars as $pelajar) {
@@ -56,9 +71,10 @@ class semakanTugasanController extends Controller
                                  ->map(function($word) { return strtoupper(substr($word, 0, 1)); })
                                  ->take(2)->join('');
             
-            $pelajar->has_submission = isset($penghantarans[$pelajar->fld_pel_nomat]) && !empty($penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_fail);
-            $hasRecord = isset($penghantarans[$pelajar->fld_pel_nomat]);
-            $pelajar->mark = $hasRecord ? $penghantarans[$pelajar->fld_pel_nomat]->fld_pgh_markah : '';
+            $nomatUpper = strtoupper($pelajar->fld_pel_nomat);
+            $pelajar->has_submission = isset($penghantarans[$nomatUpper]) && !empty($penghantarans[$nomatUpper]->fld_pgh_fail);
+            $hasRecord = isset($penghantarans[$nomatUpper]);
+            $pelajar->mark = $hasRecord ? $penghantarans[$nomatUpper]->fld_pgh_markah : '';
             
             // Check for student picture
             $nomat = strtolower($pelajar->fld_pel_nomat);

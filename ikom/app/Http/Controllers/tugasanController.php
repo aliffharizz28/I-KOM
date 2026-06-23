@@ -217,18 +217,13 @@ class tugasanController extends Controller
                     $existing = subkriteria::where('fld_sub_nama', $oldTitle)->first();
                     if ($existing) {
                         $existing->update(['fld_sub_nama' => $request->tugasan_title]);
-                        \Illuminate\Support\Facades\Log::info('Subkriteria updated from ' . $oldTitle . ' to ' . $request->tugasan_title);
                     } else {
                         subkriteria::create(['fld_sub_nama' => $request->tugasan_title]);
-                        \Illuminate\Support\Facades\Log::info('Subkriteria created on title change: ' . $request->tugasan_title);
                     }
                 } else {
                     $existing = subkriteria::where('fld_sub_nama', $request->tugasan_title)->first();
                     if (!$existing) {
                         subkriteria::create(['fld_sub_nama' => $request->tugasan_title]);
-                        \Illuminate\Support\Facades\Log::info('Subkriteria created on update (was missing): ' . $request->tugasan_title);
-                    } else {
-                        \Illuminate\Support\Facades\Log::info('Subkriteria already exists: ' . $request->tugasan_title);
                     }
                 }
 
