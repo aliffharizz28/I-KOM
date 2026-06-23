@@ -95,8 +95,6 @@ class tugasanController extends Controller
             if (!$existingSub) {
                 \App\Models\subkriteria::create([
                     'fld_sub_nama'  => $request->tugasan_title,
-                    'fld_sub_markah' => null,
-                    'fld_krit_id'   => null,
                 ]);
             }
         } catch (\Exception $e) {
@@ -115,6 +113,18 @@ class tugasanController extends Controller
         $tugasan->save();
 
         if ($tugasan->is_published) {
+            // Check and create subkriteria when published
+            try {
+                $existingSub = \App\Models\subkriteria::where('fld_sub_nama', $tugasan->fld_tgs_nama)->first();
+                if (!$existingSub) {
+                    \App\Models\subkriteria::create([
+                        'fld_sub_nama' => $tugasan->fld_tgs_nama,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Subkriteria auto-create skipped during publish: ' . $e->getMessage());
+            }
+
             // Notify only students enrolled in this session for this SIG
             $sesiAktif = kursus::getActive();
             $pelajarIds = $sesiAktif
@@ -204,8 +214,22 @@ class tugasanController extends Controller
 
                 // Sync with subkriteria table if title changed
                 if ($oldTitle !== $request->tugasan_title) {
-                    subkriteria::where('fld_sub_nama', $oldTitle)
-                        ->update(['fld_sub_nama' => $request->tugasan_title]);
+                    $existing = subkriteria::where('fld_sub_nama', $oldTitle)->first();
+                    if ($existing) {
+                        $existing->update(['fld_sub_nama' => $request->tugasan_title]);
+                        \Illuminate\Support\Facades\Log::info('Subkriteria updated from ' . $oldTitle . ' to ' . $request->tugasan_title);
+                    } else {
+                        subkriteria::create(['fld_sub_nama' => $request->tugasan_title]);
+                        \Illuminate\Support\Facades\Log::info('Subkriteria created on title change: ' . $request->tugasan_title);
+                    }
+                } else {
+                    $existing = subkriteria::where('fld_sub_nama', $request->tugasan_title)->first();
+                    if (!$existing) {
+                        subkriteria::create(['fld_sub_nama' => $request->tugasan_title]);
+                        \Illuminate\Support\Facades\Log::info('Subkriteria created on update (was missing): ' . $request->tugasan_title);
+                    } else {
+                        \Illuminate\Support\Facades\Log::info('Subkriteria already exists: ' . $request->tugasan_title);
+                    }
                 }
 
                 return redirect()->route('tugasan')->with('success', 'Tugasan berjaya dikemaskini!');
