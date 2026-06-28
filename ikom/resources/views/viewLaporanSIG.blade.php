@@ -35,7 +35,7 @@
         </div>
         <div class="view-laporan-header-actions">
             <a href="{{ route('laporanSIG.export', $sig->fld_sig_id) }}" class="btn-submit btn-view-export">
-                <i class="fas fa-file-pdf"></i> Muat Turun PDF
+                <i class="fas fa-file-excel"></i> Muat Turun Excel
             </a>
             <a href="{{ route('laporanSIG') }}" class="btn-reset btn-view-back">
                 <i class="fas fa-arrow-left"></i> Kembali
