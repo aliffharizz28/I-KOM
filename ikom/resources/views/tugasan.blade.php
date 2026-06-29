@@ -53,7 +53,7 @@
                 @foreach($tugasans as $tgs)
                 <tr>
                     <td>
-                        <a href="javascript:void(0)" onclick="showDetails({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}', '{{ addslashes($tgs->fld_tgs_desc) }}', '{{ \Carbon\Carbon::parse($tgs->fld_tgs_tarikh)->format('d M Y') }}', '{{ $tgs->penghantaran_count }}', '{{ $tgs->fld_tgs_file ? route('file.tugasan', $tgs->fld_tgs_file) : '' }}', '{{ $tgs->fld_tgs_status }}', '{{ $tgs->fld_tgs_jenis }}')" class="title-link">
+                        <a href="javascript:void(0)" onclick="showDetails({{ $tgs->fld_tgs_id }}, {{ json_encode($tgs->fld_tgs_nama) }}, {{ json_encode($tgs->fld_tgs_desc) }}, '{{ \Carbon\Carbon::parse($tgs->fld_tgs_tarikh)->format('d M Y') }}', '{{ $tgs->penghantaran_count }}', '{{ $tgs->fld_tgs_file ? route('file.tugasan', $tgs->fld_tgs_file) : '' }}', '{{ $tgs->fld_tgs_status }}', '{{ $tgs->fld_tgs_jenis }}')" class="title-link">
                             <strong>{{ $tgs->fld_tgs_nama }}</strong>
                         </a>
                     </td>
@@ -70,7 +70,7 @@
                     </td>
                     <td>
                         <!-- Edit Button -->
-                        <button type="button" title="Kemaskini" onclick="showEditForm({{ $tgs->fld_tgs_id }}, '{{ addslashes($tgs->fld_tgs_nama) }}', '{{ addslashes($tgs->fld_tgs_desc) }}', '{{ $tgs->fld_tgs_tarikh }}', '{{ $tgs->fld_tgs_jenis }}')" class="btn-action-edit">
+                        <button type="button" title="Kemaskini" onclick="showEditForm({{ $tgs->fld_tgs_id }}, {{ json_encode($tgs->fld_tgs_nama) }}, {{ json_encode($tgs->fld_tgs_desc) }}, '{{ $tgs->fld_tgs_tarikh }}', '{{ $tgs->fld_tgs_jenis }}')" class="btn-action-edit">
                             <i class="fas fa-edit"></i>
                         </button>
                         <!-- Toggle Publish Button -->
