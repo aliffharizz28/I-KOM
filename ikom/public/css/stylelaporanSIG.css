@@ -189,7 +189,7 @@
 .laporan-table {
     min-width: 1200px;
     white-space: nowrap;
-    width: auto;
+    width: 100%;
     border-collapse: collapse;
 }
 

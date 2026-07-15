@@ -136,10 +136,8 @@ class StudentRegistrationController extends Controller
 
         $file       = $request->file('csv_file');
         $fileHandle = fopen($file->getRealPath(), 'r');
-
         $registeredStudents = [];
         $errors             = [];
-
         while (($row = fgetcsv($fileHandle, 1000, ',')) !== false) {
             $matric = trim($row[0]);
             if (empty($matric)) continue;
