@@ -55,7 +55,6 @@
             <select id="publishSelect" class="publish-select" onchange="promptPublishConfirm(this)">
                 <option value="0" {{ $publishStatus == 0 ? 'selected' : '' }}>Draf (Tidak Diterbitkan Markah)</option>
                 <option value="1" {{ $publishStatus == 1 ? 'selected' : '' }}>Fasa 1 (60% Penilaian Berterusan)</option>
-                <option value="2" {{ $publishStatus == 2 ? 'selected' : '' }}>Fasa 2 (100% Markah Keseluruhan)</option>
             </select>
             <span id="publishLoading" style="display: none; color: var(--primary-blue);"><i class="fas fa-spinner fa-spin"></i></span>
         </div>

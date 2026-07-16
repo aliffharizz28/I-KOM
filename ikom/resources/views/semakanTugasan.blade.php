@@ -112,6 +112,40 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Carian Pelajar
+        const searchInput = document.querySelector('.search-input');
+        if(searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const studentCards = document.querySelectorAll('.student-card');
+                
+                studentCards.forEach(card => {
+                    const studentNameElement = card.querySelector('.student-name-bold');
+                    if (studentNameElement) {
+                        const studentName = studentNameElement.textContent.toLowerCase();
+                        if(studentName.includes(searchTerm)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
+
+        // 2. Elak simpan markah bila tekan "Enter"
+        const marksForm = document.querySelector('.marks-form');
+        if(marksForm) {
+            marksForm.addEventListener('keydown', function(e) {
+                // Prevent submission if enter is pressed on inputs (not on submit button or textarea)
+                if(e.key === 'Enter' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+
     function viewSubmission(studentName, fileUrl) {
         // Update Header
         document.getElementById('currentStudentName').textContent = studentName;
