@@ -19,7 +19,7 @@
         </a>
     </div>
 
-    <div class="glass-effect section-container">
+    <div class="card-container section-container table-container">
         <p><strong>Tarikh:</strong> {{ \Carbon\Carbon::parse($perjumpaan->fld_meet_tarikh)->format('d M Y') }}</p>
         <p><strong>Status Pengesahan:</strong> {!! $perjumpaan->fld_meet_verify ? '<span style="color:green;">Telah Disahkan</span>' : '<span style="color:red;">Belum Disahkan</span>' !!}</p>
         
