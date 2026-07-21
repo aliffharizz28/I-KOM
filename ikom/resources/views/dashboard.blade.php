@@ -111,11 +111,43 @@
                 </div>
                 <div class="timeline-item">
                     <h3>Minggu 4:</h3>
-                    <p>Perancangan Program</p>
+                    <p>Perancangan Program & Agihan Tugas</p>
                 </div>
                 <div class="timeline-item">
                     <h3>Minggu 5:</h3>
                     <p>Pembentukan Jawatankuasa Program</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 6-7:</h3>
+                    <p>Penyediaan Kertas Kerja & Kelulusan Projek</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 8:</h3>
+                    <p>Pembangunan Prototaip / Permulaan Pelaksanaan Projek</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 9-10:</h3>
+                    <p>Pelaksanaan Projek Lanjutan & Pengumpulan Data</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 11-12:</h3>
+                    <p>Pengujian Sistem, Simulasi & Analisis Maklum Balas</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 13:</h3>
+                    <p>Penambahbaikan & Kemasan Akhir Projek</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 14:</h3>
+                    <p>Penghantaran Tugasan (Laporan Akhir, Sistem & Bahan Pembentangan)</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 15:</h3>
+                    <p>Pembentangan Projek & Penilaian Terakhir</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 16:</h3>
+                    <p>Post-Mortem, Semakan Markah & Penutup Kursus</p>
                 </div>
             </div>
         </div>
@@ -229,11 +261,43 @@
                 </div>
                 <div class="timeline-item">
                     <h3>Minggu 4:</h3>
-                    <p>Perancangan Program</p>
+                    <p>Perancangan Program & Agihan Tugas</p>
                 </div>
                 <div class="timeline-item">
                     <h3>Minggu 5:</h3>
                     <p>Pembentukan Jawatankuasa Program</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 6-7:</h3>
+                    <p>Penyediaan Kertas Kerja & Kelulusan Projek</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 8:</h3>
+                    <p>Pembangunan Prototaip / Permulaan Pelaksanaan Projek</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 9-10:</h3>
+                    <p>Pelaksanaan Projek Lanjutan & Pengumpulan Data</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 11-12:</h3>
+                    <p>Pengujian Sistem, Simulasi & Analisis Maklum Balas</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 13:</h3>
+                    <p>Penambahbaikan & Kemasan Akhir Projek</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 14:</h3>
+                    <p>Penghantaran Tugasan (Laporan Akhir, Sistem & Bahan Pembentangan)</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 15:</h3>
+                    <p>Pembentangan Projek & Penilaian Terakhir</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Minggu 16:</h3>
+                    <p>Post-Mortem, Semakan Markah & Penutup Kursus</p>
                 </div>
             </div>
         </div>
@@ -347,11 +411,43 @@
                     </div>
                     <div class="timeline-item">
                         <h3>Minggu 4:</h3>
-                        <p>Perancangan Program</p> 
+                        <p>Perancangan Program & Agihan Tugas</p> 
                     </div>
                     <div class="timeline-item">
                         <h3>Minggu 5:</h3>
                         <p>Pembentukan Jawatankuasa Program</p> 
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 6-7:</h3>
+                        <p>Penyediaan Kertas Kerja & Kelulusan Projek</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 8:</h3>
+                        <p>Pembangunan Prototaip / Permulaan Pelaksanaan Projek</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 9-10:</h3>
+                        <p>Pelaksanaan Projek Lanjutan & Pengumpulan Data</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 11-12:</h3>
+                        <p>Pengujian Sistem, Simulasi & Analisis Maklum Balas</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 13:</h3>
+                        <p>Penambahbaikan & Kemasan Akhir Projek</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 14:</h3>
+                        <p>Penghantaran Tugasan (Laporan Akhir, Sistem & Bahan Pembentangan)</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 15:</h3>
+                        <p>Pembentangan Projek & Penilaian Terakhir</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Minggu 16:</h3>
+                        <p>Post-Mortem, Semakan Markah & Penutup Kursus</p>
                     </div>
                 </div>
             </div>
