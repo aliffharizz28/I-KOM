@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                             <div class="mark-input-group">
-                                <input type="number" name="marks[{{ $pelajar->fld_pel_nomat }}]" class="mark-input" value="{{ $pelajar->mark }}" placeholder="-" min="0" max="10" step="1">
+                                <input type="number" name="marks[{{ trim($pelajar->fld_pel_nomat) }}]" class="mark-input" value="{{ $pelajar->mark }}" placeholder="-" min="0" max="10" step="1">
                                 <span class="mark-divider">/ 10</span>
                             </div>
                         </div>

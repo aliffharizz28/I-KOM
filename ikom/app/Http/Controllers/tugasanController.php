@@ -148,6 +148,7 @@ class tugasanController extends Controller
             $sent   = 0;
             $failed = 0;
 
+            //hantar emel ke pelajar
             foreach ($pelajars as $pel) {
                 if ($pel->pengguna && !empty($pel->pengguna->fld_user_email)) {
                     try {

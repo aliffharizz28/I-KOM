@@ -122,12 +122,14 @@ class semakanTugasanController extends Controller
             ? \App\Models\PendaftaranPelajar::where('fld_sig_id', $penyelaras->fld_sig_id)
                 ->where('fld_krs_id', $sesiAktif->fld_krs_id)
                 ->pluck('fld_pel_nomat')
+                ->map(fn($n) => trim($n))
             : collect();
 
         $marks = $request->input('marks', []);
 
         try {
             foreach ($marks as $nomat => $mark) {
+                $nomat = trim($nomat); // Strip any whitespace from matric number
                 if ($mark !== null && $mark !== '') {
                     // Skip students not in this SIG
                     if (!$validStudents->contains($nomat)) {
